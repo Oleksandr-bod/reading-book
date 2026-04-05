@@ -33,9 +33,6 @@
             background: #e6d5bd;
             color: #4f3a24;
         }
-        body.light .page {
-            background: #fffcf5;
-        }
 
         /* Темна тема */
         body.dark {
@@ -178,7 +175,7 @@
             overflow-y: auto;
         }
 
-        /* Адаптація для різних екранів */
+        /* Адаптація для телефону */
         @media (max-width: 700px) {
             body { padding: 8px; }
             .app-header { margin-bottom: 12px; }
@@ -475,8 +472,8 @@
 
 <script>
     // ------------------- ГЛОБАЛЬНІ ЗМІННІ -------------------
-    let allPages = [];              // масив HTML-коду кожної сторінки
-    let currentPage = 0;           // поточна сторінка (індекс у allPages)
+    let allPages = [];
+    let currentPage = 0;
     let vocabularyHistory = [];
     let translationCache = new Map();
     let soundEnabled = true;
@@ -571,7 +568,6 @@
         setTimeout(() => toast.remove(), duration);
     }
 
-    // Розбиття HTML на окремі сторінки
     function splitHtmlIntoPages(html, maxBlocksPerPage = 7) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
@@ -594,7 +590,6 @@
         return pages;
     }
 
-    // Обгорнути слова в теги .word
     function wrapWordsInHtml(html) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
@@ -621,7 +616,6 @@
         return tempDiv.innerHTML;
     }
 
-    // Тултіп
     function showTooltip(wordElement, text, autoHide = true) {
         if (!tooltip) {
             tooltip = document.createElement('div');
@@ -665,7 +659,6 @@
         currentTooltipWord = null;
     }
 
-    // ------------------- ВІДОБРАЖЕННЯ -------------------
     function render() {
         if (!allPages.length) {
             bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Завантажте книгу</p>';
@@ -705,7 +698,6 @@
         localStorage.setItem('lastWordPage', currentPage);
     }
 
-    // ------------------- НАВІГАЦІЯ -------------------
     function nextPage() {
         if (currentPage + 1 < allPages.length) {
             currentPage++;
@@ -722,7 +714,6 @@
         } else showToast("Це перша сторінка");
     }
 
-    // Свайпи для телефону
     function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
     function handleTouchEnd(e) {
         touchEndX = e.changedTouches[0].screenX;
@@ -733,7 +724,6 @@
         }
     }
 
-    // Клавіші для комп'ютера
     function handleKeyPress(e) {
         if (e.key === 'ArrowLeft') {
             prevPage();
@@ -774,7 +764,6 @@
         }
     }
 
-    // ------------------- ПЕРЕКЛАД ТА ЗВУК -------------------
     async function fetchTranslation(word) {
         const lower = word.toLowerCase();
         if (translationCache.has(lower)) return translationCache.get(lower);
@@ -816,7 +805,6 @@
         localStorage.setItem('soundEnabled', soundEnabled);
     }
 
-    // ------------------- СЛОВНИК -------------------
     function saveVocabulary() { localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory)); }
     function loadVocabulary() {
         const saved = localStorage.getItem('reader_vocabulary');
@@ -908,7 +896,6 @@
         renderVocabularyList();
     }
 
-    // ------------------- РОБОТА З КНИГАМИ -------------------
     async function parseEpubWithImages(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1122,11 +1109,9 @@
         else loadDefaultBook();
     }
 
-    // ------------------- МОБІЛЬНЕ МЕНЮ -------------------
     function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
 
-    // ------------------- ІНІЦІАЛІЗАЦІЯ -------------------
     function init() {
         loadUploadedBooks();
         loadVocabulary();
@@ -1154,7 +1139,6 @@
             lastWordPage = savedPageNum;
         }
         
-        // Події
         soundToggleBtn.addEventListener('click', toggleSound);
         clearVocabBtn.addEventListener('click', clearVocabulary);
         toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
@@ -1171,21 +1155,17 @@
             fileInput.value = '';
         });
         
-        // Свайпи для телефону
         const touchArea = document.getElementById('bookPage');
         touchArea.addEventListener('touchstart', handleTouchStart);
         touchArea.addEventListener('touchend', handleTouchEnd);
         
-        // Клавіші для комп'ютера
         window.addEventListener('keydown', handleKeyPress);
         
-        // Мобільне меню
         if (mobileMenuBtn) {
             mobileMenuBtn.addEventListener('click', openSidebar);
             overlay.addEventListener('click', closeSidebar);
         }
         
-        // Тултіп
         tooltip = document.createElement('div');
         tooltip.className = 'word-tooltip';
         tooltip.style.display = 'none';
