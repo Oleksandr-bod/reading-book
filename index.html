@@ -345,6 +345,10 @@
             cursor: pointer;
             padding: 4px;
             border-radius: 30px;
+            transition: 0.1s;
+        }
+        .icon-btn:hover {
+            transform: scale(1.1);
         }
         .upload-area {
             display: flex;
@@ -444,6 +448,33 @@
         body.dark .info-note {
             color: #d4b87a;
         }
+        
+        /* Стилі для редагування перекладу */
+        .edit-translation-input {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            width: 120px;
+        }
+        body.dark .edit-translation-input {
+            background: #3a3a3a;
+            color: white;
+            border-color: #666;
+        }
+        .save-edit-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        body.dark .save-edit-btn {
+            background: #2e7d32;
+        }
     </style>
 </head>
 <body class="light">
@@ -498,7 +529,8 @@
             <div class="info-note">
                 💡 Торкніться/клікніть на слово → переклад + звук (підказка біля слова).<br>
                 👆 Гортайте кнопками або стрілками на клавіатурі.<br>
-                🔤 Кнопки A+ / A− змінюють розмір шрифту.
+                🔤 Кнопки A+ / A− змінюють розмір шрифту.<br>
+                ✏️ У словнику можна редагувати переклад (кнопка ✏️).
             </div>
         </div>
     </div>
@@ -734,23 +766,95 @@
         if (saved) { try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) vocabularyHistory = parsed; translationCache.clear(); for (let item of vocabularyHistory) if (item.translation && !item.translation.includes("❓")) translationCache.set(item.word.toLowerCase(), item.translation); } catch(e) {} }
         renderVocabularyList();
     }
+    
+    // Функція для редагування перекладу
+    function editTranslation(word, currentTranslation, index) {
+        const newTranslation = prompt(`Редагувати переклад для "${word}":`, currentTranslation);
+        if (newTranslation && newTranslation.trim() !== "") {
+            vocabularyHistory[index].translation = newTranslation.trim();
+            translationCache.set(word.toLowerCase(), newTranslation.trim());
+            saveVocabulary();
+            renderVocabularyList();
+            showToast(`Переклад "${word}" оновлено на "${newTranslation.trim()}"`);
+        }
+    }
+    
     function addOrUpdateWord(word, translation) {
         const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
-        if (idx !== -1) { vocabularyHistory[idx].translation = translation; const item = vocabularyHistory.splice(idx, 1)[0]; vocabularyHistory.unshift(item); }
+        if (idx !== -1) { 
+            vocabularyHistory[idx].translation = translation; 
+            const item = vocabularyHistory.splice(idx, 1)[0]; 
+            vocabularyHistory.unshift(item); 
+        }
         else { vocabularyHistory.unshift({ word, translation }); }
         translationCache.set(word.toLowerCase(), translation);
         saveVocabulary();
         renderVocabularyList();
     }
+    
     function renderVocabularyList() {
         if (!vocabListUl) return;
         let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []);
         if (items.length === 0) { vocabListUl.innerHTML = '<li style="color:#b59773;">📖 Натисніть на слово</li>'; return; }
-        vocabListUl.innerHTML = items.map(item => `<li class="vocab-item" data-word="${escapeHtml(item.word)}"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span><span style="font-size:0.8rem;">${escapeHtml(item.translation)}</span><button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}">🔄</button><button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}">🗑️</button></div></li>`).join('');
-        document.querySelectorAll('.vocab-word').forEach(el => { el.addEventListener('click', (e) => { e.stopPropagation(); const w = el.getAttribute('data-word'); const trans = el.parentElement.children[1]?.innerText || ''; showToast(`${w} → ${trans}`); }); });
-        document.querySelectorAll('.retry-vocab').forEach(btn => { btn.addEventListener('click', async (e) => { const w = btn.getAttribute('data-word'); const newTrans = await fetchTranslation(w); addOrUpdateWord(w, newTrans); renderVocabularyList(); showToast(`Переклад "${w}" оновлено`); }); });
-        document.querySelectorAll('.remove-vocab').forEach(btn => { btn.addEventListener('click', (e) => { const w = btn.getAttribute('data-word'); vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); translationCache.delete(w.toLowerCase()); saveVocabulary(); renderVocabularyList(); showToast(`"${w}" видалено`); }); });
+        
+        vocabListUl.innerHTML = items.map((item, idx) => {
+            const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word);
+            return `<li class="vocab-item" data-word="${escapeHtml(item.word)}">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                    <span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span>
+                    <span style="font-size:0.8rem; flex:1; margin:0 8px;">${escapeHtml(item.translation)}</span>
+                    <button class="icon-btn edit-vocab" data-word="${escapeHtml(item.word)}" data-index="${globalIdx}" title="Редагувати переклад">✏️</button>
+                    <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}" title="Оновити переклад онлайн">🔄</button>
+                    <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}" title="Видалити">🗑️</button>
+                </div>
+            </li>`;
+        }).join('');
+        
+        // Події для словника
+        document.querySelectorAll('.vocab-word').forEach(el => { 
+            el.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                const w = el.getAttribute('data-word'); 
+                const item = vocabularyHistory.find(v => v.word === w);
+                const trans = item ? item.translation : '';
+                showToast(`${w} → ${trans}`); 
+            }); 
+        });
+        
+        document.querySelectorAll('.edit-vocab').forEach(btn => { 
+            btn.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                const w = btn.getAttribute('data-word'); 
+                const idx = parseInt(btn.getAttribute('data-index'));
+                const item = vocabularyHistory[idx];
+                if (item) editTranslation(w, item.translation, idx);
+            }); 
+        });
+        
+        document.querySelectorAll('.retry-vocab').forEach(btn => { 
+            btn.addEventListener('click', async (e) => { 
+                e.stopPropagation(); 
+                const w = btn.getAttribute('data-word'); 
+                const newTrans = await fetchTranslation(w); 
+                addOrUpdateWord(w, newTrans); 
+                renderVocabularyList(); 
+                showToast(`Переклад "${w}" оновлено`); 
+            }); 
+        });
+        
+        document.querySelectorAll('.remove-vocab').forEach(btn => { 
+            btn.addEventListener('click', (e) => { 
+                e.stopPropagation(); 
+                const w = btn.getAttribute('data-word'); 
+                vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); 
+                translationCache.delete(w.toLowerCase()); 
+                saveVocabulary(); 
+                renderVocabularyList(); 
+                showToast(`"${w}" видалено`); 
+            }); 
+        });
     }
+    
     function clearVocabulary() { vocabularyHistory = []; translationCache.clear(); saveVocabulary(); renderVocabularyList(); showToast("Словник очищено"); }
     function toggleShowAllWords() { showAllWords = !showAllWords; toggleAllWordsBtn.innerHTML = showAllWords ? '📋 Показати лише останнє' : '📋 Всі слова'; renderVocabularyList(); }
 
