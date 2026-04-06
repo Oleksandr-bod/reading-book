@@ -38,7 +38,7 @@
             color: #2c2b28 !important;
         }
 
-        /* Темна тема — максимальний контраст для підказок та підсвітки */
+        /* Темна тема */
         body.dark {
             background: #121212;
             color: #f0f0f0;
@@ -66,14 +66,12 @@
             background: #5a4a3a;
             color: #ffecb3;
         }
-        /* Підсвітка слова в темній темі — яскрава, щоб слово було дуже видно */
         body.dark .word-highlight {
             background-color: #f0b84d !important;
             color: #1a1a1a !important;
             box-shadow: 0 2px 10px rgba(240,184,77,0.5) !important;
             border-radius: 12px;
         }
-        /* Слова при наведенні в темній темі */
         body.dark .word:hover {
             background-color: #3a3a3a;
             color: #ffecb3;
@@ -86,7 +84,6 @@
             transition: background 0.2s, color 0.2s;
         }
 
-        /* Хедер з логотипом */
         .app-header {
             max-width: 1400px;
             margin: 0 auto 20px auto;
@@ -359,7 +356,7 @@
         }
         input[type="file"] { display: none; }
 
-        /* ========= ПОКРАЩЕНИЙ ТУЛТІП (переклад) — чудова видимість у ТЕМНІЙ ТЕМІ ========= */
+        /* Стиль підказки - тільки переклад */
         .word-tooltip {
             position: fixed;
             background: #2d2a24;
@@ -399,7 +396,6 @@
             border-bottom: none;
             border-top: 14px solid #2d2a24;
         }
-        /* Спеціальне оформлення для темної теми (ще контрастніше) */
         body.dark .word-tooltip {
             background: #1e1b17;
             border: 2px solid #ffb347;
@@ -414,7 +410,6 @@
             border-top-color: #1e1b17;
             border-bottom: none;
         }
-        /* Світла тема теж залишається контрастною */
         body.light .word-tooltip {
             background: #2c2b28;
             color: #fff6ea;
@@ -449,7 +444,6 @@
             color: #d4b87a;
         }
         
-        /* Стилі для редагування перекладу */
         .edit-translation-input {
             font-size: 0.75rem;
             padding: 4px 8px;
@@ -527,7 +521,7 @@
                 <li style="color:#b59773;">📭 Список завантажених книг</li>
             </ul>
             <div class="info-note">
-                💡 Торкніться/клікніть на слово → переклад + звук (підказка біля слова).<br>
+                💡 Торкніться/клікніть на слово → переклад українською.<br>
                 👆 Гортайте кнопками або стрілками на клавіатурі.<br>
                 🔤 Кнопки A+ / A− змінюють розмір шрифту.<br>
                 ✏️ У словнику можна редагувати переклад (кнопка ✏️).
@@ -599,7 +593,7 @@
         if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) {
             const wordText = currentTooltipWord.innerText.trim();
             const translation = getTranslationFromCache(wordText);
-            if (translation) tooltip.innerText = `${wordText} → ${translation}`;
+            if (translation) tooltip.innerText = translation;
         }
     }
     function getTranslationFromCache(word) { return translationCache.get(word.toLowerCase()) || null; }
@@ -704,10 +698,11 @@
         const span = e.currentTarget;
         const word = span.innerText.trim();
         if (!word || !word.match(/^[a-zA-Z']+$/)) return;
-        showTooltip(span, `⏳ ${word}...`, false);
+        showTooltip(span, `⏳...`, false);
         let translation = await fetchTranslation(word);
         if (translation.includes("❓") || translation.includes("помилка")) translation = `❓ (немає перекладу)`;
-        showTooltip(span, `${word} → ${translation}`, true);
+        // Показуємо ТІЛЬКИ переклад, без англійського слова
+        showTooltip(span, translation, true);
         addOrUpdateWord(word, translation);
         if (soundEnabled) speakWord(word);
         span.classList.add('word-highlight');
@@ -767,7 +762,6 @@
         renderVocabularyList();
     }
     
-    // Функція для редагування перекладу
     function editTranslation(word, currentTranslation, index) {
         const newTranslation = prompt(`Редагувати переклад для "${word}":`, currentTranslation);
         if (newTranslation && newTranslation.trim() !== "") {
@@ -810,7 +804,6 @@
             </li>`;
         }).join('');
         
-        // Події для словника
         document.querySelectorAll('.vocab-word').forEach(el => { 
             el.addEventListener('click', (e) => { 
                 e.stopPropagation(); 
