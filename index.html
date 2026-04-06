@@ -33,36 +33,50 @@
             background: #e6d5bd;
             color: #4f3a24;
         }
+        body.light .word-highlight {
+            background-color: #ffecb3 !important;
+            color: #2c2b28 !important;
+        }
 
-        /* Темна тема */
+        /* Темна тема — максимальний контраст для підказок та підсвітки */
         body.dark {
-            background: #1a1a1a;
-            color: #e0e0e0;
-        }
-        body.dark .book-page {
-            background: #2a2a2a;
-            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.8);
-            color: #e0e0e0;
-        }
-        body.dark .sidebar {
-            background: #2a2a2a;
-            color: #e0e0e0;
-            border: 1px solid #444;
-        }
-        body.dark .control-btn, body.dark .file-label {
-            background: #3a3a3a;
+            background: #121212;
             color: #f0f0f0;
         }
+        body.dark .book-page {
+            background: #1e1e1e;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.8);
+            color: #e8e8e8;
+        }
+        body.dark .sidebar {
+            background: #1e1e1e;
+            color: #e8e8e8;
+            border: 1px solid #3a3a3a;
+        }
+        body.dark .control-btn, body.dark .file-label {
+            background: #2c2c2c;
+            color: #ffffff;
+            border: 1px solid #5a5a5a;
+        }
         body.dark .vocab-item, body.dark .book-item {
-            background: #333;
-            border-color: #555;
+            background: #2a2a2a;
+            border-color: #4a4a4a;
         }
         body.dark .vocab-word {
-            background: #444;
+            background: #5a4a3a;
             color: #ffecb3;
         }
+        /* Підсвітка слова в темній темі — яскрава, щоб слово було дуже видно */
         body.dark .word-highlight {
-            background-color: #6b4e2e !important;
+            background-color: #f0b84d !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 2px 10px rgba(240,184,77,0.5) !important;
+            border-radius: 12px;
+        }
+        /* Слова при наведенні в темній темі */
+        body.dark .word:hover {
+            background-color: #3a3a3a;
+            color: #ffecb3;
         }
 
         body {
@@ -109,7 +123,7 @@
             letter-spacing: -0.02em;
         }
         body.dark .site-title {
-            background: linear-gradient(135deg, #e6c99c, #f5e2b9);
+            background: linear-gradient(135deg, #f5e2b9, #ffd966);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -142,8 +156,9 @@
             transform: scale(0.95);
         }
         body.dark .font-controls button {
-            background: #4a4a4a;
+            background: #3a3a3a;
             color: white;
+            border: 1px solid #666;
         }
 
         .reader-wrapper {
@@ -160,7 +175,6 @@
             min-width: 260px;
         }
 
-        /* Єдина сторінка для всіх пристроїв */
         .book-page {
             display: block;
             border-radius: 24px;
@@ -175,7 +189,6 @@
             overflow-y: auto;
         }
 
-        /* Адаптація для телефону */
         @media (max-width: 700px) {
             body { padding: 8px; }
             .app-header { margin-bottom: 12px; }
@@ -189,22 +202,18 @@
         .word {
             display: inline-block;
             cursor: pointer;
-            border-radius: 8px;
-            padding: 0 2px;
-            margin: 0 -2px;
+            border-radius: 10px;
+            padding: 0 3px;
+            margin: 0 -3px;
             font-weight: 500;
             touch-action: manipulation;
+            transition: all 0.1s ease;
         }
         .word:hover {
             background-color: #f3e9da;
         }
         .word:active {
-            background-color: #ffecb3;
-            transform: scale(0.99);
-        }
-        .word-highlight {
-            background-color: #ffecb3 !important;
-            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+            transform: scale(0.98);
         }
 
         .book-page img {
@@ -249,11 +258,11 @@
             font-size: 0.85rem;
         }
         body.dark .page-indicator {
-            background: #3a3a3a;
-            color: #ddd;
+            background: #2c2c2c;
+            color: #f0f0f0;
+            border: 1px solid #555;
         }
 
-        /* Бічна панель */
         .sidebar {
             flex: 1;
             min-width: 260px;
@@ -346,43 +355,66 @@
         }
         input[type="file"] { display: none; }
 
-        /* Тултіп біля слова */
+        /* ========= ПОКРАЩЕНИЙ ТУЛТІП (переклад) — чудова видимість у ТЕМНІЙ ТЕМІ ========= */
         .word-tooltip {
             position: fixed;
-            background: #1f1c18e6;
-            backdrop-filter: blur(12px);
-            color: #fffaee;
-            padding: 8px 16px;
-            border-radius: 48px;
-            font-size: 0.85rem;
+            background: #2d2a24;
+            backdrop-filter: blur(20px);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-size: 0.95rem;
+            font-weight: 600;
             z-index: 2000;
             pointer-events: none;
             font-family: 'Inter', sans-serif;
-            box-shadow: 0 8px 20px black;
-            border: 1px solid #d4af7a;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+            border: 1px solid #f5b042;
             white-space: nowrap;
-            max-width: 80vw;
+            max-width: 90vw;
             white-space: normal;
             word-break: break-word;
             text-align: center;
+            letter-spacing: 0.3px;
         }
         .word-tooltip::before {
             content: '';
             position: absolute;
             width: 0;
             height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-bottom: 10px solid #1f1c18e6;
-            top: -10px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 14px solid #2d2a24;
+            top: -14px;
             left: 50%;
             transform: translateX(-50%);
         }
         .word-tooltip.bottom-arrow::before {
             top: auto;
-            bottom: -10px;
+            bottom: -14px;
             border-bottom: none;
-            border-top: 10px solid #1f1c18e6;
+            border-top: 14px solid #2d2a24;
+        }
+        /* Спеціальне оформлення для темної теми (ще контрастніше) */
+        body.dark .word-tooltip {
+            background: #1e1b17;
+            border: 2px solid #ffb347;
+            color: #fff5e6;
+            font-weight: 600;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+        }
+        body.dark .word-tooltip::before {
+            border-bottom-color: #1e1b17;
+        }
+        body.dark .word-tooltip.bottom-arrow::before {
+            border-top-color: #1e1b17;
+            border-bottom: none;
+        }
+        /* Світла тема теж залишається контрастною */
+        body.light .word-tooltip {
+            background: #2c2b28;
+            color: #fff6ea;
+            border: 1px solid #d4af37;
         }
 
         .toast-message {
@@ -409,6 +441,9 @@
             margin-top: 16px;
             color: #ad8e62;
         }
+        body.dark .info-note {
+            color: #d4b87a;
+        }
     </style>
 </head>
 <body class="light">
@@ -431,7 +466,6 @@
 
 <div class="reader-wrapper">
     <div class="book-area">
-        <!-- Єдина сторінка для всіх пристроїв -->
         <div class="book-page" id="bookPage"></div>
         
         <div class="pagination-controls">
@@ -485,7 +519,6 @@
     let isDarkTheme = false;
     let currentFontSize = 1.0;
 
-    // DOM елементи
     const bookPageDiv = document.getElementById('bookPage');
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
@@ -510,31 +543,15 @@
     let touchStartX = 0;
     let touchEndX = 0;
 
-    // ------------------- РОЗМІР ШРИФТУ -------------------
     function updateFontSize() {
         const textContainer = document.querySelector('.book-page');
-        if (textContainer) {
-            textContainer.style.fontSize = currentFontSize + 'rem';
-        }
+        if (textContainer) textContainer.style.fontSize = currentFontSize + 'rem';
         localStorage.setItem('readerFontSize', currentFontSize);
-        if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) {
-            positionTooltip(currentTooltipWord);
-        }
+        if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord);
     }
-    function increaseFont() {
-        if (currentFontSize < 2.2) {
-            currentFontSize += 0.1;
-            updateFontSize();
-        } else showToast("Максимальний розмір шрифту");
-    }
-    function decreaseFont() {
-        if (currentFontSize > 0.7) {
-            currentFontSize -= 0.1;
-            updateFontSize();
-        } else showToast("Мінімальний розмір шрифту");
-    }
+    function increaseFont() { if (currentFontSize < 2.2) { currentFontSize += 0.1; updateFontSize(); } else showToast("Максимальний розмір шрифту"); }
+    function decreaseFont() { if (currentFontSize > 0.7) { currentFontSize -= 0.1; updateFontSize(); } else showToast("Мінімальний розмір шрифту"); }
 
-    // ------------------- ТЕМА -------------------
     function setTheme(dark) {
         isDarkTheme = dark;
         if (dark) {
@@ -547,19 +564,16 @@
             themeToggleBtn.innerHTML = '🌙 Нічний режим';
         }
         localStorage.setItem('darkTheme', dark);
+        if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) {
+            const wordText = currentTooltipWord.innerText.trim();
+            const translation = getTranslationFromCache(wordText);
+            if (translation) tooltip.innerText = `${wordText} → ${translation}`;
+        }
     }
+    function getTranslationFromCache(word) { return translationCache.get(word.toLowerCase()) || null; }
     function toggleTheme() { setTheme(!isDarkTheme); }
 
-    // ------------------- ДОПОМІЖНІ -------------------
-    function escapeHtml(str) {
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
     function showToast(msg, duration = 2000) {
         const toast = document.createElement('div');
         toast.className = 'toast-message';
@@ -583,9 +597,7 @@
             }
         }
         const pages = [];
-        for (let i = 0; i < blocks.length; i += maxBlocksPerPage) {
-            pages.push(blocks.slice(i, i + maxBlocksPerPage).join(''));
-        }
+        for (let i = 0; i < blocks.length; i += maxBlocksPerPage) pages.push(blocks.slice(i, i + maxBlocksPerPage).join(''));
         if (pages.length === 0) pages.push('<p>✨ Сторінка порожня</p>');
         return pages;
     }
@@ -603,9 +615,7 @@
                         span.className = 'word';
                         span.textContent = part;
                         frag.appendChild(span);
-                    } else {
-                        frag.appendChild(document.createTextNode(part));
-                    }
+                    } else frag.appendChild(document.createTextNode(part));
                 }
                 node.parentNode.replaceChild(frag, node);
             } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'IMG' && node.tagName !== 'SCRIPT') {
@@ -627,58 +637,36 @@
         tooltip.style.display = 'block';
         currentTooltipWord = wordElement;
         positionTooltip(wordElement);
-        if (autoHide) {
-            tooltipTimeout = setTimeout(() => {
-                tooltip.style.display = 'none';
-                currentTooltipWord = null;
-            }, 3000);
-        }
+        if (autoHide) tooltipTimeout = setTimeout(() => { tooltip.style.display = 'none'; currentTooltipWord = null; }, 3800);
     }
 
     function positionTooltip(wordElement) {
         if (!tooltip || tooltip.style.display !== 'block') return;
         const rect = wordElement.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
-        let top = rect.top - tooltipRect.height - 10;
+        let top = rect.top - tooltipRect.height - 12;
         let arrowClass = '';
-        if (top < 10) {
-            top = rect.bottom + 10;
-            arrowClass = 'bottom-arrow';
-        }
+        if (top < 10) { top = rect.bottom + 12; arrowClass = 'bottom-arrow'; }
         tooltip.classList.remove('bottom-arrow');
         if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
         let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-        left = Math.max(8, Math.min(left, window.innerWidth - tooltipRect.width - 8));
+        left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
         tooltip.style.top = `${top}px`;
         tooltip.style.left = `${left}px`;
     }
 
-    function hideTooltip() {
-        if (tooltip) tooltip.style.display = 'none';
-        if (tooltipTimeout) clearTimeout(tooltipTimeout);
-        currentTooltipWord = null;
-    }
+    function hideTooltip() { if (tooltip) tooltip.style.display = 'none'; if (tooltipTimeout) clearTimeout(tooltipTimeout); currentTooltipWord = null; }
 
     function render() {
-        if (!allPages.length) {
-            bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Завантажте книгу</p>';
-            pageIndicator.innerText = `Сторінка 0 / 0`;
-            return;
-        }
-
+        if (!allPages.length) { bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Завантажте книгу</p>'; pageIndicator.innerText = `Сторінка 0 / 0`; return; }
         const pageHtml = wrapWordsInHtml(allPages[currentPage]);
         bookPageDiv.innerHTML = pageHtml;
         pageIndicator.innerText = `Сторінка ${currentPage+1} / ${allPages.length}`;
         attachListeners();
+        bookPageDiv.scrollTop = 0;
     }
 
-    function attachListeners() {
-        const words = document.querySelectorAll('#bookPage .word');
-        words.forEach(span => {
-            span.removeEventListener('click', wordClickHandler);
-            span.addEventListener('click', wordClickHandler);
-        });
-    }
+    function attachListeners() { document.querySelectorAll('#bookPage .word').forEach(span => { span.removeEventListener('click', wordClickHandler); span.addEventListener('click', wordClickHandler); }); }
 
     async function wordClickHandler(e) {
         const span = e.currentTarget;
@@ -691,76 +679,29 @@
         addOrUpdateWord(word, translation);
         if (soundEnabled) speakWord(word);
         span.classList.add('word-highlight');
-        setTimeout(() => span.classList.remove('word-highlight'), 500);
+        setTimeout(() => span.classList.remove('word-highlight'), 600);
         lastWordText = word;
         lastWordPage = currentPage;
         localStorage.setItem('lastWord', word);
         localStorage.setItem('lastWordPage', currentPage);
     }
 
-    function nextPage() {
-        if (currentPage + 1 < allPages.length) {
-            currentPage++;
-            render();
-            hideTooltip();
-        } else showToast("Це остання сторінка");
-    }
-
-    function prevPage() {
-        if (currentPage - 1 >= 0) {
-            currentPage--;
-            render();
-            hideTooltip();
-        } else showToast("Це перша сторінка");
-    }
-
+    function nextPage() { if (currentPage + 1 < allPages.length) { currentPage++; render(); hideTooltip(); } else showToast("Це остання сторінка"); }
+    function prevPage() { if (currentPage - 1 >= 0) { currentPage--; render(); hideTooltip(); } else showToast("Це перша сторінка"); }
     function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
-    function handleTouchEnd(e) {
-        touchEndX = e.changedTouches[0].screenX;
-        const delta = touchEndX - touchStartX;
-        if (Math.abs(delta) > 50) {
-            if (delta > 0) prevPage();
-            else nextPage();
-        }
-    }
-
-    function handleKeyPress(e) {
-        if (e.key === 'ArrowLeft') {
-            prevPage();
-            e.preventDefault();
-        } else if (e.key === 'ArrowRight') {
-            nextPage();
-            e.preventDefault();
-        }
-    }
+    function handleTouchEnd(e) { touchEndX = e.changedTouches[0].screenX; const delta = touchEndX - touchStartX; if (Math.abs(delta) > 50) delta > 0 ? prevPage() : nextPage(); }
+    function handleKeyPress(e) { if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); } else if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); } }
 
     function goToLastWord() {
-        if (!lastWordText || lastWordPage === -1) {
-            showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово.");
-            return;
-        }
-        if (lastWordPage >= allPages.length) {
-            showToast("Слово більше не в книзі");
-            return;
-        }
-        if (currentPage !== lastWordPage) {
-            currentPage = lastWordPage;
-            render();
-            setTimeout(() => highlightWord(lastWordText), 200);
-        } else {
-            highlightWord(lastWordText);
-        }
+        if (!lastWordText || lastWordPage === -1) { showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово."); return; }
+        if (lastWordPage >= allPages.length) { showToast("Слово більше не в книзі"); return; }
+        if (currentPage !== lastWordPage) { currentPage = lastWordPage; render(); setTimeout(() => highlightWord(lastWordText), 200); }
+        else highlightWord(lastWordText);
     }
-
     function highlightWord(word) {
         const spans = document.querySelectorAll('#bookPage .word');
         for (let span of spans) {
-            if (span.innerText === word) {
-                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                span.classList.add('word-highlight');
-                setTimeout(() => span.classList.remove('word-highlight'), 1500);
-                break;
-            }
+            if (span.innerText === word) { span.scrollIntoView({ behavior: 'smooth', block: 'center' }); span.classList.add('word-highlight'); setTimeout(() => span.classList.remove('word-highlight'), 1500); break; }
         }
     }
 
@@ -771,11 +712,7 @@
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=uk&dt=t&q=${encodeURIComponent(word)}`;
             const resp = await fetch(url);
             const data = await resp.json();
-            if (data && data[0] && data[0][0] && data[0][0][0]) {
-                let trans = data[0][0][0];
-                translationCache.set(lower, trans);
-                return trans;
-            }
+            if (data && data[0] && data[0][0] && data[0][0][0]) { let trans = data[0][0][0]; translationCache.set(lower, trans); return trans; }
         } catch(e) {}
         try {
             const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|uk`;
@@ -788,396 +725,74 @@
         } catch(e) { return "⚠️ помилка перекладу"; }
     }
 
-    function speakWord(word) {
-        if (!soundEnabled || !window.speechSynthesis) return;
-        if (currentUtterance) window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(word);
-        utter.lang = 'en-US';
-        utter.rate = 0.9;
-        window.speechSynthesis.speak(utter);
-        currentUtterance = utter;
-    }
-
-    function toggleSound() {
-        soundEnabled = !soundEnabled;
-        soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
-        if (!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
-        localStorage.setItem('soundEnabled', soundEnabled);
-    }
+    function speakWord(word) { if (!soundEnabled || !window.speechSynthesis) return; if (currentUtterance) window.speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(word); utter.lang = 'en-US'; utter.rate = 0.9; window.speechSynthesis.speak(utter); currentUtterance = utter; }
+    function toggleSound() { soundEnabled = !soundEnabled; soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук'; if (!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel(); localStorage.setItem('soundEnabled', soundEnabled); }
 
     function saveVocabulary() { localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory)); }
     function loadVocabulary() {
         const saved = localStorage.getItem('reader_vocabulary');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) vocabularyHistory = parsed;
-                translationCache.clear();
-                for (let item of vocabularyHistory) {
-                    if (item.translation && !item.translation.includes("❓"))
-                        translationCache.set(item.word.toLowerCase(), item.translation);
-                }
-            } catch(e) {}
-        }
+        if (saved) { try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) vocabularyHistory = parsed; translationCache.clear(); for (let item of vocabularyHistory) if (item.translation && !item.translation.includes("❓")) translationCache.set(item.word.toLowerCase(), item.translation); } catch(e) {} }
         renderVocabularyList();
     }
-
     function addOrUpdateWord(word, translation) {
         const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
-        if (idx !== -1) {
-            vocabularyHistory[idx].translation = translation;
-            const item = vocabularyHistory.splice(idx, 1)[0];
-            vocabularyHistory.unshift(item);
-        } else {
-            vocabularyHistory.unshift({ word, translation });
-        }
+        if (idx !== -1) { vocabularyHistory[idx].translation = translation; const item = vocabularyHistory.splice(idx, 1)[0]; vocabularyHistory.unshift(item); }
+        else { vocabularyHistory.unshift({ word, translation }); }
         translationCache.set(word.toLowerCase(), translation);
         saveVocabulary();
         renderVocabularyList();
     }
-
     function renderVocabularyList() {
         if (!vocabListUl) return;
         let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []);
-        if (items.length === 0) {
-            vocabListUl.innerHTML = '<li style="color:#b59773;">📖 Натисніть на слово</li>';
-            return;
-        }
-        vocabListUl.innerHTML = items.map((item, i) => `
-            <li class="vocab-item" data-word="${escapeHtml(item.word)}">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                    <span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span>
-                    <span style="font-size:0.8rem;">${escapeHtml(item.translation)}</span>
-                    <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}">🔄</button>
-                    <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}">🗑️</button>
-                </div>
-            </li>
-        `).join('');
-        document.querySelectorAll('.vocab-word').forEach(el => {
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const w = el.getAttribute('data-word');
-                const trans = el.parentElement.children[1]?.innerText || '';
-                showToast(`${w} → ${trans}`);
-            });
-        });
-        document.querySelectorAll('.retry-vocab').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                const w = btn.getAttribute('data-word');
-                const newTrans = await fetchTranslation(w);
-                addOrUpdateWord(w, newTrans);
-                renderVocabularyList();
-                showToast(`Переклад "${w}" оновлено`);
-            });
-        });
-        document.querySelectorAll('.remove-vocab').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const w = btn.getAttribute('data-word');
-                vocabularyHistory = vocabularyHistory.filter(v => v.word !== w);
-                translationCache.delete(w.toLowerCase());
-                saveVocabulary();
-                renderVocabularyList();
-                showToast(`"${w}" видалено`);
-            });
-        });
+        if (items.length === 0) { vocabListUl.innerHTML = '<li style="color:#b59773;">📖 Натисніть на слово</li>'; return; }
+        vocabListUl.innerHTML = items.map(item => `<li class="vocab-item" data-word="${escapeHtml(item.word)}"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;"><span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span><span style="font-size:0.8rem;">${escapeHtml(item.translation)}</span><button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}">🔄</button><button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}">🗑️</button></div></li>`).join('');
+        document.querySelectorAll('.vocab-word').forEach(el => { el.addEventListener('click', (e) => { e.stopPropagation(); const w = el.getAttribute('data-word'); const trans = el.parentElement.children[1]?.innerText || ''; showToast(`${w} → ${trans}`); }); });
+        document.querySelectorAll('.retry-vocab').forEach(btn => { btn.addEventListener('click', async (e) => { const w = btn.getAttribute('data-word'); const newTrans = await fetchTranslation(w); addOrUpdateWord(w, newTrans); renderVocabularyList(); showToast(`Переклад "${w}" оновлено`); }); });
+        document.querySelectorAll('.remove-vocab').forEach(btn => { btn.addEventListener('click', (e) => { const w = btn.getAttribute('data-word'); vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); translationCache.delete(w.toLowerCase()); saveVocabulary(); renderVocabularyList(); showToast(`"${w}" видалено`); }); });
     }
+    function clearVocabulary() { vocabularyHistory = []; translationCache.clear(); saveVocabulary(); renderVocabularyList(); showToast("Словник очищено"); }
+    function toggleShowAllWords() { showAllWords = !showAllWords; toggleAllWordsBtn.innerHTML = showAllWords ? '📋 Показати лише останнє' : '📋 Всі слова'; renderVocabularyList(); }
 
-    function clearVocabulary() {
-        vocabularyHistory = [];
-        translationCache.clear();
-        saveVocabulary();
-        renderVocabularyList();
-        showToast("Словник очищено");
-    }
-
-    function toggleShowAllWords() {
-        showAllWords = !showAllWords;
-        toggleAllWordsBtn.innerHTML = showAllWords ? '📋 Показати лише останнє' : '📋 Всі слова';
-        renderVocabularyList();
-    }
-
-    async function parseEpubWithImages(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const arrayBuffer = e.target.result;
-                const book = ePub(arrayBuffer);
-                await book.ready;
-                const spine = book.spine;
-                const sections = spine.spineItems;
-                let fullHtml = '';
-                for (let i = 0; i < sections.length; i++) {
-                    const section = sections[i];
-                    const doc = await section.load(book.load.bind(book));
-                    const body = doc.querySelector('body');
-                    if (body) {
-                        const clone = body.cloneNode(true);
-                        const imgs = clone.querySelectorAll('img');
-                        for (let img of imgs) {
-                            const src = img.getAttribute('src');
-                            if (src && !src.startsWith('data:') && !src.startsWith('blob:')) {
-                                try {
-                                    const blob = await book.resources.get(src);
-                                    if (blob) img.setAttribute('src', URL.createObjectURL(blob));
-                                } catch(err) { console.warn("img error", src); }
-                            }
-                        }
-                        fullHtml += clone.innerHTML + '<hr class="epub-split">';
-                    }
-                    section.unload();
-                }
-                resolve(fullHtml);
-            };
-            reader.onerror = reject;
-            reader.readAsArrayBuffer(file);
-        });
-    }
-
-    async function parseFb2WithImages(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const xml = e.target.result;
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(xml, 'text/xml');
-                const body = doc.querySelector('body');
-                if (!body) { reject("Немає body"); return; }
-                let html = '';
-                const images = doc.querySelectorAll('binary');
-                const map = new Map();
-                for (let img of images) {
-                    const id = img.getAttribute('id');
-                    const data = img.textContent;
-                    if (id && data) {
-                        const mime = img.getAttribute('content-type') || 'image/jpeg';
-                        const blob = new Blob([Uint8Array.from(atob(data), c => c.charCodeAt(0))], { type: mime });
-                        map.set(id, URL.createObjectURL(blob));
-                    }
-                }
-                function process(node) {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.tagName === 'image' && node.getAttribute('href')) {
-                            const href = node.getAttribute('href').replace('#', '');
-                            if (map.has(href)) html += `<img src="${map.get(href)}" style="max-width:100%; margin:1rem auto;">`;
-                            return;
-                        }
-                        if (node.tagName === 'p') {
-                            html += '<p>';
-                            node.childNodes.forEach(process);
-                            html += '</p>';
-                            return;
-                        }
-                        node.childNodes.forEach(process);
-                    } else if (node.nodeType === Node.TEXT_NODE) {
-                        html += node.textContent;
-                    }
-                }
-                body.childNodes.forEach(process);
-                resolve(html);
-            };
-            reader.onerror = reject;
-            reader.readAsText(file, 'utf-8');
-        });
-    }
-
-    async function parsePdfTextOnly(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const arrayBuffer = e.target.result;
-                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-                const pdf = await loadingTask.promise;
-                let fullText = '';
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    const page = await pdf.getPage(i);
-                    const content = await page.getTextContent();
-                    const pageText = content.items.map(item => item.str).join(' ');
-                    fullText += `<p>${pageText}</p>`;
-                }
-                resolve(fullText);
-            };
-            reader.onerror = reject;
-            reader.readAsArrayBuffer(file);
-        });
-    }
-
+    async function parseEpubWithImages(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { const arrayBuffer = e.target.result; const book = ePub(arrayBuffer); await book.ready; const spine = book.spine; const sections = spine.spineItems; let fullHtml = ''; for (let i = 0; i < sections.length; i++) { const section = sections[i]; const doc = await section.load(book.load.bind(book)); const body = doc.querySelector('body'); if (body) { const clone = body.cloneNode(true); const imgs = clone.querySelectorAll('img'); for (let img of imgs) { const src = img.getAttribute('src'); if (src && !src.startsWith('data:') && !src.startsWith('blob:')) { try { const blob = await book.resources.get(src); if (blob) img.setAttribute('src', URL.createObjectURL(blob)); } catch(err) {} } } fullHtml += clone.innerHTML + '<hr class="epub-split">'; } section.unload(); } resolve(fullHtml); }; reader.onerror = reject; reader.readAsArrayBuffer(file); }); }
+    async function parseFb2WithImages(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = (e) => { const xml = e.target.result; const parser = new DOMParser(); const doc = parser.parseFromString(xml, 'text/xml'); const body = doc.querySelector('body'); if (!body) { reject("Немає body"); return; } let html = ''; const images = doc.querySelectorAll('binary'); const map = new Map(); for (let img of images) { const id = img.getAttribute('id'); const data = img.textContent; if (id && data) { const mime = img.getAttribute('content-type') || 'image/jpeg'; const blob = new Blob([Uint8Array.from(atob(data), c => c.charCodeAt(0))], { type: mime }); map.set(id, URL.createObjectURL(blob)); } } function process(node) { if (node.nodeType === Node.ELEMENT_NODE) { if (node.tagName === 'image' && node.getAttribute('href')) { const href = node.getAttribute('href').replace('#', ''); if (map.has(href)) html += `<img src="${map.get(href)}" style="max-width:100%; margin:1rem auto;">`; return; } if (node.tagName === 'p') { html += '<p>'; node.childNodes.forEach(process); html += '</p>'; return; } node.childNodes.forEach(process); } else if (node.nodeType === Node.TEXT_NODE) html += node.textContent; } body.childNodes.forEach(process); resolve(html); }; reader.onerror = reject; reader.readAsText(file, 'utf-8'); }); }
+    async function parsePdfTextOnly(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { const arrayBuffer = e.target.result; const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer }); const pdf = await loadingTask.promise; let fullText = ''; for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const content = await page.getTextContent(); const pageText = content.items.map(item => item.str).join(' '); fullText += `<p>${pageText}</p>`; } resolve(fullText); }; reader.onerror = reject; reader.readAsArrayBuffer(file); }); }
     async function loadBookFromFile(file) {
-        const ext = file.name.split('.').pop().toLowerCase();
-        let htmlContent = "";
-        showToast("Обробка книги...");
-        try {
-            if (ext === 'epub') htmlContent = await parseEpubWithImages(file);
-            else if (ext === 'fb2') htmlContent = await parseFb2WithImages(file);
-            else if (ext === 'pdf') htmlContent = await parsePdfTextOnly(file);
-            else if (ext === 'txt') {
-                const text = await new Promise((res, rej) => {
-                    const r = new FileReader();
-                    r.onload = e => res(e.target.result);
-                    r.onerror = rej;
-                    r.readAsText(file, 'UTF-8');
-                });
-                htmlContent = `<p>${text.replace(/\n/g, '</p><p>')}</p>`;
-            } else throw new Error("Формат не підтримується");
-            if (!htmlContent.trim()) htmlContent = "<p>⚠️ Не вдалося витягнути текст</p>";
-            const bookId = Date.now() + '-' + Math.random().toString(36).substr(2,6);
-            uploadedBooks.unshift({ id: bookId, name: file.name, content: htmlContent });
-            localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
-            renderBooksList();
-            loadBook(htmlContent);
-        } catch(err) {
-            console.error(err);
-            showToast("Помилка: " + err.message);
-        }
+        const ext = file.name.split('.').pop().toLowerCase(); let htmlContent = ""; showToast("Обробка книги...");
+        try { if (ext === 'epub') htmlContent = await parseEpubWithImages(file); else if (ext === 'fb2') htmlContent = await parseFb2WithImages(file); else if (ext === 'pdf') htmlContent = await parsePdfTextOnly(file); else if (ext === 'txt') { const text = await new Promise((res, rej) => { const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsText(file, 'UTF-8'); }); htmlContent = `<p>${text.replace(/\n/g, '</p><p>')}</p>`; } else throw new Error("Формат не підтримується"); if (!htmlContent.trim()) htmlContent = "<p>⚠️ Не вдалося витягнути текст</p>"; const bookId = Date.now() + '-' + Math.random().toString(36).substr(2,6); uploadedBooks.unshift({ id: bookId, name: file.name, content: htmlContent }); localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); renderBooksList(); loadBook(htmlContent); } catch(err) { console.error(err); showToast("Помилка: " + err.message); }
     }
-
-    function loadBook(html) {
-        allPages = splitHtmlIntoPages(html, 7);
-        currentPage = 0;
-        render();
-        localStorage.setItem('reader_current_book', html);
-        lastWordText = null;
-        lastWordPage = -1;
-        localStorage.removeItem('lastWord');
-        localStorage.removeItem('lastWordPage');
-        showToast("Книгу завантажено");
-    }
-
-    function loadDefaultBook() {
-        const defaultHtml = `
-            <h2>The Lost Key</h2>
-            <p>Sam is a boy. He lives in a small house near the forest. One sunny morning, Sam finds an old key under a big tree. The key is gold and very beautiful.</p>
-            <p>"What does this key open?" Sam asks himself.</p>
-            <img src="https://placehold.co/600x400/F5E6D3/7A5A3A?text=Magical+Key" style="max-width:100%; border-radius:16px;">
-            <p>Sam walks to the garden. He sees a small door behind the flowers. The door is green and old. Sam puts the key into the lock. Click! The door opens.</p>
-            <p>Behind the door there is a magic garden. The flowers are red, blue, and yellow. A little bird sits on a branch. The bird says, "Hello, Sam! Welcome to the secret garden."</p>
-            <p>Sam is happy. He drinks sweet water from a fountain. He plays with the bird. In the evening, Sam returns home. He puts the key in his pocket.</p>
-        `;
-        loadBook(defaultHtml);
-    }
-
+    function loadBook(html) { allPages = splitHtmlIntoPages(html, 7); currentPage = 0; render(); localStorage.setItem('reader_current_book', html); lastWordText = null; lastWordPage = -1; localStorage.removeItem('lastWord'); localStorage.removeItem('lastWordPage'); showToast("Книгу завантажено"); }
+    function loadDefaultBook() { loadBook(`<h2>The Lost Key</h2><p>Sam is a boy. He lives in a small house near the forest. One sunny morning, Sam finds an old key under a big tree. The key is gold and very beautiful.</p><p>"What does this key open?" Sam asks himself.</p><img src="https://placehold.co/600x400/F5E6D3/7A5A3A?text=Magical+Key" style="max-width:100%; border-radius:16px;"><p>Sam walks to the garden. He sees a small door behind the flowers. The door is green and old. Sam puts the key into the lock. Click! The door opens.</p><p>Behind the door there is a magic garden. The flowers are red, blue, and yellow. A little bird sits on a branch. The bird says, "Hello, Sam! Welcome to the secret garden."</p><p>Sam is happy. He drinks sweet water from a fountain. He plays with the bird. In the evening, Sam returns home. He puts the key in his pocket.</p>`); }
     function renderBooksList() {
         if (!booksListUl) return;
-        if (uploadedBooks.length === 0) {
-            booksListUl.innerHTML = '<li style="color:#b59773;">📭 Немає збережених книг</li>';
-            return;
-        }
-        booksListUl.innerHTML = uploadedBooks.map(book => `
-            <li class="book-item" data-id="${book.id}">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                    <span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1;">📘 ${escapeHtml(book.name.length>30 ? book.name.slice(0,27)+'...' : book.name)}</span>
-                    <button class="icon-btn open-book" data-id="${book.id}">📖</button>
-                    <button class="icon-btn delete-book" data-id="${book.id}">🗑️</button>
-                </div>
-            </li>
-        `).join('');
-        document.querySelectorAll('.open-book').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = btn.getAttribute('data-id');
-                const book = uploadedBooks.find(b => b.id === id);
-                if (book) loadBook(book.content);
-            });
-        });
-        document.querySelectorAll('.delete-book').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = btn.getAttribute('data-id');
-                uploadedBooks = uploadedBooks.filter(b => b.id !== id);
-                localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
-                renderBooksList();
-                if (uploadedBooks.length === 0 && allPages.length) loadDefaultBook();
-            });
-        });
-        document.querySelectorAll('.book-name').forEach(name => {
-            name.addEventListener('click', () => {
-                const id = name.getAttribute('data-id');
-                const book = uploadedBooks.find(b => b.id === id);
-                if (book) loadBook(book.content);
-            });
-        });
+        if (uploadedBooks.length === 0) { booksListUl.innerHTML = '<li style="color:#b59773;">📭 Немає збережених книг</li>'; return; }
+        booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item" data-id="${book.id}"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;"><span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1;">📘 ${escapeHtml(book.name.length>30 ? book.name.slice(0,27)+'...' : book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📖</button><button class="icon-btn delete-book" data-id="${book.id}">🗑️</button></div></li>`).join('');
+        document.querySelectorAll('.open-book').forEach(btn => { btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); const book = uploadedBooks.find(b => b.id === id); if (book) loadBook(book.content); }); });
+        document.querySelectorAll('.delete-book').forEach(btn => { btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); uploadedBooks = uploadedBooks.filter(b => b.id !== id); localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); renderBooksList(); if (uploadedBooks.length === 0 && allPages.length) loadDefaultBook(); }); });
+        document.querySelectorAll('.book-name').forEach(name => { name.addEventListener('click', () => { const id = name.getAttribute('data-id'); const book = uploadedBooks.find(b => b.id === id); if (book) loadBook(book.content); }); });
     }
-
-    function loadUploadedBooks() {
-        const saved = localStorage.getItem('reader_books');
-        if (saved) {
-            try { uploadedBooks = JSON.parse(saved); } catch(e) {}
-        }
-        renderBooksList();
-    }
-
-    function loadSavedBook() {
-        const saved = localStorage.getItem('reader_current_book');
-        if (saved && saved.trim()) loadBook(saved);
-        else loadDefaultBook();
-    }
-
+    function loadUploadedBooks() { const saved = localStorage.getItem('reader_books'); if (saved) { try { uploadedBooks = JSON.parse(saved); } catch(e) {} } renderBooksList(); }
+    function loadSavedBook() { const saved = localStorage.getItem('reader_current_book'); if (saved && saved.trim()) loadBook(saved); else loadDefaultBook(); }
     function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
 
+    window.addEventListener('scroll', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
+    window.addEventListener('resize', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
+    if (bookPageDiv) bookPageDiv.addEventListener('scroll', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
+
     function init() {
-        loadUploadedBooks();
-        loadVocabulary();
-        loadSavedBook();
-        
-        const savedSound = localStorage.getItem('soundEnabled');
-        if (savedSound !== null) soundEnabled = savedSound === 'true';
-        soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
-        
-        const savedFont = localStorage.getItem('readerFontSize');
-        if (savedFont) {
-            currentFontSize = parseFloat(savedFont);
-            if (isNaN(currentFontSize)) currentFontSize = 1.0;
-        }
-        updateFontSize();
-        
-        const savedTheme = localStorage.getItem('darkTheme');
-        if (savedTheme === 'true') setTheme(true);
-        else setTheme(false);
-        
-        const savedLast = localStorage.getItem('lastWord');
-        const savedPageNum = parseInt(localStorage.getItem('lastWordPage'));
-        if (savedLast && !isNaN(savedPageNum)) {
-            lastWordText = savedLast;
-            lastWordPage = savedPageNum;
-        }
-        
-        soundToggleBtn.addEventListener('click', toggleSound);
-        clearVocabBtn.addEventListener('click', clearVocabulary);
-        toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
-        lastWordBtn.addEventListener('click', goToLastWord);
-        prevBtn.addEventListener('click', prevPage);
-        nextBtn.addEventListener('click', nextPage);
-        themeToggleBtn.addEventListener('click', toggleTheme);
-        increaseFontBtn.addEventListener('click', increaseFont);
-        decreaseFontBtn.addEventListener('click', decreaseFont);
-        
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) loadBookFromFile(file);
-            fileInput.value = '';
-        });
-        
-        const touchArea = document.getElementById('bookPage');
-        touchArea.addEventListener('touchstart', handleTouchStart);
-        touchArea.addEventListener('touchend', handleTouchEnd);
-        
+        loadUploadedBooks(); loadVocabulary(); loadSavedBook();
+        const savedSound = localStorage.getItem('soundEnabled'); if (savedSound !== null) soundEnabled = savedSound === 'true'; soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
+        const savedFont = localStorage.getItem('readerFontSize'); if (savedFont) { currentFontSize = parseFloat(savedFont); if (isNaN(currentFontSize)) currentFontSize = 1.0; } updateFontSize();
+        const savedTheme = localStorage.getItem('darkTheme'); if (savedTheme === 'true') setTheme(true); else setTheme(false);
+        const savedLast = localStorage.getItem('lastWord'); const savedPageNum = parseInt(localStorage.getItem('lastWordPage')); if (savedLast && !isNaN(savedPageNum)) { lastWordText = savedLast; lastWordPage = savedPageNum; }
+        soundToggleBtn.addEventListener('click', toggleSound); clearVocabBtn.addEventListener('click', clearVocabulary); toggleAllWordsBtn.addEventListener('click', toggleShowAllWords); lastWordBtn.addEventListener('click', goToLastWord); prevBtn.addEventListener('click', prevPage); nextBtn.addEventListener('click', nextPage); themeToggleBtn.addEventListener('click', toggleTheme); increaseFontBtn.addEventListener('click', increaseFont); decreaseFontBtn.addEventListener('click', decreaseFont);
+        fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) loadBookFromFile(file); fileInput.value = ''; });
+        const touchArea = document.getElementById('bookPage'); touchArea.addEventListener('touchstart', handleTouchStart); touchArea.addEventListener('touchend', handleTouchEnd);
         window.addEventListener('keydown', handleKeyPress);
-        
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', openSidebar);
-            overlay.addEventListener('click', closeSidebar);
-        }
-        
-        tooltip = document.createElement('div');
-        tooltip.className = 'word-tooltip';
-        tooltip.style.display = 'none';
-        document.body.appendChild(tooltip);
-        
-        window.addEventListener('scroll', () => {
-            if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) {
-                positionTooltip(currentTooltipWord);
-            }
-        });
+        if (mobileMenuBtn) { mobileMenuBtn.addEventListener('click', openSidebar); overlay.addEventListener('click', closeSidebar); }
+        tooltip = document.createElement('div'); tooltip.className = 'word-tooltip'; tooltip.style.display = 'none'; document.body.appendChild(tooltip);
     }
-    
     init();
 </script>
 </body>
