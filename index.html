@@ -701,7 +701,6 @@
         showTooltip(span, `⏳...`, false);
         let translation = await fetchTranslation(word);
         if (translation.includes("❓") || translation.includes("помилка")) translation = `❓ (немає перекладу)`;
-        // Показуємо ТІЛЬКИ переклад, без англійського слова
         showTooltip(span, translation, true);
         addOrUpdateWord(word, translation);
         if (soundEnabled) speakWord(word);
@@ -720,15 +719,46 @@
     function handleKeyPress(e) { if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); } else if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); } }
 
     function goToLastWord() {
-        if (!lastWordText || lastWordPage === -1) { showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово."); return; }
-        if (lastWordPage >= allPages.length) { showToast("Слово більше не в книзі"); return; }
-        if (currentPage !== lastWordPage) { currentPage = lastWordPage; render(); setTimeout(() => highlightWord(lastWordText), 200); }
-        else highlightWord(lastWordText);
+        if (!lastWordText) { 
+            showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово."); 
+            return; 
+        }
+        
+        // Спроба знайти сторінку, де є це слово в поточній книзі
+        let foundPage = -1;
+        for (let i = 0; i < allPages.length; i++) {
+            // Тимчасовий div для пошуку слова в HTML сторінки без обгортання в spans
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = allPages[i];
+            const text = tempDiv.textContent || tempDiv.innerText;
+            if (text.toLowerCase().includes(lastWordText.toLowerCase())) {
+                foundPage = i;
+                break;
+            }
+        }
+        
+        if (foundPage !== -1) {
+            if (currentPage !== foundPage) {
+                currentPage = foundPage;
+                render();
+                setTimeout(() => highlightWord(lastWordText), 200);
+            } else {
+                highlightWord(lastWordText);
+            }
+        } else {
+            showToast(`⚠️ Слово "${lastWordText}" не знайдено в поточній книзі`);
+        }
     }
+    
     function highlightWord(word) {
         const spans = document.querySelectorAll('#bookPage .word');
         for (let span of spans) {
-            if (span.innerText === word) { span.scrollIntoView({ behavior: 'smooth', block: 'center' }); span.classList.add('word-highlight'); setTimeout(() => span.classList.remove('word-highlight'), 1500); break; }
+            if (span.innerText.toLowerCase() === word.toLowerCase()) { 
+                span.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                span.classList.add('word-highlight'); 
+                setTimeout(() => span.classList.remove('word-highlight'), 1500); 
+                break; 
+            }
         }
     }
 
@@ -858,7 +888,7 @@
         const ext = file.name.split('.').pop().toLowerCase(); let htmlContent = ""; showToast("Обробка книги...");
         try { if (ext === 'epub') htmlContent = await parseEpubWithImages(file); else if (ext === 'fb2') htmlContent = await parseFb2WithImages(file); else if (ext === 'pdf') htmlContent = await parsePdfTextOnly(file); else if (ext === 'txt') { const text = await new Promise((res, rej) => { const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsText(file, 'UTF-8'); }); htmlContent = `<p>${text.replace(/\n/g, '</p><p>')}</p>`; } else throw new Error("Формат не підтримується"); if (!htmlContent.trim()) htmlContent = "<p>⚠️ Не вдалося витягнути текст</p>"; const bookId = Date.now() + '-' + Math.random().toString(36).substr(2,6); uploadedBooks.unshift({ id: bookId, name: file.name, content: htmlContent }); localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); renderBooksList(); loadBook(htmlContent); } catch(err) { console.error(err); showToast("Помилка: " + err.message); }
     }
-    function loadBook(html) { allPages = splitHtmlIntoPages(html, 7); currentPage = 0; render(); localStorage.setItem('reader_current_book', html); lastWordText = null; lastWordPage = -1; localStorage.removeItem('lastWord'); localStorage.removeItem('lastWordPage'); showToast("Книгу завантажено"); }
+    function loadBook(html) { allPages = splitHtmlIntoPages(html, 7); currentPage = 0; render(); localStorage.setItem('reader_current_book', html); showToast("Книгу завантажено"); }
     function loadDefaultBook() { loadBook(`<h2>The Lost Key</h2><p>Sam is a boy. He lives in a small house near the forest. One sunny morning, Sam finds an old key under a big tree. The key is gold and very beautiful.</p><p>"What does this key open?" Sam asks himself.</p><img src="https://placehold.co/600x400/F5E6D3/7A5A3A?text=Magical+Key" style="max-width:100%; border-radius:16px;"><p>Sam walks to the garden. He sees a small door behind the flowers. The door is green and old. Sam puts the key into the lock. Click! The door opens.</p><p>Behind the door there is a magic garden. The flowers are red, blue, and yellow. A little bird sits on a branch. The bird says, "Hello, Sam! Welcome to the secret garden."</p><p>Sam is happy. He drinks sweet water from a fountain. He plays with the bird. In the evening, Sam returns home. He puts the key in his pocket.</p>`); }
     function renderBooksList() {
         if (!booksListUl) return;
@@ -869,7 +899,22 @@
         document.querySelectorAll('.book-name').forEach(name => { name.addEventListener('click', () => { const id = name.getAttribute('data-id'); const book = uploadedBooks.find(b => b.id === id); if (book) loadBook(book.content); }); });
     }
     function loadUploadedBooks() { const saved = localStorage.getItem('reader_books'); if (saved) { try { uploadedBooks = JSON.parse(saved); } catch(e) {} } renderBooksList(); }
-    function loadSavedBook() { const saved = localStorage.getItem('reader_current_book'); if (saved && saved.trim()) loadBook(saved); else loadDefaultBook(); }
+    function loadSavedBook() { 
+        const saved = localStorage.getItem('reader_current_book'); 
+        if (saved && saved.trim()) {
+            loadBook(saved);
+        } else {
+            loadDefaultBook();
+        }
+        // Завантажуємо останнє слово після того, як книга завантажена
+        const savedLastWord = localStorage.getItem('lastWord');
+        const savedLastWordPage = localStorage.getItem('lastWordPage');
+        if (savedLastWord) {
+            lastWordText = savedLastWord;
+            if (savedLastWordPage) lastWordPage = parseInt(savedLastWordPage);
+            // Не показуємо одразу, чекаємо натискання кнопки
+        }
+    }
     function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
     function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
 
@@ -882,7 +927,7 @@
         const savedSound = localStorage.getItem('soundEnabled'); if (savedSound !== null) soundEnabled = savedSound === 'true'; soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
         const savedFont = localStorage.getItem('readerFontSize'); if (savedFont) { currentFontSize = parseFloat(savedFont); if (isNaN(currentFontSize)) currentFontSize = 1.0; } updateFontSize();
         const savedTheme = localStorage.getItem('darkTheme'); if (savedTheme === 'true') setTheme(true); else setTheme(false);
-        const savedLast = localStorage.getItem('lastWord'); const savedPageNum = parseInt(localStorage.getItem('lastWordPage')); if (savedLast && !isNaN(savedPageNum)) { lastWordText = savedLast; lastWordPage = savedPageNum; }
+        
         soundToggleBtn.addEventListener('click', toggleSound); clearVocabBtn.addEventListener('click', clearVocabulary); toggleAllWordsBtn.addEventListener('click', toggleShowAllWords); lastWordBtn.addEventListener('click', goToLastWord); prevBtn.addEventListener('click', prevPage); nextBtn.addEventListener('click', nextPage); themeToggleBtn.addEventListener('click', toggleTheme); increaseFontBtn.addEventListener('click', increaseFont); decreaseFontBtn.addEventListener('click', decreaseFont);
         fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) loadBookFromFile(file); fileInput.value = ''; });
         const touchArea = document.getElementById('bookPage'); touchArea.addEventListener('touchstart', handleTouchStart); touchArea.addEventListener('touchend', handleTouchEnd);
