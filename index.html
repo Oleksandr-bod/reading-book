@@ -15,7 +15,6 @@
             box-sizing: border-box;
         }
 
-        /* Світла тема */
         body.light {
             background: linear-gradient(145deg, #d9cdb0 0%, #c7b891 100%);
             color: #2c2b28;
@@ -38,7 +37,6 @@
             color: #2c2b28 !important;
         }
 
-        /* Темна тема */
         body.dark {
             background: #121212;
             color: #f0f0f0;
@@ -186,6 +184,10 @@
             overflow-y: auto;
         }
 
+        .book-page img {
+            display: none !important;
+        }
+
         @media (max-width: 700px) {
             body { padding: 8px; }
             .app-header { margin-bottom: 12px; }
@@ -211,14 +213,6 @@
         }
         .word:active {
             transform: scale(0.98);
-        }
-
-        .book-page img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0.8rem auto;
-            border-radius: 12px;
         }
 
         .pagination-controls {
@@ -356,7 +350,6 @@
         }
         input[type="file"] { display: none; }
 
-        /* Стиль підказки - тільки переклад */
         .word-tooltip {
             position: fixed;
             background: #2d2a24;
@@ -371,12 +364,11 @@
             font-family: 'Inter', sans-serif;
             box-shadow: 0 12px 28px rgba(0,0,0,0.4);
             border: 1px solid #f5b042;
-            white-space: nowrap;
-            max-width: 90vw;
             white-space: normal;
             word-break: break-word;
             text-align: center;
             letter-spacing: 0.3px;
+            max-width: 90vw;
         }
         .word-tooltip::before {
             content: '';
@@ -443,32 +435,6 @@
         body.dark .info-note {
             color: #d4b87a;
         }
-        
-        .edit-translation-input {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            background: white;
-            width: 120px;
-        }
-        body.dark .edit-translation-input {
-            background: #3a3a3a;
-            color: white;
-            border-color: #666;
-        }
-        .save-edit-btn {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.7rem;
-        }
-        body.dark .save-edit-btn {
-            background: #2e7d32;
-        }
     </style>
 </head>
 <body class="light">
@@ -524,418 +490,949 @@
                 💡 Торкніться/клікніть на слово → переклад українською.<br>
                 👆 Гортайте кнопками або стрілками на клавіатурі.<br>
                 🔤 Кнопки A+ / A− змінюють розмір шрифту.<br>
-                ✏️ У словнику можна редагувати переклад (кнопка ✏️).
+                ✏️ У словнику можна редагувати переклад (кнопка ✏️).<br>
+                📍 Кнопка "Останнє слово" повертає до точно того слова, на якому зупинились.<br>
+                🖼️ Картинки з книг автоматично приховуються.
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ------------------- ГЛОБАЛЬНІ ЗМІННІ -------------------
-    let allPages = [];
-    let currentPage = 0;
-    let vocabularyHistory = [];
-    let translationCache = new Map();
-    let soundEnabled = true;
-    let currentUtterance = null;
-    let showAllWords = false;
-    let lastWordText = null;
-    let lastWordPage = -1;
-    let uploadedBooks = [];
-    let isDarkTheme = false;
-    let currentFontSize = 1.0;
-
-    const bookPageDiv = document.getElementById('bookPage');
-    const prevBtn = document.getElementById('prevPageBtn');
-    const nextBtn = document.getElementById('nextPageBtn');
-    const pageIndicator = document.getElementById('pageIndicator');
-    const vocabListUl = document.getElementById('vocabularyList');
-    const booksListUl = document.getElementById('booksList');
-    const fileInput = document.getElementById('uploadBook');
-    const soundToggleBtn = document.getElementById('soundToggleBtn');
-    const clearVocabBtn = document.getElementById('clearVocabBtn');
-    const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn');
-    const lastWordBtn = document.getElementById('lastWordBtn');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    const increaseFontBtn = document.getElementById('increaseFontBtn');
-    const decreaseFontBtn = document.getElementById('decreaseFontBtn');
-
-    let tooltip = null;
-    let tooltipTimeout = null;
-    let currentTooltipWord = null;
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    function updateFontSize() {
-        const textContainer = document.querySelector('.book-page');
-        if (textContainer) textContainer.style.fontSize = currentFontSize + 'rem';
-        localStorage.setItem('readerFontSize', currentFontSize);
-        if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord);
-    }
-    function increaseFont() { if (currentFontSize < 2.2) { currentFontSize += 0.1; updateFontSize(); } else showToast("Максимальний розмір шрифту"); }
-    function decreaseFont() { if (currentFontSize > 0.7) { currentFontSize -= 0.1; updateFontSize(); } else showToast("Мінімальний розмір шрифту"); }
-
-    function setTheme(dark) {
-        isDarkTheme = dark;
-        if (dark) {
-            document.body.classList.remove('light');
-            document.body.classList.add('dark');
-            themeToggleBtn.innerHTML = '☀️ Світла тема';
-        } else {
-            document.body.classList.remove('dark');
-            document.body.classList.add('light');
-            themeToggleBtn.innerHTML = '🌙 Нічний режим';
-        }
-        localStorage.setItem('darkTheme', dark);
-        if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) {
-            const wordText = currentTooltipWord.innerText.trim();
-            const translation = getTranslationFromCache(wordText);
-            if (translation) tooltip.innerText = translation;
-        }
-    }
-    function getTranslationFromCache(word) { return translationCache.get(word.toLowerCase()) || null; }
-    function toggleTheme() { setTheme(!isDarkTheme); }
-
-    function escapeHtml(str) { return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-    function showToast(msg, duration = 2000) {
-        const toast = document.createElement('div');
-        toast.className = 'toast-message';
-        toast.innerText = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), duration);
-    }
-
-    function splitHtmlIntoPages(html, maxBlocksPerPage = 7) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        const blocks = [];
-        const nodes = Array.from(tempDiv.childNodes);
-        for (let node of nodes) {
-            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-                const paragraphs = node.textContent.split(/\n\s*\n/);
-                for (let p of paragraphs) if (p.trim()) blocks.push(`<p>${p.trim()}</p>`);
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                if (node.tagName === 'IMG') blocks.push(node.outerHTML);
-                else blocks.push(node.outerHTML);
-            }
-        }
-        const pages = [];
-        for (let i = 0; i < blocks.length; i += maxBlocksPerPage) pages.push(blocks.slice(i, i + maxBlocksPerPage).join(''));
-        if (pages.length === 0) pages.push('<p>✨ Сторінка порожня</p>');
-        return pages;
-    }
-
-    function wrapWordsInHtml(html) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        function walk(node) {
-            if (node.nodeType === Node.TEXT_NODE) {
-                const words = node.textContent.split(/(\b[a-zA-Z']+\b)/g);
-                const frag = document.createDocumentFragment();
-                for (let part of words) {
-                    if (part.match(/^[a-zA-Z']+$/)) {
-                        const span = document.createElement('span');
-                        span.className = 'word';
-                        span.textContent = part;
-                        frag.appendChild(span);
-                    } else frag.appendChild(document.createTextNode(part));
-                }
-                node.parentNode.replaceChild(frag, node);
-            } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'IMG' && node.tagName !== 'SCRIPT') {
-                Array.from(node.childNodes).forEach(walk);
-            }
-        }
-        walk(tempDiv);
-        return tempDiv.innerHTML;
-    }
-
-    function showTooltip(wordElement, text, autoHide = true) {
-        if (!tooltip) {
-            tooltip = document.createElement('div');
-            tooltip.className = 'word-tooltip';
-            document.body.appendChild(tooltip);
-        }
-        if (tooltipTimeout) clearTimeout(tooltipTimeout);
-        tooltip.innerText = text;
-        tooltip.style.display = 'block';
-        currentTooltipWord = wordElement;
-        positionTooltip(wordElement);
-        if (autoHide) tooltipTimeout = setTimeout(() => { tooltip.style.display = 'none'; currentTooltipWord = null; }, 3800);
-    }
-
-    function positionTooltip(wordElement) {
-        if (!tooltip || tooltip.style.display !== 'block') return;
-        const rect = wordElement.getBoundingClientRect();
-        const tooltipRect = tooltip.getBoundingClientRect();
-        let top = rect.top - tooltipRect.height - 12;
-        let arrowClass = '';
-        if (top < 10) { top = rect.bottom + 12; arrowClass = 'bottom-arrow'; }
-        tooltip.classList.remove('bottom-arrow');
-        if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
-        let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-        left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
-        tooltip.style.top = `${top}px`;
-        tooltip.style.left = `${left}px`;
-    }
-
-    function hideTooltip() { if (tooltip) tooltip.style.display = 'none'; if (tooltipTimeout) clearTimeout(tooltipTimeout); currentTooltipWord = null; }
-
-    function render() {
-        if (!allPages.length) { bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Завантажте книгу</p>'; pageIndicator.innerText = `Сторінка 0 / 0`; return; }
-        const pageHtml = wrapWordsInHtml(allPages[currentPage]);
-        bookPageDiv.innerHTML = pageHtml;
-        pageIndicator.innerText = `Сторінка ${currentPage+1} / ${allPages.length}`;
-        attachListeners();
-        bookPageDiv.scrollTop = 0;
-    }
-
-    function attachListeners() { document.querySelectorAll('#bookPage .word').forEach(span => { span.removeEventListener('click', wordClickHandler); span.addEventListener('click', wordClickHandler); }); }
-
-    async function wordClickHandler(e) {
-        const span = e.currentTarget;
-        const word = span.innerText.trim();
-        if (!word || !word.match(/^[a-zA-Z']+$/)) return;
-        showTooltip(span, `⏳...`, false);
-        let translation = await fetchTranslation(word);
-        if (translation.includes("❓") || translation.includes("помилка")) translation = `❓ (немає перекладу)`;
-        showTooltip(span, translation, true);
-        addOrUpdateWord(word, translation);
-        if (soundEnabled) speakWord(word);
-        span.classList.add('word-highlight');
-        setTimeout(() => span.classList.remove('word-highlight'), 600);
-        lastWordText = word;
-        lastWordPage = currentPage;
-        localStorage.setItem('lastWord', word);
-        localStorage.setItem('lastWordPage', currentPage);
-    }
-
-    function nextPage() { if (currentPage + 1 < allPages.length) { currentPage++; render(); hideTooltip(); } else showToast("Це остання сторінка"); }
-    function prevPage() { if (currentPage - 1 >= 0) { currentPage--; render(); hideTooltip(); } else showToast("Це перша сторінка"); }
-    function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
-    function handleTouchEnd(e) { touchEndX = e.changedTouches[0].screenX; const delta = touchEndX - touchStartX; if (Math.abs(delta) > 50) delta > 0 ? prevPage() : nextPage(); }
-    function handleKeyPress(e) { if (e.key === 'ArrowLeft') { prevPage(); e.preventDefault(); } else if (e.key === 'ArrowRight') { nextPage(); e.preventDefault(); } }
-
-    function goToLastWord() {
-        if (!lastWordText) { 
-            showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово."); 
-            return; 
+    (function() {
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         }
         
-        // Спроба знайти сторінку, де є це слово в поточній книзі
-        let foundPage = -1;
-        for (let i = 0; i < allPages.length; i++) {
-            // Тимчасовий div для пошуку слова в HTML сторінки без обгортання в spans
+        let allPages = [];
+        let currentPage = 0;
+        let vocabularyHistory = [];
+        let translationCache = new Map();
+        let soundEnabled = true;
+        let currentUtterance = null;
+        let showAllWords = false;
+        let lastWordText = null;
+        let lastWordPageIndex = -1;
+        let lastWordPosition = null;
+        let uploadedBooks = [];
+        let isDarkTheme = false;
+        let currentFontSize = 1.0;
+        let currentBookId = null;
+
+        const bookPageDiv = document.getElementById('bookPage');
+        const prevBtn = document.getElementById('prevPageBtn');
+        const nextBtn = document.getElementById('nextPageBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
+        const vocabListUl = document.getElementById('vocabularyList');
+        const booksListUl = document.getElementById('booksList');
+        const fileInput = document.getElementById('uploadBook');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const clearVocabBtn = document.getElementById('clearVocabBtn');
+        const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn');
+        const lastWordBtn = document.getElementById('lastWordBtn');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const increaseFontBtn = document.getElementById('increaseFontBtn');
+        const decreaseFontBtn = document.getElementById('decreaseFontBtn');
+
+        let tooltip = null;
+        let tooltipTimeout = null;
+        let currentTooltipWord = null;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function clearAllBookData() {
+            allPages = [];
+            currentPage = 0;
+            lastWordText = null;
+            lastWordPageIndex = -1;
+            lastWordPosition = null;
+            currentBookId = null;
+            
+            localStorage.removeItem('reader_current_book');
+            localStorage.removeItem('reader_current_book_id');
+            localStorage.removeItem('lastWord');
+            localStorage.removeItem('lastWordPage');
+            localStorage.removeItem('lastWordPosition');
+            
+            if (bookPageDiv) {
+                bookPageDiv.innerHTML = '<p style="text-align:center; padding: 40px;">📘 Немає відкритої книги<br>Завантажте книгу або виберіть зі списку</p>';
+            }
+            if (pageIndicator) {
+                pageIndicator.innerText = `Сторінка 0 / 0`;
+            }
+        }
+
+        function removeAllImagesFromHtml(html) {
+            if (!html) return '';
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = allPages[i];
-            const text = tempDiv.textContent || tempDiv.innerText;
-            if (text.toLowerCase().includes(lastWordText.toLowerCase())) {
-                foundPage = i;
-                break;
+            tempDiv.innerHTML = html;
+            const images = tempDiv.querySelectorAll('img');
+            images.forEach(img => img.remove());
+            const svgs = tempDiv.querySelectorAll('svg');
+            svgs.forEach(svg => svg.remove());
+            const elementsWithBackground = tempDiv.querySelectorAll('[style*="background"], [style*="background-image"]');
+            elementsWithBackground.forEach(el => {
+                el.style.background = 'none';
+                el.style.backgroundImage = 'none';
+            });
+            return tempDiv.innerHTML;
+        }
+
+        function updateFontSize() {
+            const textContainer = document.querySelector('.book-page');
+            if (textContainer) textContainer.style.fontSize = currentFontSize + 'rem';
+            localStorage.setItem('readerFontSize', currentFontSize);
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) positionTooltip(currentTooltipWord);
+        }
+        
+        function increaseFont() { 
+            if (currentFontSize < 2.2) { 
+                currentFontSize += 0.1; 
+                updateFontSize(); 
+            } else { 
+                showToast("Максимальний розмір шрифту"); 
+            } 
+        }
+        
+        function decreaseFont() { 
+            if (currentFontSize > 0.7) { 
+                currentFontSize -= 0.1; 
+                updateFontSize(); 
+            } else { 
+                showToast("Мінімальний розмір шрифту"); 
+            } 
+        }
+
+        function setTheme(dark) {
+            isDarkTheme = dark;
+            if (dark) {
+                document.body.classList.remove('light');
+                document.body.classList.add('dark');
+                themeToggleBtn.innerHTML = '☀️ Світла тема';
+            } else {
+                document.body.classList.remove('dark');
+                document.body.classList.add('light');
+                themeToggleBtn.innerHTML = '🌙 Нічний режим';
+            }
+            localStorage.setItem('darkTheme', dark);
+        }
+        
+        function getTranslationFromCache(word) { 
+            return translationCache.get(word.toLowerCase()) || null; 
+        }
+        
+        function toggleTheme() { 
+            setTheme(!isDarkTheme); 
+        }
+
+        function escapeHtml(str) { 
+            if (!str) return '';
+            return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); 
+        }
+        
+        function showToast(msg, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), duration);
+        }
+
+        function splitHtmlIntoPages(html, maxBlocksPerPage = 7) {
+            let cleanHtml = removeAllImagesFromHtml(html);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = cleanHtml;
+            const blocks = [];
+            const nodes = Array.from(tempDiv.childNodes);
+            
+            for (let node of nodes) {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    const paragraphs = node.textContent.split(/\n\s*\n/);
+                    for (let p of paragraphs) {
+                        if (p.trim()) {
+                            blocks.push(`<p>${p.trim()}</p>`);
+                        }
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'IMG') {
+                        blocks.push(node.outerHTML);
+                    }
+                }
+            }
+            
+            const pages = [];
+            for (let i = 0; i < blocks.length; i += maxBlocksPerPage) {
+                pages.push(blocks.slice(i, i + maxBlocksPerPage).join(''));
+            }
+            if (pages.length === 0) pages.push('<p>✨ Сторінка порожня</p>');
+            return pages;
+        }
+
+        function wrapWordsInHtml(html) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            function walk(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const words = node.textContent.split(/(\b[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?\b)/g);
+                    const frag = document.createDocumentFragment();
+                    for (let part of words) {
+                        if (part && part.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) {
+                            const span = document.createElement('span');
+                            span.className = 'word';
+                            span.textContent = part;
+                            frag.appendChild(span);
+                        } else if (part) {
+                            frag.appendChild(document.createTextNode(part));
+                        }
+                    }
+                    node.parentNode.replaceChild(frag, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'IMG' && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+                    Array.from(node.childNodes).forEach(walk);
+                }
+            }
+            
+            walk(tempDiv);
+            return tempDiv.innerHTML;
+        }
+
+        function showTooltip(wordElement, text, autoHide = true) {
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'word-tooltip';
+                document.body.appendChild(tooltip);
+            }
+            if (tooltipTimeout) clearTimeout(tooltipTimeout);
+            tooltip.innerText = text;
+            tooltip.style.display = 'block';
+            currentTooltipWord = wordElement;
+            positionTooltip(wordElement);
+            if (autoHide) {
+                tooltipTimeout = setTimeout(() => { 
+                    tooltip.style.display = 'none'; 
+                    currentTooltipWord = null; 
+                }, 3800);
+            }
+        }
+
+        function positionTooltip(wordElement) {
+            if (!tooltip || tooltip.style.display !== 'block') return;
+            const rect = wordElement.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let top = rect.top - tooltipRect.height - 12;
+            let arrowClass = '';
+            if (top < 10) { 
+                top = rect.bottom + 12; 
+                arrowClass = 'bottom-arrow'; 
+            }
+            tooltip.classList.remove('bottom-arrow');
+            if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
+            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+            left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
+            tooltip.style.top = `${top}px`;
+            tooltip.style.left = `${left}px`;
+        }
+
+        function hideTooltip() { 
+            if (tooltip) tooltip.style.display = 'none'; 
+            if (tooltipTimeout) clearTimeout(tooltipTimeout); 
+            currentTooltipWord = null; 
+        }
+
+        function highlightWordByPosition(position) {
+            const spans = document.querySelectorAll('#bookPage .word');
+            if (position !== null && position >= 0 && position < spans.length) {
+                const span = spans[position];
+                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                span.classList.add('word-highlight');
+                setTimeout(() => span.classList.remove('word-highlight'), 1500);
+                const word = span.innerText.trim();
+                const translation = getTranslationFromCache(word);
+                if (translation) {
+                    showTooltip(span, translation, true);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        function highlightWord(word) {
+            const spans = document.querySelectorAll('#bookPage .word');
+            for (let span of spans) {
+                if (span.innerText.toLowerCase() === word.toLowerCase()) { 
+                    span.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
+                    span.classList.add('word-highlight'); 
+                    setTimeout(() => span.classList.remove('word-highlight'), 1500); 
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function render() {
+            if (!allPages.length) { 
+                bookPageDiv.innerHTML = '<p style="text-align:center; padding: 40px;">📘 Немає відкритої книги<br>Завантажте книгу або виберіть зі списку</p>'; 
+                pageIndicator.innerText = `Сторінка 0 / 0`; 
+                return; 
+            }
+            const pageHtml = wrapWordsInHtml(allPages[currentPage]);
+            bookPageDiv.innerHTML = pageHtml;
+            pageIndicator.innerText = `Сторінка ${currentPage+1} / ${allPages.length}`;
+            attachListeners();
+            bookPageDiv.scrollTop = 0;
+            
+            if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) {
+                setTimeout(() => {
+                    highlightWordByPosition(lastWordPosition);
+                }, 200);
+            }
+        }
+
+        function attachListeners() { 
+            document.querySelectorAll('#bookPage .word').forEach(span => { 
+                span.removeEventListener('click', wordClickHandler); 
+                span.addEventListener('click', wordClickHandler); 
+            }); 
+        }
+
+        async function wordClickHandler(e) {
+            const span = e.currentTarget;
+            const word = span.innerText.trim();
+            if (!word || !word.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) return;
+            
+            const allWords = Array.from(document.querySelectorAll('#bookPage .word'));
+            const wordIndex = allWords.indexOf(span);
+            
+            showTooltip(span, `⏳...`, false);
+            let translation = await fetchTranslation(word);
+            if (translation.includes("❓") || translation.includes("помилка")) {
+                translation = `❓ (немає перекладу)`;
+            }
+            showTooltip(span, translation, true);
+            addOrUpdateWord(word, translation);
+            if (soundEnabled) speakWord(word);
+            span.classList.add('word-highlight');
+            setTimeout(() => span.classList.remove('word-highlight'), 600);
+            
+            lastWordText = word;
+            lastWordPageIndex = currentPage;
+            lastWordPosition = wordIndex;
+            
+            localStorage.setItem('lastWord', word);
+            localStorage.setItem('lastWordPage', currentPage);
+            localStorage.setItem('lastWordPosition', wordIndex);
+        }
+
+        function goToLastWord() {
+            if (!lastWordText) { 
+                showToast("⚠️ Немає останнього слова. Натисніть на будь-яке слово."); 
+                return; 
+            }
+            if (!allPages.length) {
+                showToast("⚠️ Немає відкритої книги");
+                return;
+            }
+            
+            if (currentPage === lastWordPageIndex && lastWordPosition !== null) {
+                if (highlightWordByPosition(lastWordPosition)) {
+                    showToast(`📍 "${lastWordText}"`);
+                    return;
+                }
+            }
+            
+            if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) {
+                currentPage = lastWordPageIndex;
+                render();
+                setTimeout(() => {
+                    if (lastWordPosition !== null) {
+                        highlightWordByPosition(lastWordPosition);
+                    } else {
+                        highlightWord(lastWordText);
+                    }
+                    showToast(`📍 "${lastWordText}"`);
+                }, 200);
+            } else {
+                let foundPage = -1;
+                for (let i = 0; i < allPages.length; i++) {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = allPages[i];
+                    const text = tempDiv.textContent || tempDiv.innerText;
+                    if (text.toLowerCase().includes(lastWordText.toLowerCase())) {
+                        foundPage = i;
+                        break;
+                    }
+                }
+                
+                if (foundPage !== -1) {
+                    currentPage = foundPage;
+                    lastWordPageIndex = foundPage;
+                    render();
+                    setTimeout(() => {
+                        highlightWord(lastWordText);
+                        showToast(`📍 "${lastWordText}"`);
+                    }, 200);
+                } else {
+                    showToast(`⚠️ Слово "${lastWordText}" не знайдено`);
+                }
+            }
+        }
+
+        function nextPage() { 
+            if (currentPage + 1 < allPages.length) { 
+                currentPage++; 
+                render(); 
+                hideTooltip(); 
+            } else { 
+                showToast("Це остання сторінка"); 
+            } 
+        }
+        
+        function prevPage() { 
+            if (currentPage - 1 >= 0) { 
+                currentPage--; 
+                render(); 
+                hideTooltip(); 
+            } else { 
+                showToast("Це перша сторінка"); 
+            } 
+        }
+        
+        function handleTouchStart(e) { 
+            touchStartX = e.changedTouches[0].screenX; 
+        }
+        
+        function handleTouchEnd(e) { 
+            touchEndX = e.changedTouches[0].screenX; 
+            const delta = touchEndX - touchStartX; 
+            if (Math.abs(delta) > 50) {
+                delta > 0 ? prevPage() : nextPage();
             }
         }
         
-        if (foundPage !== -1) {
-            if (currentPage !== foundPage) {
-                currentPage = foundPage;
-                render();
-                setTimeout(() => highlightWord(lastWordText), 200);
-            } else {
-                highlightWord(lastWordText);
-            }
-        } else {
-            showToast(`⚠️ Слово "${lastWordText}" не знайдено в поточній книзі`);
+        function handleKeyPress(e) { 
+            if (e.key === 'ArrowLeft') { 
+                prevPage(); 
+                e.preventDefault(); 
+            } else if (e.key === 'ArrowRight') { 
+                nextPage(); 
+                e.preventDefault(); 
+            } 
         }
-    }
-    
-    function highlightWord(word) {
-        const spans = document.querySelectorAll('#bookPage .word');
-        for (let span of spans) {
-            if (span.innerText.toLowerCase() === word.toLowerCase()) { 
-                span.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-                span.classList.add('word-highlight'); 
-                setTimeout(() => span.classList.remove('word-highlight'), 1500); 
-                break; 
+
+        async function fetchTranslation(word) {
+            const lower = word.toLowerCase();
+            if (translationCache.has(lower)) return translationCache.get(lower);
+            
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=uk&dt=t&q=${encodeURIComponent(word)}`;
+                const resp = await fetch(url);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data[0] && data[0][0] && data[0][0][0]) { 
+                        let trans = data[0][0][0]; 
+                        translationCache.set(lower, trans); 
+                        return trans; 
+                    }
+                }
+            } catch(e) {}
+            
+            try {
+                const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|uk`;
+                const resp = await fetch(url);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    let trans = data?.responseData?.translatedText;
+                    if (trans && trans !== word && !trans.includes('MYMEMORY')) {
+                        translationCache.set(lower, trans);
+                        return trans;
+                    }
+                }
+            } catch(e) {}
+            
+            const fallback = "❓ (немає перекладу)";
+            translationCache.set(lower, fallback);
+            return fallback;
+        }
+
+        function speakWord(word) { 
+            if (!soundEnabled || !window.speechSynthesis) return; 
+            if (currentUtterance) window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(word); 
+            utter.lang = 'en-US'; 
+            utter.rate = 0.9; 
+            window.speechSynthesis.speak(utter); 
+            currentUtterance = utter; 
+        }
+        
+        function toggleSound() { 
+            soundEnabled = !soundEnabled; 
+            soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук'; 
+            if (!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+            localStorage.setItem('soundEnabled', soundEnabled); 
+        }
+
+        function saveVocabulary() { 
+            localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory)); 
+        }
+        
+        function loadVocabulary() {
+            const saved = localStorage.getItem('reader_vocabulary');
+            if (saved) { 
+                try { 
+                    const parsed = JSON.parse(saved); 
+                    if (Array.isArray(parsed)) {
+                        vocabularyHistory = parsed;
+                        translationCache.clear(); 
+                        for (let item of vocabularyHistory) {
+                            if (item.translation && !item.translation.includes("❓")) {
+                                translationCache.set(item.word.toLowerCase(), item.translation);
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+            renderVocabularyList();
+        }
+        
+        function editTranslation(word, currentTranslation, index) {
+            const newTranslation = prompt(`Редагувати переклад для "${word}":`, currentTranslation);
+            if (newTranslation && newTranslation.trim() !== "") {
+                vocabularyHistory[index].translation = newTranslation.trim();
+                translationCache.set(word.toLowerCase(), newTranslation.trim());
+                saveVocabulary();
+                renderVocabularyList();
+                showToast(`Переклад "${word}" оновлено`);
             }
         }
-    }
-
-    async function fetchTranslation(word) {
-        const lower = word.toLowerCase();
-        if (translationCache.has(lower)) return translationCache.get(lower);
-        try {
-            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=uk&dt=t&q=${encodeURIComponent(word)}`;
-            const resp = await fetch(url);
-            const data = await resp.json();
-            if (data && data[0] && data[0][0] && data[0][0][0]) { let trans = data[0][0][0]; translationCache.set(lower, trans); return trans; }
-        } catch(e) {}
-        try {
-            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|uk`;
-            const resp = await fetch(url);
-            const data = await resp.json();
-            let trans = data?.responseData?.translatedText;
-            if (!trans || trans === word) trans = "❓ (немає перекладу)";
-            translationCache.set(lower, trans);
-            return trans;
-        } catch(e) { return "⚠️ помилка перекладу"; }
-    }
-
-    function speakWord(word) { if (!soundEnabled || !window.speechSynthesis) return; if (currentUtterance) window.speechSynthesis.cancel(); const utter = new SpeechSynthesisUtterance(word); utter.lang = 'en-US'; utter.rate = 0.9; window.speechSynthesis.speak(utter); currentUtterance = utter; }
-    function toggleSound() { soundEnabled = !soundEnabled; soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук'; if (!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel(); localStorage.setItem('soundEnabled', soundEnabled); }
-
-    function saveVocabulary() { localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory)); }
-    function loadVocabulary() {
-        const saved = localStorage.getItem('reader_vocabulary');
-        if (saved) { try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) vocabularyHistory = parsed; translationCache.clear(); for (let item of vocabularyHistory) if (item.translation && !item.translation.includes("❓")) translationCache.set(item.word.toLowerCase(), item.translation); } catch(e) {} }
-        renderVocabularyList();
-    }
-    
-    function editTranslation(word, currentTranslation, index) {
-        const newTranslation = prompt(`Редагувати переклад для "${word}":`, currentTranslation);
-        if (newTranslation && newTranslation.trim() !== "") {
-            vocabularyHistory[index].translation = newTranslation.trim();
-            translationCache.set(word.toLowerCase(), newTranslation.trim());
+        
+        function addOrUpdateWord(word, translation) {
+            const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
+            if (idx !== -1) { 
+                vocabularyHistory[idx].translation = translation; 
+                const item = vocabularyHistory.splice(idx, 1)[0]; 
+                vocabularyHistory.unshift(item); 
+            } else { 
+                vocabularyHistory.unshift({ word, translation }); 
+            }
+            translationCache.set(word.toLowerCase(), translation);
             saveVocabulary();
             renderVocabularyList();
-            showToast(`Переклад "${word}" оновлено на "${newTranslation.trim()}"`);
         }
-    }
-    
-    function addOrUpdateWord(word, translation) {
-        const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
-        if (idx !== -1) { 
-            vocabularyHistory[idx].translation = translation; 
-            const item = vocabularyHistory.splice(idx, 1)[0]; 
-            vocabularyHistory.unshift(item); 
+        
+        function renderVocabularyList() {
+            if (!vocabListUl) return;
+            let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []);
+            if (items.length === 0) { 
+                vocabListUl.innerHTML = '<li style="color:#b59773;">📖 Натисніть на слово</li>'; 
+                return; 
+            }
+            
+            vocabListUl.innerHTML = items.map((item, idx) => {
+                const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word);
+                return `<li class="vocab-item" data-word="${escapeHtml(item.word)}">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                        <span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span>
+                        <span style="font-size:0.8rem; flex:1; margin:0 8px;">${escapeHtml(item.translation)}</span>
+                        <button class="icon-btn edit-vocab" data-word="${escapeHtml(item.word)}" data-index="${globalIdx}" title="Редагувати переклад">✏️</button>
+                        <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}" title="Оновити переклад онлайн">🔄</button>
+                        <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}" title="Видалити">🗑️</button>
+                    </div>
+                </li>`;
+            }).join('');
+            
+            document.querySelectorAll('.edit-vocab').forEach(btn => { 
+                btn.addEventListener('click', async (e) => { 
+                    e.stopPropagation(); 
+                    const w = btn.getAttribute('data-word'); 
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    const item = vocabularyHistory[idx];
+                    if (item) editTranslation(w, item.translation, idx);
+                }); 
+            });
+            
+            document.querySelectorAll('.retry-vocab').forEach(btn => { 
+                btn.addEventListener('click', async (e) => { 
+                    e.stopPropagation(); 
+                    const w = btn.getAttribute('data-word'); 
+                    const newTrans = await fetchTranslation(w); 
+                    addOrUpdateWord(w, newTrans); 
+                    renderVocabularyList(); 
+                    showToast(`Переклад "${w}" оновлено`); 
+                }); 
+            });
+            
+            document.querySelectorAll('.remove-vocab').forEach(btn => { 
+                btn.addEventListener('click', (e) => { 
+                    e.stopPropagation(); 
+                    const w = btn.getAttribute('data-word'); 
+                    vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); 
+                    translationCache.delete(w.toLowerCase()); 
+                    saveVocabulary(); 
+                    renderVocabularyList(); 
+                    showToast(`"${w}" видалено`); 
+                }); 
+            });
         }
-        else { vocabularyHistory.unshift({ word, translation }); }
-        translationCache.set(word.toLowerCase(), translation);
-        saveVocabulary();
-        renderVocabularyList();
-    }
-    
-    function renderVocabularyList() {
-        if (!vocabListUl) return;
-        let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []);
-        if (items.length === 0) { vocabListUl.innerHTML = '<li style="color:#b59773;">📖 Натисніть на слово</li>'; return; }
         
-        vocabListUl.innerHTML = items.map((item, idx) => {
-            const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word);
-            return `<li class="vocab-item" data-word="${escapeHtml(item.word)}">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                    <span class="vocab-word" data-word="${escapeHtml(item.word)}">${escapeHtml(item.word)}</span>
-                    <span style="font-size:0.8rem; flex:1; margin:0 8px;">${escapeHtml(item.translation)}</span>
-                    <button class="icon-btn edit-vocab" data-word="${escapeHtml(item.word)}" data-index="${globalIdx}" title="Редагувати переклад">✏️</button>
-                    <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}" title="Оновити переклад онлайн">🔄</button>
-                    <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}" title="Видалити">🗑️</button>
-                </div>
-            </li>`;
-        }).join('');
+        function clearVocabulary() { 
+            vocabularyHistory = []; 
+            translationCache.clear(); 
+            saveVocabulary(); 
+            renderVocabularyList(); 
+            showToast("Словник очищено"); 
+        }
         
-        document.querySelectorAll('.vocab-word').forEach(el => { 
-            el.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                const w = el.getAttribute('data-word'); 
-                const item = vocabularyHistory.find(v => v.word === w);
-                const trans = item ? item.translation : '';
-                showToast(`${w} → ${trans}`); 
-            }); 
-        });
-        
-        document.querySelectorAll('.edit-vocab').forEach(btn => { 
-            btn.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                const w = btn.getAttribute('data-word'); 
-                const idx = parseInt(btn.getAttribute('data-index'));
-                const item = vocabularyHistory[idx];
-                if (item) editTranslation(w, item.translation, idx);
-            }); 
-        });
-        
-        document.querySelectorAll('.retry-vocab').forEach(btn => { 
-            btn.addEventListener('click', async (e) => { 
-                e.stopPropagation(); 
-                const w = btn.getAttribute('data-word'); 
-                const newTrans = await fetchTranslation(w); 
-                addOrUpdateWord(w, newTrans); 
-                renderVocabularyList(); 
-                showToast(`Переклад "${w}" оновлено`); 
-            }); 
-        });
-        
-        document.querySelectorAll('.remove-vocab').forEach(btn => { 
-            btn.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                const w = btn.getAttribute('data-word'); 
-                vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); 
-                translationCache.delete(w.toLowerCase()); 
-                saveVocabulary(); 
-                renderVocabularyList(); 
-                showToast(`"${w}" видалено`); 
-            }); 
-        });
-    }
-    
-    function clearVocabulary() { vocabularyHistory = []; translationCache.clear(); saveVocabulary(); renderVocabularyList(); showToast("Словник очищено"); }
-    function toggleShowAllWords() { showAllWords = !showAllWords; toggleAllWordsBtn.innerHTML = showAllWords ? '📋 Показати лише останнє' : '📋 Всі слова'; renderVocabularyList(); }
+        function toggleShowAllWords() { 
+            showAllWords = !showAllWords; 
+            toggleAllWordsBtn.innerHTML = showAllWords ? '📋 Показати лише останнє' : '📋 Всі слова'; 
+            renderVocabularyList(); 
+        }
 
-    async function parseEpubWithImages(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { const arrayBuffer = e.target.result; const book = ePub(arrayBuffer); await book.ready; const spine = book.spine; const sections = spine.spineItems; let fullHtml = ''; for (let i = 0; i < sections.length; i++) { const section = sections[i]; const doc = await section.load(book.load.bind(book)); const body = doc.querySelector('body'); if (body) { const clone = body.cloneNode(true); const imgs = clone.querySelectorAll('img'); for (let img of imgs) { const src = img.getAttribute('src'); if (src && !src.startsWith('data:') && !src.startsWith('blob:')) { try { const blob = await book.resources.get(src); if (blob) img.setAttribute('src', URL.createObjectURL(blob)); } catch(err) {} } } fullHtml += clone.innerHTML + '<hr class="epub-split">'; } section.unload(); } resolve(fullHtml); }; reader.onerror = reject; reader.readAsArrayBuffer(file); }); }
-    async function parseFb2WithImages(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = (e) => { const xml = e.target.result; const parser = new DOMParser(); const doc = parser.parseFromString(xml, 'text/xml'); const body = doc.querySelector('body'); if (!body) { reject("Немає body"); return; } let html = ''; const images = doc.querySelectorAll('binary'); const map = new Map(); for (let img of images) { const id = img.getAttribute('id'); const data = img.textContent; if (id && data) { const mime = img.getAttribute('content-type') || 'image/jpeg'; const blob = new Blob([Uint8Array.from(atob(data), c => c.charCodeAt(0))], { type: mime }); map.set(id, URL.createObjectURL(blob)); } } function process(node) { if (node.nodeType === Node.ELEMENT_NODE) { if (node.tagName === 'image' && node.getAttribute('href')) { const href = node.getAttribute('href').replace('#', ''); if (map.has(href)) html += `<img src="${map.get(href)}" style="max-width:100%; margin:1rem auto;">`; return; } if (node.tagName === 'p') { html += '<p>'; node.childNodes.forEach(process); html += '</p>'; return; } node.childNodes.forEach(process); } else if (node.nodeType === Node.TEXT_NODE) html += node.textContent; } body.childNodes.forEach(process); resolve(html); }; reader.onerror = reject; reader.readAsText(file, 'utf-8'); }); }
-    async function parsePdfTextOnly(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { const arrayBuffer = e.target.result; const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer }); const pdf = await loadingTask.promise; let fullText = ''; for (let i = 1; i <= pdf.numPages; i++) { const page = await pdf.getPage(i); const content = await page.getTextContent(); const pageText = content.items.map(item => item.str).join(' '); fullText += `<p>${pageText}</p>`; } resolve(fullText); }; reader.onerror = reject; reader.readAsArrayBuffer(file); }); }
-    async function loadBookFromFile(file) {
-        const ext = file.name.split('.').pop().toLowerCase(); let htmlContent = ""; showToast("Обробка книги...");
-        try { if (ext === 'epub') htmlContent = await parseEpubWithImages(file); else if (ext === 'fb2') htmlContent = await parseFb2WithImages(file); else if (ext === 'pdf') htmlContent = await parsePdfTextOnly(file); else if (ext === 'txt') { const text = await new Promise((res, rej) => { const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsText(file, 'UTF-8'); }); htmlContent = `<p>${text.replace(/\n/g, '</p><p>')}</p>`; } else throw new Error("Формат не підтримується"); if (!htmlContent.trim()) htmlContent = "<p>⚠️ Не вдалося витягнути текст</p>"; const bookId = Date.now() + '-' + Math.random().toString(36).substr(2,6); uploadedBooks.unshift({ id: bookId, name: file.name, content: htmlContent }); localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); renderBooksList(); loadBook(htmlContent); } catch(err) { console.error(err); showToast("Помилка: " + err.message); }
-    }
-    function loadBook(html) { allPages = splitHtmlIntoPages(html, 7); currentPage = 0; render(); localStorage.setItem('reader_current_book', html); showToast("Книгу завантажено"); }
-    function loadDefaultBook() { loadBook(`<h2>The Lost Key</h2><p>Sam is a boy. He lives in a small house near the forest. One sunny morning, Sam finds an old key under a big tree. The key is gold and very beautiful.</p><p>"What does this key open?" Sam asks himself.</p><img src="https://placehold.co/600x400/F5E6D3/7A5A3A?text=Magical+Key" style="max-width:100%; border-radius:16px;"><p>Sam walks to the garden. He sees a small door behind the flowers. The door is green and old. Sam puts the key into the lock. Click! The door opens.</p><p>Behind the door there is a magic garden. The flowers are red, blue, and yellow. A little bird sits on a branch. The bird says, "Hello, Sam! Welcome to the secret garden."</p><p>Sam is happy. He drinks sweet water from a fountain. He plays with the bird. In the evening, Sam returns home. He puts the key in his pocket.</p>`); }
-    function renderBooksList() {
-        if (!booksListUl) return;
-        if (uploadedBooks.length === 0) { booksListUl.innerHTML = '<li style="color:#b59773;">📭 Немає збережених книг</li>'; return; }
-        booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item" data-id="${book.id}"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;"><span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1;">📘 ${escapeHtml(book.name.length>30 ? book.name.slice(0,27)+'...' : book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📖</button><button class="icon-btn delete-book" data-id="${book.id}">🗑️</button></div></li>`).join('');
-        document.querySelectorAll('.open-book').forEach(btn => { btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); const book = uploadedBooks.find(b => b.id === id); if (book) loadBook(book.content); }); });
-        document.querySelectorAll('.delete-book').forEach(btn => { btn.addEventListener('click', (e) => { const id = btn.getAttribute('data-id'); uploadedBooks = uploadedBooks.filter(b => b.id !== id); localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); renderBooksList(); if (uploadedBooks.length === 0 && allPages.length) loadDefaultBook(); }); });
-        document.querySelectorAll('.book-name').forEach(name => { name.addEventListener('click', () => { const id = name.getAttribute('data-id'); const book = uploadedBooks.find(b => b.id === id); if (book) loadBook(book.content); }); });
-    }
-    function loadUploadedBooks() { const saved = localStorage.getItem('reader_books'); if (saved) { try { uploadedBooks = JSON.parse(saved); } catch(e) {} } renderBooksList(); }
-    function loadSavedBook() { 
-        const saved = localStorage.getItem('reader_current_book'); 
-        if (saved && saved.trim()) {
-            loadBook(saved);
-        } else {
-            loadDefaultBook();
+        async function parseEpub(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const book = ePub(arrayBuffer);
+                        await book.ready;
+                        const spine = book.spine;
+                        const spineItems = spine.spineItems || [];
+                        let fullHtml = '';
+                        for (let i = 0; i < spineItems.length; i++) {
+                            try {
+                                const section = spineItems[i];
+                                const doc = await section.load(book.load.bind(book));
+                                const body = doc.querySelector('body');
+                                if (body) {
+                                    const clone = body.cloneNode(true);
+                                    const imgs = clone.querySelectorAll('img');
+                                    imgs.forEach(img => img.remove());
+                                    fullHtml += clone.innerHTML;
+                                }
+                                section.unload();
+                            } catch(err) {}
+                        }
+                        resolve(fullHtml);
+                    } catch(err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
         }
-        // Завантажуємо останнє слово після того, як книга завантажена
-        const savedLastWord = localStorage.getItem('lastWord');
-        const savedLastWordPage = localStorage.getItem('lastWordPage');
-        if (savedLastWord) {
-            lastWordText = savedLastWord;
-            if (savedLastWordPage) lastWordPage = parseInt(savedLastWordPage);
-            // Не показуємо одразу, чекаємо натискання кнопки
-        }
-    }
-    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
-    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-
-    window.addEventListener('scroll', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
-    window.addEventListener('resize', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
-    if (bookPageDiv) bookPageDiv.addEventListener('scroll', () => { if (tooltip && tooltip.style.display === 'block' && currentTooltipWord) positionTooltip(currentTooltipWord); });
-
-    function init() {
-        loadUploadedBooks(); loadVocabulary(); loadSavedBook();
-        const savedSound = localStorage.getItem('soundEnabled'); if (savedSound !== null) soundEnabled = savedSound === 'true'; soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
-        const savedFont = localStorage.getItem('readerFontSize'); if (savedFont) { currentFontSize = parseFloat(savedFont); if (isNaN(currentFontSize)) currentFontSize = 1.0; } updateFontSize();
-        const savedTheme = localStorage.getItem('darkTheme'); if (savedTheme === 'true') setTheme(true); else setTheme(false);
         
-        soundToggleBtn.addEventListener('click', toggleSound); clearVocabBtn.addEventListener('click', clearVocabulary); toggleAllWordsBtn.addEventListener('click', toggleShowAllWords); lastWordBtn.addEventListener('click', goToLastWord); prevBtn.addEventListener('click', prevPage); nextBtn.addEventListener('click', nextPage); themeToggleBtn.addEventListener('click', toggleTheme); increaseFontBtn.addEventListener('click', increaseFont); decreaseFontBtn.addEventListener('click', decreaseFont);
-        fileInput.addEventListener('change', (e) => { const file = e.target.files[0]; if (file) loadBookFromFile(file); fileInput.value = ''; });
-        const touchArea = document.getElementById('bookPage'); touchArea.addEventListener('touchstart', handleTouchStart); touchArea.addEventListener('touchend', handleTouchEnd);
-        window.addEventListener('keydown', handleKeyPress);
-        if (mobileMenuBtn) { mobileMenuBtn.addEventListener('click', openSidebar); overlay.addEventListener('click', closeSidebar); }
-        tooltip = document.createElement('div'); tooltip.className = 'word-tooltip'; tooltip.style.display = 'none'; document.body.appendChild(tooltip);
-    }
-    init();
+        async function parseFb2(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const xml = e.target.result;
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(xml, 'text/xml');
+                        const body = doc.querySelector('body');
+                        if (!body) {
+                            reject("Немає body в FB2 файлі");
+                            return;
+                        }
+                        let html = '';
+                        function processNode(node) {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                if (node.tagName === 'image' || node.tagName === 'binary') return;
+                                if (node.tagName === 'p') {
+                                    html += '<p>';
+                                    node.childNodes.forEach(processNode);
+                                    html += '</p>';
+                                    return;
+                                }
+                                if (node.tagName === 'title') {
+                                    html += '<h2>';
+                                    node.childNodes.forEach(processNode);
+                                    html += '</h2>';
+                                    return;
+                                }
+                                node.childNodes.forEach(processNode);
+                            } else if (node.nodeType === Node.TEXT_NODE) {
+                                html += node.textContent;
+                            }
+                        }
+                        body.childNodes.forEach(processNode);
+                        resolve(html);
+                    } catch(err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsText(file, 'utf-8');
+            });
+        }
+        
+        async function parsePdf(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                        const pdf = await loadingTask.promise;
+                        let fullText = '';
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const content = await page.getTextContent();
+                            const pageText = content.items.map(item => item.str).join(' ');
+                            if (pageText.trim()) {
+                                fullText += `<p>${escapeHtml(pageText)}</p>`;
+                            }
+                        }
+                        resolve(fullText || '<p>⚠️ Не вдалося витягнути текст</p>');
+                    } catch(err) {
+                        reject(err);
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        async function loadBookFromFile(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            let htmlContent = "";
+            showToast("Обробка книги...");
+            
+            try {
+                if (ext === 'epub') {
+                    htmlContent = await parseEpub(file);
+                } else if (ext === 'fb2') {
+                    htmlContent = await parseFb2(file);
+                } else if (ext === 'pdf') {
+                    htmlContent = await parsePdf(file);
+                } else if (ext === 'txt') {
+                    const text = await new Promise((res, rej) => {
+                        const r = new FileReader();
+                        r.onload = e => res(e.target.result);
+                        r.onerror = rej;
+                        r.readAsText(file, 'UTF-8');
+                    });
+                    htmlContent = text.split('\n').map(line => line.trim() ? `<p>${escapeHtml(line)}</p>` : '<br>').join('');
+                } else {
+                    throw new Error("Формат не підтримується");
+                }
+                
+                if (!htmlContent || !htmlContent.trim()) {
+                    htmlContent = "<p>⚠️ Не вдалося витягнути текст</p>";
+                }
+                
+                const bookId = Date.now() + '-' + Math.random().toString(36).substr(2, 6);
+                uploadedBooks.unshift({ id: bookId, name: file.name, content: htmlContent });
+                localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                renderBooksList();
+                openBook(bookId);
+            } catch(err) {
+                console.error(err);
+                showToast("Помилка: " + err.message);
+            }
+        }
+        
+        function openBook(bookId) {
+            const book = uploadedBooks.find(b => b.id === bookId);
+            if (!book) return;
+            
+            currentBookId = bookId;
+            allPages = splitHtmlIntoPages(book.content, 7);
+            currentPage = 0;
+            lastWordPosition = null;
+            lastWordPageIndex = -1;
+            lastWordText = null;
+            render();
+            
+            localStorage.setItem('reader_current_book', book.content);
+            localStorage.setItem('reader_current_book_id', bookId);
+            showToast(`Відкрито: ${book.name}`);
+        }
+        
+        function loadDefaultBook() {
+            const defaultHtml = `<h2>The Lost Key</h2>
+                <p>Sam is a boy. He lives in a small house near the forest. One sunny morning, Sam finds an old key under a big tree. The key is gold and very beautiful.</p>
+                <p>"What does this key open?" Sam asks himself.</p>
+                <p>Sam walks to the garden. He sees a small door behind the flowers. The door is green and old. Sam puts the key into the lock. Click! The door opens.</p>
+                <p>Behind the door there is a magic garden. The flowers are red, blue, and yellow. A little bird sits on a branch. The bird says, "Hello, Sam! Welcome to the secret garden."</p>
+                <p>Sam is happy. He drinks sweet water from a fountain. He plays with the bird. In the evening, Sam returns home. He puts the key in his pocket.</p>`;
+            
+            allPages = splitHtmlIntoPages(defaultHtml, 7);
+            currentPage = 0;
+            render();
+        }
+        
+        function renderBooksList() {
+            if (!booksListUl) return;
+            if (uploadedBooks.length === 0) { 
+                booksListUl.innerHTML = '<li style="color:#b59773;">📭 Немає збережених книг</li>'; 
+                return; 
+            }
+            booksListUl.innerHTML = uploadedBooks.map(book => `
+                <li class="book-item" data-id="${book.id}">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                        <span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1;">📘 ${escapeHtml(book.name.length > 30 ? book.name.slice(0,27)+'...' : book.name)}</span>
+                        <button class="icon-btn open-book" data-id="${book.id}" title="Відкрити">📖</button>
+                        <button class="icon-btn delete-book" data-id="${book.id}" title="Видалити">🗑️</button>
+                    </div>
+                </li>
+            `).join('');
+            
+            document.querySelectorAll('.open-book').forEach(btn => { 
+                btn.addEventListener('click', (e) => { 
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id'); 
+                    openBook(id);
+                }); 
+            });
+            
+            document.querySelectorAll('.delete-book').forEach(btn => { 
+                btn.addEventListener('click', (e) => { 
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id');
+                    const bookToDelete = uploadedBooks.find(b => b.id === id);
+                    uploadedBooks = uploadedBooks.filter(b => b.id !== id); 
+                    localStorage.setItem('reader_books', JSON.stringify(uploadedBooks)); 
+                    
+                    if (currentBookId === id) {
+                        clearAllBookData();
+                        if (uploadedBooks.length > 0) {
+                            openBook(uploadedBooks[0].id);
+                        } else {
+                            loadDefaultBook();
+                        }
+                    }
+                    
+                    renderBooksList();
+                    showToast(`Книгу "${bookToDelete?.name}" видалено`);
+                }); 
+            });
+            
+            document.querySelectorAll('.book-name').forEach(name => { 
+                name.addEventListener('click', () => { 
+                    const id = name.getAttribute('data-id'); 
+                    openBook(id);
+                }); 
+            });
+        }
+        
+        function loadUploadedBooks() { 
+            const saved = localStorage.getItem('reader_books'); 
+            if (saved) { 
+                try { 
+                    uploadedBooks = JSON.parse(saved); 
+                } catch(e) {
+                    uploadedBooks = [];
+                }
+            } 
+            renderBooksList(); 
+        }
+        
+        function loadSavedBook() { 
+            const savedBookId = localStorage.getItem('reader_current_book_id');
+            if (savedBookId && uploadedBooks.find(b => b.id === savedBookId)) {
+                openBook(savedBookId);
+            } else if (uploadedBooks.length > 0) {
+                openBook(uploadedBooks[0].id);
+            } else {
+                loadDefaultBook();
+            }
+            
+            const savedLastWord = localStorage.getItem('lastWord');
+            const savedLastWordPage = localStorage.getItem('lastWordPage');
+            const savedLastWordPosition = localStorage.getItem('lastWordPosition');
+            
+            if (savedLastWord) {
+                lastWordText = savedLastWord;
+                if (savedLastWordPage) lastWordPageIndex = parseInt(savedLastWordPage);
+                if (savedLastWordPosition) lastWordPosition = parseInt(savedLastWordPosition);
+            }
+        }
+        
+        function openSidebar() { 
+            sidebar.classList.add('open'); 
+            overlay.classList.add('open'); 
+        }
+        
+        function closeSidebar() { 
+            sidebar.classList.remove('open'); 
+            overlay.classList.remove('open'); 
+        }
+
+        window.addEventListener('scroll', () => { 
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
+                positionTooltip(currentTooltipWord);
+            }
+        });
+        
+        window.addEventListener('resize', () => { 
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
+                positionTooltip(currentTooltipWord);
+            }
+        });
+
+        function init() {
+            loadUploadedBooks();
+            loadVocabulary();
+            loadSavedBook();
+            
+            const savedSound = localStorage.getItem('soundEnabled');
+            if (savedSound !== null) soundEnabled = savedSound === 'true';
+            soundToggleBtn.innerHTML = soundEnabled ? '🔊 Звук' : '🔇 Звук';
+            
+            const savedFont = localStorage.getItem('readerFontSize');
+            if (savedFont) { 
+                currentFontSize = parseFloat(savedFont); 
+                if (isNaN(currentFontSize)) currentFontSize = 1.0; 
+            }
+            updateFontSize();
+            
+            const savedTheme = localStorage.getItem('darkTheme');
+            if (savedTheme === 'true') setTheme(true);
+            else setTheme(false);
+            
+            soundToggleBtn.addEventListener('click', toggleSound);
+            clearVocabBtn.addEventListener('click', clearVocabulary);
+            toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
+            lastWordBtn.addEventListener('click', goToLastWord);
+            prevBtn.addEventListener('click', prevPage);
+            nextBtn.addEventListener('click', nextPage);
+            themeToggleBtn.addEventListener('click', toggleTheme);
+            increaseFontBtn.addEventListener('click', increaseFont);
+            decreaseFontBtn.addEventListener('click', decreaseFont);
+            
+            fileInput.addEventListener('change', (e) => { 
+                const file = e.target.files[0]; 
+                if (file) loadBookFromFile(file); 
+                fileInput.value = ''; 
+            });
+            
+            const touchArea = document.getElementById('bookPage');
+            if (touchArea) {
+                touchArea.addEventListener('touchstart', handleTouchStart);
+                touchArea.addEventListener('touchend', handleTouchEnd);
+            }
+            
+            window.addEventListener('keydown', handleKeyPress);
+            
+            if (mobileMenuBtn) { 
+                mobileMenuBtn.addEventListener('click', openSidebar);
+                if (overlay) overlay.addEventListener('click', closeSidebar);
+            }
+            
+            tooltip = document.createElement('div');
+            tooltip.className = 'word-tooltip';
+            tooltip.style.display = 'none';
+            document.body.appendChild(tooltip);
+        }
+        
+        init();
+    })();
 </script>
 </body>
 </html>
