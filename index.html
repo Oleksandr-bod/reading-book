@@ -182,7 +182,6 @@
             min-height: 500px;
             max-height: 70vh;
             overflow-y: auto;
-            scroll-behavior: smooth;
         }
 
         .book-page img {
@@ -351,8 +350,7 @@
         }
         input[type="file"] { display: none; }
 
-        /* Стиль підказки для перекладу біля слова */
-        .word-translation-tooltip {
+        .word-tooltip {
             position: fixed;
             background: #2d2a24;
             backdrop-filter: blur(20px);
@@ -371,9 +369,8 @@
             text-align: center;
             letter-spacing: 0.3px;
             max-width: 90vw;
-            transition: opacity 0.15s ease;
         }
-        .word-translation-tooltip::before {
+        .word-tooltip::before {
             content: '';
             position: absolute;
             width: 0;
@@ -385,27 +382,27 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        .word-translation-tooltip.bottom-arrow::before {
+        .word-tooltip.bottom-arrow::before {
             top: auto;
             bottom: -14px;
             border-bottom: none;
             border-top: 14px solid #2d2a24;
         }
-        body.dark .word-translation-tooltip {
+        body.dark .word-tooltip {
             background: #1e1b17;
             border: 2px solid #ffb347;
             color: #fff5e6;
             font-weight: 600;
             text-shadow: 0 1px 1px rgba(0,0,0,0.5);
         }
-        body.dark .word-translation-tooltip::before {
+        body.dark .word-tooltip::before {
             border-bottom-color: #1e1b17;
         }
-        body.dark .word-translation-tooltip.bottom-arrow::before {
+        body.dark .word-tooltip.bottom-arrow::before {
             border-top-color: #1e1b17;
             border-bottom: none;
         }
-        body.light .word-translation-tooltip {
+        body.light .word-tooltip {
             background: #2c2b28;
             color: #fff6ea;
             border: 1px solid #d4af37;
@@ -438,10 +435,6 @@
         body.dark .info-note {
             color: #d4b87a;
         }
-        
-        .scroll-to-top-word {
-            scroll-margin-top: 20px;
-        }
     </style>
 </head>
 <body class="light">
@@ -458,7 +451,6 @@
             <button id="increaseFontBtn" aria-label="Збільшити шрифт">A+</button>
         </div>
         <button id="themeToggleBtn" class="control-btn">🌙 Нічний режим</button>
-        <button id="lastWordBtn" class="control-btn">📍 Останнє слово</button>
         <button id="mobileMenuBtn" class="mobile-menu-btn control-btn">📚 Словник</button>
     </div>
 </div>
@@ -476,6 +468,7 @@
             <label class="file-label" for="uploadBook">📂 Завантажити книгу</label>
             <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt">
             <button id="soundToggleBtn" class="control-btn">🔊 Звук</button>
+            <button id="lastWordBtn" class="control-btn">📍 Останнє слово</button>
         </div>
     </div>
 
@@ -498,7 +491,7 @@
                 👆 Гортайте кнопками або стрілками на клавіатурі.<br>
                 🔤 Кнопки A+ / A− змінюють розмір шрифту.<br>
                 ✏️ У словнику можна редагувати переклад (кнопка ✏️).<br>
-                📍 Кнопка "Останнє слово" повертає до точно того слова, на якому зупинились (прокрутка до верху).<br>
+                📍 Кнопка "Останнє слово" повертає до точно того слова, на якому зупинились.<br>
                 🖼️ Картинки з книг автоматично приховуються.
             </div>
         </div>
@@ -544,12 +537,11 @@
         const increaseFontBtn = document.getElementById('increaseFontBtn');
         const decreaseFontBtn = document.getElementById('decreaseFontBtn');
 
-        let translationTooltip = null;
+        let tooltip = null;
         let tooltipTimeout = null;
         let currentTooltipWord = null;
         let touchStartX = 0;
         let touchEndX = 0;
-        let isScrolling = false;
 
         function clearAllBookData() {
             allPages = [];
@@ -593,9 +585,7 @@
             const textContainer = document.querySelector('.book-page');
             if (textContainer) textContainer.style.fontSize = currentFontSize + 'rem';
             localStorage.setItem('readerFontSize', currentFontSize);
-            if (translationTooltip && translationTooltip.style.display !== 'none' && currentTooltipWord) {
-                setTimeout(() => positionTooltip(currentTooltipWord), 10);
-            }
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) positionTooltip(currentTooltipWord);
         }
         
         function increaseFont() { 
@@ -709,134 +699,71 @@
             return tempDiv.innerHTML;
         }
 
-        // Функція для показу підказки БЕЗ прокрутки - тільки біля слова
-        function showTranslationTooltipNearWord(wordElement, text, autoHide = true) {
-            if (!translationTooltip) {
-                translationTooltip = document.createElement('div');
-                translationTooltip.className = 'word-translation-tooltip';
-                document.body.appendChild(translationTooltip);
+        function showTooltip(wordElement, text, autoHide = true) {
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.className = 'word-tooltip';
+                document.body.appendChild(tooltip);
             }
             if (tooltipTimeout) clearTimeout(tooltipTimeout);
-            translationTooltip.innerText = text;
-            translationTooltip.style.display = 'block';
-            translationTooltip.style.opacity = '1';
+            tooltip.innerText = text;
+            tooltip.style.display = 'block';
             currentTooltipWord = wordElement;
-            
-            // Позиціонуємо підказку безпосередньо біля слова
             positionTooltip(wordElement);
-            
             if (autoHide) {
                 tooltipTimeout = setTimeout(() => { 
-                    if (translationTooltip) {
-                        translationTooltip.style.opacity = '0';
-                        setTimeout(() => {
-                            if (translationTooltip) translationTooltip.style.display = 'none';
-                        }, 150);
-                    }
+                    tooltip.style.display = 'none'; 
                     currentTooltipWord = null; 
-                }, 4000);
+                }, 3800);
             }
         }
 
         function positionTooltip(wordElement) {
-            if (!translationTooltip || translationTooltip.style.display !== 'block') return;
-            if (!wordElement || !wordElement.getBoundingClientRect) return;
-            
+            if (!tooltip || tooltip.style.display !== 'block') return;
             const rect = wordElement.getBoundingClientRect();
-            const tooltipRect = translationTooltip.getBoundingClientRect();
-            
-            // Позиціонуємо над словом
+            const tooltipRect = tooltip.getBoundingClientRect();
             let top = rect.top - tooltipRect.height - 12;
             let arrowClass = '';
-            
-            // Якщо зверху не вистачає місця - показуємо знизу
             if (top < 10) { 
                 top = rect.bottom + 12; 
                 arrowClass = 'bottom-arrow'; 
             }
-            
-            translationTooltip.classList.remove('bottom-arrow');
-            if (arrowClass === 'bottom-arrow') translationTooltip.classList.add('bottom-arrow');
-            
-            // Центруємо відносно слова
+            tooltip.classList.remove('bottom-arrow');
+            if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
             let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
             left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
-            
-            translationTooltip.style.top = `${top}px`;
-            translationTooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+            tooltip.style.left = `${left}px`;
         }
 
-        function hideTranslationTooltip() { 
-            if (translationTooltip) {
-                translationTooltip.style.opacity = '0';
-                setTimeout(() => {
-                    if (translationTooltip) translationTooltip.style.display = 'none';
-                }, 150);
-            }
+        function hideTooltip() { 
+            if (tooltip) tooltip.style.display = 'none'; 
             if (tooltipTimeout) clearTimeout(tooltipTimeout); 
             currentTooltipWord = null; 
         }
 
-        // Прокрутка до слова без зміни позиції підказки
-        function scrollToWord(wordElement, alignToTop = false) {
-            if (!wordElement) return;
-            const container = bookPageDiv;
-            const elementRect = wordElement.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            const relativeTop = elementRect.top - containerRect.top;
-            
-            let targetScroll;
-            if (alignToTop) {
-                targetScroll = container.scrollTop + relativeTop - 30;
-            } else {
-                // Центруємо слово на екрані
-                targetScroll = container.scrollTop + relativeTop - (containerRect.height / 2) + (elementRect.height / 2);
-            }
-            
-            container.scrollTo({
-                top: Math.max(0, targetScroll),
-                behavior: 'smooth'
-            });
-        }
-
-        function scrollWordToCenter(wordElement) {
-            scrollToWord(wordElement, false);
-        }
-
-        function scrollWordToTop(wordElement) {
-            scrollToWord(wordElement, true);
-        }
-
-        function highlightWordByPosition(position, scrollToCenter = true) {
+        function highlightWordByPosition(position) {
             const spans = document.querySelectorAll('#bookPage .word');
             if (position !== null && position >= 0 && position < spans.length) {
                 const span = spans[position];
-                if (scrollToCenter) {
-                    scrollWordToCenter(span);
-                } else {
-                    scrollWordToTop(span);
-                }
+                span.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 span.classList.add('word-highlight');
                 setTimeout(() => span.classList.remove('word-highlight'), 1500);
                 const word = span.innerText.trim();
                 const translation = getTranslationFromCache(word);
                 if (translation) {
-                    showTranslationTooltipNearWord(span, translation, true);
+                    showTooltip(span, translation, true);
                 }
                 return true;
             }
             return false;
         }
 
-        function highlightWord(word, scrollToCenter = true) {
+        function highlightWord(word) {
             const spans = document.querySelectorAll('#bookPage .word');
             for (let span of spans) {
                 if (span.innerText.toLowerCase() === word.toLowerCase()) { 
-                    if (scrollToCenter) {
-                        scrollWordToCenter(span);
-                    } else {
-                        scrollWordToTop(span);
-                    }
+                    span.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
                     span.classList.add('word-highlight'); 
                     setTimeout(() => span.classList.remove('word-highlight'), 1500); 
                     return true;
@@ -859,7 +786,7 @@
             
             if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) {
                 setTimeout(() => {
-                    highlightWordByPosition(lastWordPosition, true);
+                    highlightWordByPosition(lastWordPosition);
                 }, 200);
             }
         }
@@ -876,40 +803,27 @@
             const word = span.innerText.trim();
             if (!word || !word.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) return;
             
-            // Зберігаємо останню позицію
             const allWords = Array.from(document.querySelectorAll('#bookPage .word'));
             const wordIndex = allWords.indexOf(span);
             
-            lastWordText = word;
-            lastWordPageIndex = currentPage;
-            lastWordPosition = wordIndex;
-            localStorage.setItem('lastWord', word);
-            localStorage.setItem('lastWordPage', currentPage);
-            localStorage.setItem('lastWordPosition', wordIndex);
-            
-            // Спочатку прокручуємо до слова
-            scrollWordToCenter(span);
-            
-            // Показуємо підказку завантаження БІЛЯ СЛОВА (без прокрутки)
-            setTimeout(() => {
-                showTranslationTooltipNearWord(span, `⏳ Завантаження...`, false);
-            }, 50);
-            
-            // Отримуємо переклад
+            showTooltip(span, `⏳...`, false);
             let translation = await fetchTranslation(word);
             if (translation.includes("❓") || translation.includes("помилка")) {
                 translation = `❓ (немає перекладу)`;
             }
-            
-            // Оновлюємо підказку з перекладом БІЛЯ ТОГО Ж СЛОВА
-            showTranslationTooltipNearWord(span, translation, true);
-            
+            showTooltip(span, translation, true);
             addOrUpdateWord(word, translation);
             if (soundEnabled) speakWord(word);
-            
-            // Додаємо підсвічування слова
             span.classList.add('word-highlight');
             setTimeout(() => span.classList.remove('word-highlight'), 600);
+            
+            lastWordText = word;
+            lastWordPageIndex = currentPage;
+            lastWordPosition = wordIndex;
+            
+            localStorage.setItem('lastWord', word);
+            localStorage.setItem('lastWordPage', currentPage);
+            localStorage.setItem('lastWordPosition', wordIndex);
         }
 
         function goToLastWord() {
@@ -923,15 +837,7 @@
             }
             
             if (currentPage === lastWordPageIndex && lastWordPosition !== null) {
-                const spans = document.querySelectorAll('#bookPage .word');
-                if (lastWordPosition >= 0 && lastWordPosition < spans.length) {
-                    const span = spans[lastWordPosition];
-                    scrollWordToTop(span);
-                    setTimeout(() => {
-                        showTranslationTooltipNearWord(span, getTranslationFromCache(lastWordText) || lastWordText, true);
-                        span.classList.add('word-highlight');
-                        setTimeout(() => span.classList.remove('word-highlight'), 1500);
-                    }, 100);
+                if (highlightWordByPosition(lastWordPosition)) {
                     showToast(`📍 "${lastWordText}"`);
                     return;
                 }
@@ -941,17 +847,10 @@
                 currentPage = lastWordPageIndex;
                 render();
                 setTimeout(() => {
-                    const spans = document.querySelectorAll('#bookPage .word');
-                    if (lastWordPosition !== null && lastWordPosition >= 0 && lastWordPosition < spans.length) {
-                        const span = spans[lastWordPosition];
-                        scrollWordToTop(span);
-                        setTimeout(() => {
-                            showTranslationTooltipNearWord(span, getTranslationFromCache(lastWordText) || lastWordText, true);
-                            span.classList.add('word-highlight');
-                            setTimeout(() => span.classList.remove('word-highlight'), 1500);
-                        }, 100);
+                    if (lastWordPosition !== null) {
+                        highlightWordByPosition(lastWordPosition);
                     } else {
-                        highlightWord(lastWordText, false);
+                        highlightWord(lastWordText);
                     }
                     showToast(`📍 "${lastWordText}"`);
                 }, 200);
@@ -972,7 +871,7 @@
                     lastWordPageIndex = foundPage;
                     render();
                     setTimeout(() => {
-                        highlightWord(lastWordText, false);
+                        highlightWord(lastWordText);
                         showToast(`📍 "${lastWordText}"`);
                     }, 200);
                 } else {
@@ -985,7 +884,7 @@
             if (currentPage + 1 < allPages.length) { 
                 currentPage++; 
                 render(); 
-                hideTranslationTooltip(); 
+                hideTooltip(); 
             } else { 
                 showToast("Це остання сторінка"); 
             } 
@@ -995,7 +894,7 @@
             if (currentPage - 1 >= 0) { 
                 currentPage--; 
                 render(); 
-                hideTranslationTooltip(); 
+                hideTooltip(); 
             } else { 
                 showToast("Це перша сторінка"); 
             } 
@@ -1465,15 +1364,14 @@
             overlay.classList.remove('open'); 
         }
 
-        // Оновлюємо позицію підказки при скролі
         window.addEventListener('scroll', () => { 
-            if (translationTooltip && translationTooltip.style.display !== 'none' && currentTooltipWord) {
-                requestAnimationFrame(() => positionTooltip(currentTooltipWord));
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
+                positionTooltip(currentTooltipWord);
             }
         });
         
         window.addEventListener('resize', () => { 
-            if (translationTooltip && translationTooltip.style.display !== 'none' && currentTooltipWord) {
+            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
                 positionTooltip(currentTooltipWord);
             }
         });
@@ -1527,10 +1425,10 @@
                 if (overlay) overlay.addEventListener('click', closeSidebar);
             }
             
-            translationTooltip = document.createElement('div');
-            translationTooltip.className = 'word-translation-tooltip';
-            translationTooltip.style.display = 'none';
-            document.body.appendChild(translationTooltip);
+            tooltip = document.createElement('div');
+            tooltip.className = 'word-tooltip';
+            tooltip.style.display = 'none';
+            document.body.appendChild(tooltip);
         }
         
         init();
