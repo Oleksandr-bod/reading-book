@@ -435,6 +435,39 @@
         body.dark .info-note {
             color: #d4b87a;
         }
+        
+        /* Стиль для кнопки останнього слова у верхній панелі */
+        .last-word-top-btn {
+            background: #e6d5bd;
+            color: #4f3a24;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        body.dark .last-word-top-btn {
+            background: #2c2c2c;
+            color: #ffffff;
+            border: 1px solid #5a5a5a;
+        }
+        .last-word-top-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.97);
+        }
+        .last-word-top-btn:active {
+            transform: scale(0.96);
+        }
+        
+        /* Видаляємо стару кнопку в upload-area */
+        .upload-area .last-word-btn-old {
+            display: none;
+        }
     </style>
 </head>
 <body class="light">
@@ -451,6 +484,7 @@
             <button id="increaseFontBtn" aria-label="Збільшити шрифт">A+</button>
         </div>
         <button id="themeToggleBtn" class="control-btn">🌙 Нічний режим</button>
+        <button id="lastWordTopBtn" class="last-word-top-btn">📍 Останнє слово</button>
         <button id="mobileMenuBtn" class="mobile-menu-btn control-btn">📚 Словник</button>
     </div>
 </div>
@@ -468,7 +502,8 @@
             <label class="file-label" for="uploadBook">📂 Завантажити книгу</label>
             <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt">
             <button id="soundToggleBtn" class="control-btn">🔊 Звук</button>
-            <button id="lastWordBtn" class="control-btn">📍 Останнє слово</button>
+            <!-- Стара кнопка прихована, використовуємо нову у верхній панелі -->
+            <button id="lastWordBtn" class="control-btn last-word-btn-old" style="display:none;">📍 Останнє слово</button>
         </div>
     </div>
 
@@ -529,7 +564,8 @@
         const soundToggleBtn = document.getElementById('soundToggleBtn');
         const clearVocabBtn = document.getElementById('clearVocabBtn');
         const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn');
-        const lastWordBtn = document.getElementById('lastWordBtn');
+        const lastWordBtn = document.getElementById('lastWordBtn'); // стара, прихована
+        const lastWordTopBtn = document.getElementById('lastWordTopBtn'); // нова кнопка вгорі
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -1399,7 +1435,16 @@
             soundToggleBtn.addEventListener('click', toggleSound);
             clearVocabBtn.addEventListener('click', clearVocabulary);
             toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
-            lastWordBtn.addEventListener('click', goToLastWord);
+            
+            // Додаємо обробник для нової кнопки у верхній панелі
+            if (lastWordTopBtn) {
+                lastWordTopBtn.addEventListener('click', goToLastWord);
+            }
+            // Якщо стара кнопка існує, теж додаємо (про всяк випадок)
+            if (lastWordBtn) {
+                lastWordBtn.addEventListener('click', goToLastWord);
+            }
+            
             prevBtn.addEventListener('click', prevPage);
             nextBtn.addEventListener('click', nextPage);
             themeToggleBtn.addEventListener('click', toggleTheme);
