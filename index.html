@@ -182,6 +182,7 @@
             min-height: 500px;
             max-height: 70vh;
             overflow-y: auto;
+            position: relative;
         }
 
         .book-page img {
@@ -369,6 +370,10 @@
             text-align: center;
             letter-spacing: 0.3px;
             max-width: 90vw;
+            transition: opacity 0.1s ease;
+        }
+        .word-tooltip.hidden {
+            display: none;
         }
         .word-tooltip::before {
             content: '';
@@ -436,7 +441,6 @@
             color: #d4b87a;
         }
         
-        /* Стиль для кнопки останнього слова у верхній панелі */
         .last-word-top-btn {
             background: #e6d5bd;
             color: #4f3a24;
@@ -464,7 +468,6 @@
             transform: scale(0.96);
         }
         
-        /* Видаляємо стару кнопку в upload-area */
         .upload-area .last-word-btn-old {
             display: none;
         }
@@ -502,7 +505,6 @@
             <label class="file-label" for="uploadBook">📂 Завантажити книгу</label>
             <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt">
             <button id="soundToggleBtn" class="control-btn">🔊 Звук</button>
-            <!-- Стара кнопка прихована, використовуємо нову у верхній панелі -->
             <button id="lastWordBtn" class="control-btn last-word-btn-old" style="display:none;">📍 Останнє слово</button>
         </div>
     </div>
@@ -564,8 +566,8 @@
         const soundToggleBtn = document.getElementById('soundToggleBtn');
         const clearVocabBtn = document.getElementById('clearVocabBtn');
         const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn');
-        const lastWordBtn = document.getElementById('lastWordBtn'); // стара, прихована
-        const lastWordTopBtn = document.getElementById('lastWordTopBtn'); // нова кнопка вгорі
+        const lastWordBtn = document.getElementById('lastWordBtn');
+        const lastWordTopBtn = document.getElementById('lastWordTopBtn');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -576,8 +578,12 @@
         let tooltip = null;
         let tooltipTimeout = null;
         let currentTooltipWord = null;
+        let currentTooltipWordElement = null;
         let touchStartX = 0;
         let touchEndX = 0;
+        
+        let rafId = null;
+        let isUpdatingTooltip = false;
 
         function clearAllBookData() {
             allPages = [];
@@ -621,7 +627,9 @@
             const textContainer = document.querySelector('.book-page');
             if (textContainer) textContainer.style.fontSize = currentFontSize + 'rem';
             localStorage.setItem('readerFontSize', currentFontSize);
-            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) positionTooltip(currentTooltipWord);
+            if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
+                updateTooltipPosition();
+            }
         }
         
         function increaseFont() { 
@@ -735,47 +743,73 @@
             return tempDiv.innerHTML;
         }
 
+        function updateTooltipPosition() {
+            if (!tooltip || tooltip.classList.contains('hidden') || !currentTooltipWordElement) return;
+            
+            if (!isUpdatingTooltip) {
+                isUpdatingTooltip = true;
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = requestAnimationFrame(() => {
+                    const rect = currentTooltipWordElement.getBoundingClientRect();
+                    const tooltipRect = tooltip.getBoundingClientRect();
+                    
+                    let top = rect.top - tooltipRect.height - 12;
+                    let arrowClass = '';
+                    if (top < 10) { 
+                        top = rect.bottom + 12; 
+                        arrowClass = 'bottom-arrow'; 
+                    }
+                    tooltip.classList.remove('bottom-arrow');
+                    if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
+                    
+                    let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                    left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
+                    
+                    tooltip.style.top = `${top}px`;
+                    tooltip.style.left = `${left}px`;
+                    isUpdatingTooltip = false;
+                    rafId = null;
+                });
+            }
+        }
+
         function showTooltip(wordElement, text, autoHide = true) {
             if (!tooltip) {
                 tooltip = document.createElement('div');
-                tooltip.className = 'word-tooltip';
+                tooltip.className = 'word-tooltip hidden';
                 document.body.appendChild(tooltip);
             }
+            
             if (tooltipTimeout) clearTimeout(tooltipTimeout);
+            
             tooltip.innerText = text;
-            tooltip.style.display = 'block';
-            currentTooltipWord = wordElement;
-            positionTooltip(wordElement);
+            tooltip.classList.remove('hidden');
+            currentTooltipWordElement = wordElement;
+            
+            updateTooltipPosition();
+            
             if (autoHide) {
                 tooltipTimeout = setTimeout(() => { 
-                    tooltip.style.display = 'none'; 
-                    currentTooltipWord = null; 
+                    tooltip.classList.add('hidden');
+                    currentTooltipWordElement = null;
+                    if (rafId) {
+                        cancelAnimationFrame(rafId);
+                        rafId = null;
+                    }
+                    isUpdatingTooltip = false;
                 }, 3800);
             }
         }
 
-        function positionTooltip(wordElement) {
-            if (!tooltip || tooltip.style.display !== 'block') return;
-            const rect = wordElement.getBoundingClientRect();
-            const tooltipRect = tooltip.getBoundingClientRect();
-            let top = rect.top - tooltipRect.height - 12;
-            let arrowClass = '';
-            if (top < 10) { 
-                top = rect.bottom + 12; 
-                arrowClass = 'bottom-arrow'; 
-            }
-            tooltip.classList.remove('bottom-arrow');
-            if (arrowClass === 'bottom-arrow') tooltip.classList.add('bottom-arrow');
-            let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-            left = Math.max(12, Math.min(left, window.innerWidth - tooltipRect.width - 12));
-            tooltip.style.top = `${top}px`;
-            tooltip.style.left = `${left}px`;
-        }
-
         function hideTooltip() { 
-            if (tooltip) tooltip.style.display = 'none'; 
-            if (tooltipTimeout) clearTimeout(tooltipTimeout); 
-            currentTooltipWord = null; 
+            if (tooltip) tooltip.classList.add('hidden');
+            if (tooltipTimeout) clearTimeout(tooltipTimeout);
+            currentTooltipWordElement = null;
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            isUpdatingTooltip = false;
         }
 
         function highlightWordByPosition(position) {
@@ -1400,18 +1434,6 @@
             overlay.classList.remove('open'); 
         }
 
-        window.addEventListener('scroll', () => { 
-            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
-                positionTooltip(currentTooltipWord);
-            }
-        });
-        
-        window.addEventListener('resize', () => { 
-            if (tooltip && tooltip.style.display !== 'none' && currentTooltipWord) {
-                positionTooltip(currentTooltipWord);
-            }
-        });
-
         function init() {
             loadUploadedBooks();
             loadVocabulary();
@@ -1436,11 +1458,9 @@
             clearVocabBtn.addEventListener('click', clearVocabulary);
             toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
             
-            // Додаємо обробник для нової кнопки у верхній панелі
             if (lastWordTopBtn) {
                 lastWordTopBtn.addEventListener('click', goToLastWord);
             }
-            // Якщо стара кнопка існує, теж додаємо (про всяк випадок)
             if (lastWordBtn) {
                 lastWordBtn.addEventListener('click', goToLastWord);
             }
@@ -1470,9 +1490,29 @@
                 if (overlay) overlay.addEventListener('click', closeSidebar);
             }
             
+            const scrollContainer = document.getElementById('bookPage');
+            if (scrollContainer) {
+                scrollContainer.addEventListener('scroll', () => {
+                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
+                        updateTooltipPosition();
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', () => {
+                if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
+                    updateTooltipPosition();
+                }
+            });
+            
+            window.addEventListener('resize', () => {
+                if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
+                    updateTooltipPosition();
+                }
+            });
+            
             tooltip = document.createElement('div');
-            tooltip.className = 'word-tooltip';
-            tooltip.style.display = 'none';
+            tooltip.className = 'word-tooltip hidden';
             document.body.appendChild(tooltip);
         }
         
