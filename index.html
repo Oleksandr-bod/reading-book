@@ -25,15 +25,19 @@
             --light-accent-soft: #e8d9c8;
             --light-border: #e2d6c8;
             --light-glow: rgba(200, 168, 107, 0.15);
+            --light-btn-text: #2c2418;
+            --light-btn-hover: #d4b87a;
             
-            --dark-bg: #1a1a1a;
-            --dark-surface: #262626;
-            --dark-text: #ececec;
-            --dark-text-secondary: #a8a8a8;
+            --dark-bg: #121212;
+            --dark-surface: #1e1e1e;
+            --dark-text: #e4e4e4;
+            --dark-text-secondary: #b0b0b0;
             --dark-accent: #e2b870;
-            --dark-accent-soft: #3a3228;
+            --dark-accent-soft: #2a2a2a;
             --dark-border: #3a3a3a;
             --dark-glow: rgba(226, 184, 112, 0.15);
+            --dark-btn-text: #e4e4e4;
+            --dark-btn-hover: #3a3228;
             
             --radius-card: 28px;
             --radius-element: 20px;
@@ -132,7 +136,7 @@
             box-shadow: var(--shadow-sm);
         }
         body.dark .font-controls {
-            background: rgba(38, 38, 38, 0.8);
+            background: rgba(30, 30, 30, 0.8);
         }
         .font-controls button {
             background: transparent;
@@ -152,6 +156,9 @@
             background: rgba(0, 0, 0, 0.05);
             transform: scale(0.96);
         }
+        body.dark .font-controls button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
         .control-btn, .file-label, .game-btn, .last-word-top-btn {
             background: var(--light-surface);
             border: 1px solid var(--light-border);
@@ -161,7 +168,7 @@
             font-size: 0.9rem;
             cursor: pointer;
             transition: var(--transition);
-            color: var(--light-text);
+            color: var(--light-btn-text);
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -173,12 +180,21 @@
         body.dark .last-word-top-btn {
             background: var(--dark-surface);
             border-color: var(--dark-border);
-            color: var(--dark-text);
+            color: var(--dark-btn-text);
         }
         .control-btn:hover, .file-label:hover, .game-btn:hover, .last-word-top-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
             border-color: var(--light-accent);
+            background: var(--light-btn-hover);
+        }
+        body.dark .control-btn:hover, 
+        body.dark .file-label:hover, 
+        body.dark .game-btn:hover, 
+        body.dark .last-word-top-btn:hover {
+            border-color: var(--dark-accent);
+            background: var(--dark-btn-hover);
+            color: var(--dark-accent);
         }
         .reader-wrapper {
             max-width: 1400px;
@@ -233,6 +249,10 @@
             box-shadow: 0 2px 8px rgba(200, 168, 107, 0.4);
             border-radius: 12px;
         }
+        body.dark .word-highlight {
+            background-color: var(--dark-accent) !important;
+            color: #121212 !important;
+        }
         .pagination-controls {
             display: flex;
             justify-content: center;
@@ -264,6 +284,7 @@
         body.dark .page-indicator {
             background: var(--dark-surface);
             border-color: var(--dark-border);
+            color: var(--dark-text);
         }
         .upload-area {
             display: flex;
@@ -297,6 +318,9 @@
             gap: 8px;
             color: var(--light-accent);
         }
+        body.dark .sidebar h2 {
+            color: var(--dark-accent);
+        }
         .vocab-list, .books-list {
             list-style: none;
             max-height: 320px;
@@ -308,6 +332,7 @@
             padding: 12px;
             border-radius: 20px;
             background: var(--light-bg);
+            transition: var(--transition);
         }
         body.dark .vocab-item, body.dark .book-item {
             background: var(--dark-bg);
@@ -319,20 +344,36 @@
             border-radius: 30px;
             font-size: 0.85rem;
             cursor: pointer;
+            color: var(--light-text);
+        }
+        body.dark .vocab-word {
+            background: var(--dark-accent-soft);
+            color: var(--dark-accent);
         }
         .icon-btn {
-            background: transparent;
-            border: none;
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
             font-size: 0.9rem;
             cursor: pointer;
-            padding: 6px;
+            padding: 6px 10px;
             border-radius: 30px;
             transition: var(--transition);
-            color: var(--light-text-secondary);
+            color: var(--light-text);
+        }
+        body.dark .icon-btn {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
         }
         .icon-btn:hover {
-            transform: scale(1.1);
-            color: var(--light-accent);
+            transform: scale(1.05);
+            background: var(--light-accent-soft);
+            border-color: var(--light-accent);
+        }
+        body.dark .icon-btn:hover {
+            background: var(--dark-accent-soft);
+            border-color: var(--dark-accent);
+            color: var(--dark-accent);
         }
         .info-note {
             font-size: 0.7rem;
@@ -340,6 +381,10 @@
             color: var(--light-text-secondary);
             border-top: 1px solid var(--light-border);
             padding-top: 16px;
+        }
+        body.dark .info-note {
+            color: var(--dark-text-secondary);
+            border-top-color: var(--dark-border);
         }
 
         /* Модальне вікно гри */
@@ -382,6 +427,7 @@
         }
         body.dark .game-card {
             background: var(--dark-surface);
+            color: var(--dark-text);
         }
         .close-game-btn {
             position: absolute;
@@ -398,6 +444,7 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition);
+            color: var(--light-text);
         }
         body.dark .close-game-btn {
             background: var(--dark-accent-soft);
@@ -445,6 +492,9 @@
             transform: scale(1.02);
             border-color: var(--light-accent);
         }
+        body.dark .option-btn:hover:not(:disabled) {
+            border-color: var(--dark-accent);
+        }
         .option-btn.correct {
             background: #2e7d32 !important;
             color: white !important;
@@ -465,6 +515,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            color: var(--light-text);
+        }
+        body.dark .speak-word-btn {
+            background: var(--dark-accent-soft);
+            color: var(--dark-accent);
+        }
+        .speak-word-btn:hover {
+            transform: scale(1.05);
         }
         .progress-badge {
             display: inline-block;
@@ -474,11 +532,19 @@
             font-size: 0.8rem;
             font-weight: 600;
             margin-top: 16px;
+            color: var(--light-text);
+        }
+        body.dark .progress-badge {
+            background: var(--dark-accent-soft);
+            color: var(--dark-accent);
         }
         .game-stats {
             font-size: 0.85rem;
             margin-top: 1rem;
             color: var(--light-text-secondary);
+        }
+        body.dark .game-stats {
+            color: var(--dark-text-secondary);
         }
         .word-tooltip {
             position: fixed;
@@ -496,6 +562,9 @@
             border: 1px solid var(--light-accent);
             white-space: normal;
             max-width: 90vw;
+        }
+        body.dark .word-tooltip {
+            border-color: var(--dark-accent);
         }
         .word-tooltip.hidden { display: none; }
         .toast-message {
@@ -551,7 +620,7 @@
         }
     </style>
 </head>
-<body class="light">
+<body>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="app-header">
@@ -889,8 +958,15 @@
 
         function setTheme(dark) {
             isDarkTheme = dark;
-            if(dark) { document.body.classList.remove('light'); document.body.classList.add('dark'); themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла тема'; }
-            else { document.body.classList.remove('dark'); document.body.classList.add('light'); themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічний режим'; }
+            if(dark) { 
+                document.body.classList.remove('light'); 
+                document.body.classList.add('dark'); 
+                themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла тема';
+            } else { 
+                document.body.classList.remove('dark'); 
+                document.body.classList.add('light'); 
+                themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічний режим';
+            }
             localStorage.setItem('darkTheme', dark);
         }
         function toggleTheme() { setTheme(!isDarkTheme); }
