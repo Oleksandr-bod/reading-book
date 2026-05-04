@@ -584,6 +584,39 @@
             box-shadow: var(--shadow-lg);
         }
 
+        /* Стиль для кнопки-перемикача перекладу */
+        .translation-toggle {
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            padding: 10px 20px;
+            border-radius: var(--radius-btn);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--light-btn-text);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        body.dark .translation-toggle {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-btn-text);
+        }
+        .translation-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--light-accent);
+            background: var(--light-btn-hover);
+        }
+        body.dark .translation-toggle:hover {
+            border-color: var(--dark-accent);
+            background: var(--dark-btn-hover);
+            color: var(--dark-accent);
+        }
+
         @media (max-width: 800px) {
             body { padding: 16px; }
             .sidebar {
@@ -635,6 +668,8 @@
         </div>
         <button id="themeToggleBtn" class="control-btn"><i class="fas fa-moon"></i> Нічний режим</button>
         <button id="lastWordTopBtn" class="last-word-top-btn"><i class="fas fa-location-dot"></i> Останнє слово</button>
+        <!-- НОВА КНОПКА: перемикач показу перекладу -->
+        <button id="toggleTranslationBtn" class="translation-toggle"><i class="fas fa-language"></i> Переклад: увімк.</button>
         <button id="mobileMenuBtn" class="mobile-menu-btn control-btn"><i class="fas fa-book-open"></i> Словник</button>
     </div>
 </div>
@@ -723,6 +758,9 @@
         let currentFontSize = 1.0;
         let currentBookId = null;
 
+        // НОВА ЗМІННА: чи показувати переклад
+        let showTranslation = true;
+
         let wordProgress = new Map();
         const NEEDED_CORRECT = 3;
         
@@ -762,6 +800,8 @@
         const gameProgressInfo = document.getElementById('gameProgressInfo');
         const gameModal = document.getElementById('gameModal');
         const closeGameBtn = document.getElementById('closeGameBtn');
+        // Нова кнопка перемикача перекладу
+        const toggleTranslationBtn = document.getElementById('toggleTranslationBtn');
 
         let tooltip = null;
         let tooltipTimeout = null;
@@ -920,6 +960,23 @@
             if (!word.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) return;
             const allWords = Array.from(document.querySelectorAll('#bookPage .word'));
             const wordIndex = allWords.indexOf(span);
+            
+            // Якщо показ перекладу вимкнено — показуємо сповіщення, але слово все одно додаємо до словника і озвучуємо (опціонально)
+            if (!showTranslation) {
+                showTooltip(span, `🔇 Переклад вимкнено. Увімкніть кнопкою.`, true);
+                // Все одно додаємо слово в словник для подальшого вивчення, але переклад не показуємо активно
+                // Проте щоб додати, треба отримати переклад. Але оскільки користувач не бачить — можна все одно додати в фоні.
+                let translation = await fetchTranslation(word);
+                addOrUpdateWord(word, translation);
+                if (soundEnabled) speakWord(word, false);
+                span.classList.add('word-highlight');
+                setTimeout(() => span.classList.remove('word-highlight'), 600);
+                lastWordText = word; lastWordPageIndex = currentPage; lastWordPosition = wordIndex;
+                localStorage.setItem('lastWord', word); localStorage.setItem('lastWordPage', currentPage); localStorage.setItem('lastWordPosition', wordIndex);
+                return;
+            }
+            
+            // Нормальний режим (переклад увімкнено)
             showTooltip(span, `⏳...`, false);
             let translation = await fetchTranslation(word);
             if (translation.includes("❓")) translation = `❓ (немає перекладу)`;
@@ -972,6 +1029,15 @@
         function toggleTheme() { setTheme(!isDarkTheme); }
         function toggleSound() { soundEnabled = !soundEnabled; soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' : '<i class="fas fa-volume-mute"></i> Звук'; if(!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel(); localStorage.setItem('soundEnabled', soundEnabled); }
         function toggleGameSound() { gameSoundEnabled = !gameSoundEnabled; gameSoundToggleBtn.innerHTML = gameSoundEnabled ? '<i class="fas fa-headphones"></i> Звук гри' : '<i class="fas fa-headphones-slash"></i> Звук гри'; if(!gameSoundEnabled) window.speechSynthesis.cancel(); }
+        
+        // Нова функція: перемикання показу перекладу
+        function toggleTranslationMode() {
+            showTranslation = !showTranslation;
+            const icon = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' : '<i class="fas fa-language"></i> Переклад: вимк.';
+            toggleTranslationBtn.innerHTML = icon;
+            localStorage.setItem('showTranslation', showTranslation);
+            showToast(showTranslation ? "🔓 Показ перекладу увімкнено" : "🔒 Показ перекладу вимкнено");
+        }
 
         function saveVocabulary() {
             localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory));
@@ -1074,6 +1140,11 @@
 
         function init() {
             loadUploadedBooks(); loadVocabulary(); loadSavedBook();
+            // Завантаження налаштування показу перекладу
+            const savedShowTranslation = localStorage.getItem('showTranslation');
+            if (savedShowTranslation !== null) showTranslation = savedShowTranslation === 'true';
+            toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' : '<i class="fas fa-language"></i> Переклад: вимк.';
+            
             const savedSound = localStorage.getItem('soundEnabled'); if(savedSound !== null) soundEnabled = savedSound === 'true'; soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' : '<i class="fas fa-volume-mute"></i> Звук';
             const savedFont = localStorage.getItem('readerFontSize'); if(savedFont) { currentFontSize = parseFloat(savedFont); if(isNaN(currentFontSize)) currentFontSize=1.0; } updateFontSize();
             const savedTheme = localStorage.getItem('darkTheme'); if(savedTheme === 'true') setTheme(true); else setTheme(false);
@@ -1090,6 +1161,8 @@
             refreshGameBtn.addEventListener('click', refreshGame); 
             gameSoundToggleBtn.addEventListener('click', toggleGameSound); 
             speakGameWordBtn.addEventListener('click', speakCurrentGameWord);
+            // Нова подія для кнопки перемикача перекладу
+            toggleTranslationBtn.addEventListener('click', toggleTranslationMode);
             tooltip = document.createElement('div'); tooltip.className = 'word-tooltip hidden'; document.body.appendChild(tooltip);
         }
         init();
