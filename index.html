@@ -10,496 +10,124 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --light-bg: #f5f5f0;
-            --light-surface: #ffffff;
-            --light-text: #1a1a1a;
-            --light-text-secondary: #555;
-            --light-accent: #3f51b5;
-            --light-accent-soft: #e8eaf6;
-            --light-border: #e0e0e0;
-            --light-btn-hover: #f0f0f0;
-            
-            --dark-bg: #1a1a1a;
-            --dark-surface: #262626;
-            --dark-text: #e0e0e0;
-            --dark-text-secondary: #aaa;
-            --dark-accent: #7986cb;
-            --dark-accent-soft: #333;
-            --dark-border: #404040;
-            --dark-btn-hover: #3a3a3a;
-            
-            --radius-card: 0;
-            --radius-element: 0;
-            --radius-btn: 0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 2px 5px rgba(0,0,0,0.1);
-            --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
+            --light-bg: #f5f5f0; --light-surface: #ffffff; --light-text: #1a1a1a; --light-text-secondary: #555;
+            --light-accent: #3f51b5; --light-accent-soft: #e8eaf6; --light-border: #e0e0e0; --light-btn-hover: #f0f0f0;
+            --dark-bg: #1a1a1a; --dark-surface: #262626; --dark-text: #e0e0e0; --dark-text-secondary: #aaa;
+            --dark-accent: #7986cb; --dark-accent-soft: #333; --dark-border: #404040; --dark-btn-hover: #3a3a3a;
+            --radius-card: 0; --radius-element: 0; --radius-btn: 0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05); --shadow-md: 0 2px 5px rgba(0,0,0,0.1);
             --transition: all 0.2s ease;
         }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--light-bg);
-            color: var(--light-text);
-            transition: var(--transition);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        body.dark {
-            background: var(--dark-bg);
-            color: var(--dark-text);
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 4px;
-        }
-        body.dark ::-webkit-scrollbar-thumb {
-            background: #555;
-        }
-
-        .top-bar {
-            background: var(--light-surface);
-            border-bottom: 1px solid var(--light-border);
-            padding: 8px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        body.dark .top-bar {
-            background: var(--dark-surface);
-            border-bottom-color: var(--dark-border);
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .logo {
-            font-size: 1.4rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            background: none;
-            -webkit-background-clip: unset;
-            background-clip: unset;
-            color: var(--light-accent);
-        }
-        body.dark .logo {
-            color: var(--dark-accent);
-        }
-        .site-title {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--light-text);
-        }
-        body.dark .site-title {
-            color: var(--dark-text);
-        }
-        .toolbar-buttons {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        .tool-btn {
-            background: transparent;
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--light-bg); color: var(--light-text); transition: var(--transition); min-height: 100vh; display: flex; flex-direction: column; }
+        body.dark { background: var(--dark-bg); color: var(--dark-text); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        body.dark ::-webkit-scrollbar-thumb { background: #555; }
+        .top-bar { background: var(--light-surface); border-bottom: 1px solid var(--light-border); padding: 8px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; position: sticky; top: 0; z-index: 100; }
+        body.dark .top-bar { background: var(--dark-surface); border-bottom-color: var(--dark-border); }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.5px; color: var(--light-accent); }
+        body.dark .logo { color: var(--dark-accent); }
+        .site-title { font-size: 1.1rem; font-weight: 500; color: var(--light-text); }
+        body.dark .site-title { color: var(--dark-text); }
+        .toolbar-buttons { display: flex; gap: 8px; align-items: center; }
+        .tool-btn { background: transparent; border: none; padding: 8px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition); color: var(--light-text-secondary); display: inline-flex; align-items: center; gap: 6px; }
+        body.dark .tool-btn { color: #f0f0f0; }
+        .tool-btn:hover { background: var(--light-btn-hover); color: var(--light-text); }
+        body.dark .tool-btn:hover { background: var(--dark-btn-hover); color: #ffffff; }
+        .primary-tool-btn { background: var(--light-accent); color: white !important; }
+        body.dark .primary-tool-btn { background: var(--dark-accent); color: #121212 !important; }
+        .primary-tool-btn:hover { filter: brightness(0.9); }
+        .main-container { flex: 1; display: flex; max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px; gap: 20px; }
+        .reading-area { flex: 3; min-width: 0; }
+        .book-page { background: var(--light-surface); padding: 2rem 2.5rem; font-family: 'Cormorant Garamond', 'Georgia', serif; font-size: 1.05rem; line-height: 1.7; text-align: justify; min-height: 65vh; max-height: 75vh; overflow-y: auto; box-shadow: var(--shadow-sm); border: 1px solid var(--light-border); }
+        body.dark .book-page { background: var(--dark-surface); border-color: var(--dark-border); color: var(--dark-text); }
+        .word { display: inline-block; cursor: pointer; border-radius: 2px; padding: 1px 2px; margin: 0 -1px; transition: var(--transition); }
+        .word:hover { background-color: var(--light-accent-soft); }
+        body.dark .word:hover { background-color: var(--dark-accent-soft); }
+        .word-highlight { background-color: var(--light-accent) !important; color: white !important; }
+        body.dark .word-highlight { background-color: var(--dark-accent) !important; color: #121212 !important; }
+        .pagination-bar { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .pagination-bar button { background: var(--light-surface); border: 1px solid var(--light-border); width: 40px; height: 40px; border-radius: 4px; cursor: pointer; transition: var(--transition); color: var(--light-text); display: inline-flex; align-items: center; justify-content: center; }
+        body.dark .pagination-bar button { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
+        .pagination-bar button:hover { background: var(--light-btn-hover); }
+        body.dark .pagination-bar button:hover { background: var(--dark-btn-hover); }
+        .page-indicator { background: var(--light-surface); padding: 8px 20px; border: 1px solid var(--light-border); font-size: 0.85rem; font-weight: 500; min-width: 120px; text-align: center; color: var(--light-text); }
+        body.dark .page-indicator { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
+        .page-jump-input { width: 70px; padding: 8px; border: 1px solid var(--light-border); border-radius: 4px; background: var(--light-surface); color: var(--light-text); text-align: center; font-size: 0.85rem; }
+        body.dark .page-jump-input { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
+        /* Оновлені стилі для кнопки "Перейти" – яскраво-зелена, помітна */
+        .page-jump-btn {
+            background: #2e7d32 !important;
+            color: white !important;
             border: none;
             padding: 8px 12px;
             border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
-            color: var(--light-text-secondary);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 0.85rem;
+            width: auto !important;
+            transition: background 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
-        body.dark .tool-btn {
-            color: #f0f0f0;
+        .page-jump-btn:hover {
+            background: #1b5e20 !important;
         }
-        .tool-btn:hover {
-            background: var(--light-btn-hover);
-            color: var(--light-text);
-        }
-        body.dark .tool-btn:hover {
-            background: var(--dark-btn-hover);
-            color: #ffffff;
-        }
-        .primary-tool-btn {
-            background: var(--light-accent);
-            color: white !important;
-        }
-        body.dark .primary-tool-btn {
-            background: var(--dark-accent);
+        body.dark .page-jump-btn {
+            background: #4caf50 !important;
             color: #121212 !important;
         }
-        .primary-tool-btn:hover {
-            filter: brightness(0.9);
+        body.dark .page-jump-btn:hover {
+            background: #66bb6a !important;
         }
-
-        .main-container {
-            flex: 1;
-            display: flex;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 20px;
-            gap: 20px;
-        }
-        .reading-area {
-            flex: 3;
-            min-width: 0;
-        }
-        .book-page {
-            background: var(--light-surface);
-            padding: 2rem 2.5rem;
-            font-family: 'Cormorant Garamond', 'Georgia', serif;
-            font-size: 1.05rem;
-            line-height: 1.7;
-            text-align: justify;
-            min-height: 65vh;
-            max-height: 75vh;
-            overflow-y: auto;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--light-border);
-        }
-        body.dark .book-page {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-            color: var(--dark-text);
-        }
-        .word {
-            display: inline-block;
-            cursor: pointer;
-            border-radius: 2px;
-            padding: 1px 2px;
-            margin: 0 -1px;
-            transition: var(--transition);
-        }
-        .word:hover {
-            background-color: var(--light-accent-soft);
-        }
-        body.dark .word:hover {
-            background-color: var(--dark-accent-soft);
-        }
-        .word-highlight {
-            background-color: var(--light-accent) !important;
-            color: white !important;
-        }
-        body.dark .word-highlight {
-            background-color: var(--dark-accent) !important;
-            color: #121212 !important;
-        }
-
-        .pagination-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        .pagination-bar button {
-            background: var(--light-surface);
-            border: 1px solid var(--light-border);
-            width: 40px;
-            height: 40px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--light-text);
-        }
-        body.dark .pagination-bar button {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-            color: #f0f0f0;
-        }
-        .pagination-bar button:hover {
-            background: var(--light-btn-hover);
-        }
-        body.dark .pagination-bar button:hover {
-            background: var(--dark-btn-hover);
-        }
-        .page-indicator {
-            background: var(--light-surface);
-            padding: 8px 20px;
-            border: 1px solid var(--light-border);
-            font-size: 0.85rem;
-            font-weight: 500;
-            min-width: 120px;
-            text-align: center;
-            color: var(--light-text);
-        }
-        body.dark .page-indicator {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-            color: #f0f0f0;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 340px;
-            height: 100%;
-            background: var(--light-surface);
-            border-left: 1px solid var(--light-border);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            padding: 20px;
-            overflow-y: auto;
-            box-shadow: var(--shadow-lg);
-        }
-        body.dark .sidebar {
-            background: var(--dark-surface);
-            border-left-color: var(--dark-border);
-        }
-        .sidebar.open {
-            right: 0;
-        }
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--light-border);
-        }
-        body.dark .sidebar-header {
-            border-bottom-color: var(--dark-border);
-        }
-        .sidebar-header h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--light-text);
-        }
-        body.dark .sidebar-header h3 {
-            color: var(--dark-text);
-        }
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.4);
-            z-index: 999;
-            display: none;
-        }
-        .sidebar-overlay.open {
-            display: block;
-        }
-        .vocab-list, .books-list {
-            list-style: none;
-            margin-top: 10px;
-        }
-        .vocab-item, .book-item {
-            margin: 12px 0;
-            padding: 10px;
-            border-bottom: 1px solid var(--light-border);
-        }
-        body.dark .vocab-item, body.dark .book-item {
-            border-bottom-color: var(--dark-border);
-            color: var(--dark-text);
-        }
-        .vocab-word {
-            font-weight: 600;
-            background: var(--light-accent-soft);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        body.dark .vocab-word {
-            background: var(--dark-accent-soft);
-            color: var(--dark-text);
-        }
-        .icon-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: inherit;
-        }
-        .icon-btn:hover {
-            background: var(--light-btn-hover);
-        }
-        body.dark .icon-btn:hover {
-            background: var(--dark-btn-hover);
-        }
-
-        .settings-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.2s;
-        }
-        .settings-modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .settings-panel {
-            background: var(--light-surface);
-            width: 340px;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-        }
-        body.dark .settings-panel {
-            background: var(--dark-surface);
-        }
-        .settings-panel h3 {
-            margin-bottom: 20px;
-            color: var(--light-text);
-        }
-        body.dark .settings-panel h3 {
-            color: var(--dark-text);
-        }
-        .settings-panel button {
-            display: block;
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid var(--light-border);
-            text-align: left;
-            cursor: pointer;
-            color: var(--light-text);
-        }
-        body.dark .settings-panel button {
-            border-color: var(--dark-border);
-            color: #f0f0f0;
-        }
-        .close-settings {
-            float: right;
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--light-text);
-        }
-        body.dark .close-settings {
-            color: #f0f0f0;
-        }
-
-        .game-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.2s;
-        }
-        .game-modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
-        .game-card {
-            background: var(--light-surface);
-            width: 90%;
-            max-width: 500px;
-            padding: 24px;
-            border-radius: 8px;
-            text-align: center;
-            color: var(--light-text);
-        }
-        body.dark .game-card {
-            background: var(--dark-surface);
-            color: var(--dark-text);
-        }
-        /* Кнопка закриття гри - видима в темній темі */
-        #closeGameBtn {
-            color: var(--light-text);
-        }
-        body.dark #closeGameBtn {
-            color: #f0f0f0;
-        }
-        .word-tooltip {
-            position: fixed;
-            background: #2c2c2c;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            z-index: 2100;
-            pointer-events: none;
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        /* У темному режимі робимо підказку світлішою для кращої видимості */
-        body.dark .word-tooltip {
-            background: #3c3c3c;
-            color: #ffffff;
-            border: 1px solid #5a5a5a;
-        }
-        .word-tooltip.hidden {
-            display: none;
-        }
-        .toast-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            z-index: 2200;
-            font-size: 0.8rem;
-        }
-        @media (max-width: 800px) {
-            .main-container { padding: 12px; }
-            .book-page { padding: 1rem; }
-            .toolbar-buttons .tool-btn span { display: none; }
-            .toolbar-buttons .tool-btn i { margin: 0; }
-        }
+        .sidebar { position: fixed; top: 0; right: -350px; width: 340px; height: 100%; background: var(--light-surface); border-left: 1px solid var(--light-border); z-index: 1000; transition: right 0.3s ease; padding: 20px; overflow-y: auto; box-shadow: var(--shadow-lg); }
+        body.dark .sidebar { background: var(--dark-surface); border-left-color: var(--dark-border); }
+        .sidebar.open { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--light-border); }
+        body.dark .sidebar-header { border-bottom-color: var(--dark-border); }
+        .sidebar-header h3 { font-size: 1.1rem; font-weight: 600; color: var(--light-text); }
+        body.dark .sidebar-header h3 { color: var(--dark-text); }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
+        .sidebar-overlay.open { display: block; }
+        .vocab-list, .books-list { list-style: none; margin-top: 10px; }
+        .vocab-item, .book-item { margin: 12px 0; padding: 10px; border-bottom: 1px solid var(--light-border); }
+        body.dark .vocab-item, body.dark .book-item { border-bottom-color: var(--dark-border); color: var(--dark-text); }
+        .vocab-word { font-weight: 600; background: var(--light-accent-soft); padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+        body.dark .vocab-word { background: var(--dark-accent-soft); color: var(--dark-text); }
+        .icon-btn { background: transparent; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; color: inherit; }
+        .icon-btn:hover { background: var(--light-btn-hover); }
+        body.dark .icon-btn:hover { background: var(--dark-btn-hover); }
+        .settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
+        .settings-modal.active { visibility: visible; opacity: 1; }
+        .settings-panel { background: var(--light-surface); width: 360px; padding: 24px; border-radius: 8px; box-shadow: var(--shadow-lg); }
+        body.dark .settings-panel { background: var(--dark-surface); }
+        .settings-panel h3 { margin-bottom: 20px; color: var(--light-text); }
+        body.dark .settings-panel h3 { color: var(--dark-text); }
+        .settings-panel button, .settings-panel .select-row { display: block; width: 100%; margin-bottom: 12px; }
+        .settings-panel button { background: transparent; border: 1px solid var(--light-border); text-align: left; cursor: pointer; color: var(--light-text); padding: 10px; }
+        body.dark .settings-panel button { border-color: var(--dark-border); color: #f0f0f0; }
+        .select-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .select-row label { font-size: 0.85rem; font-weight: 500; }
+        .lang-select { background: var(--light-surface); border: 1px solid var(--light-border); padding: 8px; border-radius: 4px; font-size: 0.85rem; color: var(--light-text); flex: 1; }
+        body.dark .lang-select { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
+        .close-settings { float: right; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--light-text); margin-bottom: 12px; }
+        body.dark .close-settings { color: #f0f0f0; }
+        .game-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
+        .game-modal.active { visibility: visible; opacity: 1; }
+        .game-card { background: var(--light-surface); width: 90%; max-width: 500px; padding: 24px; border-radius: 8px; text-align: center; color: var(--light-text); }
+        body.dark .game-card { background: var(--dark-surface); color: var(--dark-text); }
+        .word-tooltip { position: fixed; background: #2c2c2c; color: #fff; padding: 8px 16px; border-radius: 4px; font-size: 0.9rem; z-index: 2100; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        body.dark .word-tooltip { background: #3c3c3c; color: #ffffff; border: 1px solid #5a5a5a; }
+        .word-tooltip.hidden { display: none; }
+        .toast-message { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 16px; border-radius: 4px; z-index: 2200; font-size: 0.8rem; }
+        @media (max-width: 800px) { .main-container { padding: 12px; } .book-page { padding: 1rem; } .toolbar-buttons .tool-btn span { display: none; } .toolbar-buttons .tool-btn i { margin: 0; } .pagination-bar { gap: 8px; } .page-jump-input { width: 55px; } }
     </style>
 </head>
 <body>
-
 <div class="top-bar">
-    <div class="logo-area">
-        <span class="logo">📖</span>
-        <span class="site-title">LinguaReader</span>
-    </div>
+    <div class="logo-area"><span class="logo">📖</span><span class="site-title">LinguaReader</span></div>
     <div class="toolbar-buttons">
         <button id="lastWordTopBtn" class="tool-btn"><i class="fas fa-location-dot"></i><span> Останнє слово</span></button>
         <button id="gameLaunchBtn" class="tool-btn"><i class="fas fa-gamepad"></i><span> Гра</span></button>
@@ -507,9 +135,7 @@
         <button id="settingsBtn" class="tool-btn"><i class="fas fa-cog"></i><span> Налаштування</span></button>
     </div>
 </div>
-
 <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt" style="display:none">
-
 <div class="main-container">
     <div class="reading-area">
         <div id="bookPage" class="book-page"></div>
@@ -517,35 +143,26 @@
             <button id="prevPageBtn"><i class="fas fa-chevron-left"></i></button>
             <span id="pageIndicator" class="page-indicator">Стор. 0 / 0</span>
             <button id="nextPageBtn"><i class="fas fa-chevron-right"></i></button>
+            <input type="number" id="pageJumpInput" class="page-jump-input" min="1" value="1" step="1">
+            <button id="pageJumpBtn" class="page-jump-btn"><i class="fas fa-location-arrow"></i> Перейти</button>
         </div>
     </div>
 </div>
-
 <div id="sidebarOverlay" class="sidebar-overlay"></div>
 <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-        <h3><i class="fas fa-graduation-cap"></i> Мій словник</h3>
-        <button id="closeSidebarBtn" class="icon-btn"><i class="fas fa-times"></i></button>
-    </div>
-    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-        <button id="clearVocabBtn" class="tool-btn" style="padding: 6px 12px;">Очистити</button>
-        <button id="toggleAllWordsBtn" class="tool-btn" style="padding: 6px 12px;">Всі слова</button>
-    </div>
+    <div class="sidebar-header"><h3><i class="fas fa-graduation-cap"></i> Мій словник</h3><button id="closeSidebarBtn" class="icon-btn"><i class="fas fa-times"></i></button></div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;"><button id="clearVocabBtn" class="tool-btn" style="padding: 6px 12px;">Очистити</button><button id="toggleAllWordsBtn" class="tool-btn" style="padding: 6px 12px;">Всі слова</button></div>
     <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово</li></ul>
-    <div style="margin-top: 24px;">
-        <h3><i class="fas fa-layer-group"></i> Мої книги</h3>
-        <ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul>
-    </div>
-    <div style="margin-top: 16px; font-size: 0.7rem; color: var(--light-text-secondary);">
-        Клік на слово → переклад + словник.
-    </div>
+    <div style="margin-top: 24px;"><h3><i class="fas fa-layer-group"></i> Мої книги</h3><ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul></div>
+    <div style="margin-top: 16px; font-size: 0.7rem; color: var(--light-text-secondary);">Клік на слово → переклад + словник.</div>
 </div>
-
 <div id="settingsModal" class="settings-modal">
     <div class="settings-panel">
         <button class="close-settings" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
         <h3>Налаштування</h3>
         <button id="uploadBookSettingsBtn" class="tool-btn" style="width:100%; text-align:center;"><i class="fas fa-folder-open"></i> Відкрити книгу</button>
+        <div class="select-row"><label>Мова тексту:</label><select id="sourceLangSelect" class="lang-select"></select></div>
+        <div class="select-row"><label>Мова перекладу:</label><select id="targetLangSelect" class="lang-select"></select></div>
         <button id="decreaseFontBtn"><i class="fas fa-minus"></i> Зменшити шрифт</button>
         <button id="increaseFontBtn"><i class="fas fa-plus"></i> Збільшити шрифт</button>
         <button id="themeToggleBtn"><i class="fas fa-moon"></i> Нічний режим</button>
@@ -553,7 +170,6 @@
         <button id="toggleTranslationBtn"><i class="fas fa-language"></i> Переклад</button>
     </div>
 </div>
-
 <div id="gameModal" class="game-modal">
     <div class="game-card">
         <button id="closeGameBtn" style="float:right; background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
@@ -563,236 +179,252 @@
         <div id="gameStatus" style="margin: 10px;"></div>
         <div id="gameStats" style="font-size:0.8rem;"></div>
         <div id="gameProgressInfo" style="margin-top: 10px;"></div>
-        <div style="margin-top: 15px;">
-            <button id="refreshGameBtn" class="tool-btn">Скинути прогрес</button>
-            <button id="gameSoundToggleBtn" class="tool-btn">🔊 Звук гри</button>
-            <button id="speakGameWordBtn" class="tool-btn">🔊 Вимовити</button>
-        </div>
+        <div style="margin-top: 15px;"><button id="refreshGameBtn" class="tool-btn">Скинути прогрес</button><button id="gameSoundToggleBtn" class="tool-btn">🔊 Звук гри</button><button id="speakGameWordBtn" class="tool-btn">🔊 Вимовити</button></div>
     </div>
 </div>
-
 <script>
     (function() {
-        if (typeof pdfjsLib !== 'undefined') {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-        }
+        if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
-        let allPages = [];
-        let currentPage = 0;
-        let vocabularyHistory = [];
-        let translationCache = new Map();
-        let soundEnabled = true;
-        let gameSoundEnabled = true;
-        let currentUtterance = null;
-        let showAllWords = false;
-        let lastWordText = null;
-        let lastWordPageIndex = -1;
-        let lastWordPosition = null;
-        let uploadedBooks = [];
-        let isDarkTheme = false;
-        let currentFontSize = 1.0;
-        let currentBookId = null;
-        let showTranslation = true;
-
+        const LANGUAGES = [
+            { code: "en", name: "🇬🇧 English" },
+            { code: "uk", name: "🇺🇦 Українська" },
+            { code: "de", name: "🇩🇪 Deutsch" },
+            { code: "fr", name: "🇫🇷 Français" },
+            { code: "es", name: "🇪🇸 Español" },
+            { code: "pl", name: "🇵🇱 Polski" },
+            { code: "it", name: "🇮🇹 Italiano" }
+        ];
+        
+        let allPages = [], currentPage = 0, vocabularyHistory = [], translationCache = new Map();
+        let soundEnabled = true, gameSoundEnabled = true, currentUtterance = null, showAllWords = false;
+        let lastWordText = null, lastWordPageIndex = -1, lastWordPosition = null, uploadedBooks = [];
+        let isDarkTheme = false, currentFontSize = 1.0, currentBookId = null, showTranslation = true;
+        let sourceLang = 'en', targetLang = 'uk';
         let wordProgress = new Map();
         const NEEDED_CORRECT = 3;
-        
-        let currentGameWord = null;
-        let currentGameTranslation = null;
-        let currentGameOptions = [];
-        let gameTotalCorrect = 0;
-        let waitingForNext = false;
-        let autoNextTimeout = null;
+        let currentGameWord = null, currentGameTranslation = null, currentGameOptions = [], gameTotalCorrect = 0, waitingForNext = false, autoNextTimeout = null;
 
-        // DOM
-        const bookPageDiv = document.getElementById('bookPage');
-        const prevBtn = document.getElementById('prevPageBtn');
-        const nextBtn = document.getElementById('nextPageBtn');
-        const pageIndicator = document.getElementById('pageIndicator');
-        const vocabListUl = document.getElementById('vocabularyList');
-        const booksListUl = document.getElementById('booksList');
-        const fileInput = document.getElementById('uploadBook');
-        const soundToggleBtn = document.getElementById('soundToggleBtn');
-        const clearVocabBtn = document.getElementById('clearVocabBtn');
-        const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn');
-        const lastWordTopBtn = document.getElementById('lastWordTopBtn');
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        const increaseFontBtn = document.getElementById('increaseFontBtn');
-        const decreaseFontBtn = document.getElementById('decreaseFontBtn');
-        const gameLaunchBtn = document.getElementById('gameLaunchBtn');
-        const refreshGameBtn = document.getElementById('refreshGameBtn');
-        const gameSoundToggleBtn = document.getElementById('gameSoundToggleBtn');
-        const gameWordText = document.getElementById('gameWordText');
-        const speakGameWordBtn = document.getElementById('speakGameWordBtn');
-        const gameOptionsContainer = document.getElementById('gameOptionsContainer');
-        const gameStatus = document.getElementById('gameStatus');
-        const gameStats = document.getElementById('gameStats');
-        const gameProgressInfo = document.getElementById('gameProgressInfo');
-        const gameModal = document.getElementById('gameModal');
-        const closeGameBtn = document.getElementById('closeGameBtn');
-        const toggleTranslationBtn = document.getElementById('toggleTranslationBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const settingsModal = document.getElementById('settingsModal');
-        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-        const sidebarBtn = document.getElementById('sidebarBtn');
-        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const bookPageDiv = document.getElementById('bookPage'), prevBtn = document.getElementById('prevPageBtn'), nextBtn = document.getElementById('nextPageBtn');
+        const pageIndicator = document.getElementById('pageIndicator'), vocabListUl = document.getElementById('vocabularyList'), booksListUl = document.getElementById('booksList');
+        const fileInput = document.getElementById('uploadBook'), soundToggleBtn = document.getElementById('soundToggleBtn'), clearVocabBtn = document.getElementById('clearVocabBtn');
+        const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn'), lastWordTopBtn = document.getElementById('lastWordTopBtn'), themeToggleBtn = document.getElementById('themeToggleBtn');
+        const sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay'), increaseFontBtn = document.getElementById('increaseFontBtn');
+        const decreaseFontBtn = document.getElementById('decreaseFontBtn'), gameLaunchBtn = document.getElementById('gameLaunchBtn'), refreshGameBtn = document.getElementById('refreshGameBtn');
+        const gameSoundToggleBtn = document.getElementById('gameSoundToggleBtn'), gameWordText = document.getElementById('gameWordText'), speakGameWordBtn = document.getElementById('speakGameWordBtn');
+        const gameOptionsContainer = document.getElementById('gameOptionsContainer'), gameStatus = document.getElementById('gameStatus'), gameStats = document.getElementById('gameStats');
+        const gameProgressInfo = document.getElementById('gameProgressInfo'), gameModal = document.getElementById('gameModal'), closeGameBtn = document.getElementById('closeGameBtn');
+        const toggleTranslationBtn = document.getElementById('toggleTranslationBtn'), settingsBtn = document.getElementById('settingsBtn'), settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn'), sidebarBtn = document.getElementById('sidebarBtn'), closeSidebarBtn = document.getElementById('closeSidebarBtn');
         const uploadBookSettingsBtn = document.getElementById('uploadBookSettingsBtn');
+        const sourceLangSelect = document.getElementById('sourceLangSelect'), targetLangSelect = document.getElementById('targetLangSelect');
+        const pageJumpInput = document.getElementById('pageJumpInput'), pageJumpBtn = document.getElementById('pageJumpBtn');
 
-        let tooltip = null;
-        let tooltipTimeout = null;
-        let currentTooltipWordElement = null;
+        let tooltip = null, tooltipTimeout = null, currentTooltipWordElement = null;
 
-        function showToast(msg) {
-            const toast = document.createElement('div');
-            toast.className = 'toast-message';
-            toast.innerText = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2000);
-        }
-
+        function showToast(msg) { const toast = document.createElement('div'); toast.className = 'toast-message'; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2000); }
         function escapeHtml(str) { return (str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
 
-        function speakWord(word, isGameSound = false) {
-            if (isGameSound && !gameSoundEnabled) return;
-            if (!isGameSound && !soundEnabled) return;
-            if (!window.speechSynthesis) return;
-            if (currentUtterance) window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(word);
-            utter.lang = 'en-US';
-            utter.rate = 0.9;
-            window.speechSynthesis.speak(utter);
-            currentUtterance = utter;
+        function populateLanguageSelects() {
+            LANGUAGES.forEach(lang => {
+                const opt1 = document.createElement('option');
+                opt1.value = lang.code;
+                opt1.textContent = lang.name;
+                if (lang.code === sourceLang) opt1.selected = true;
+                sourceLangSelect.appendChild(opt1);
+                
+                const opt2 = document.createElement('option');
+                opt2.value = lang.code;
+                opt2.textContent = lang.name;
+                if (lang.code === targetLang) opt2.selected = true;
+                targetLangSelect.appendChild(opt2);
+            });
         }
-        function speakCurrentGameWord() { if (currentGameWord) speakWord(currentGameWord, true); }
-
-        function removeAllImagesFromHtml(html) {
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            div.querySelectorAll('img, svg').forEach(el => el.remove());
-            return div.innerHTML;
-        }
-
-        function splitHtmlIntoPages(html, maxBlocks = 7) {
-            let clean = removeAllImagesFromHtml(html);
-            const temp = document.createElement('div');
-            temp.innerHTML = clean;
-            const blocks = [];
-            const nodes = [...temp.childNodes];
-            for (let node of nodes) {
-                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
-                    node.textContent.split(/\n\s*\n/).forEach(p => { if(p.trim()) blocks.push(`<p>${p.trim()}</p>`); });
-                } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT','STYLE','IMG'].includes(node.tagName)) {
-                    blocks.push(node.outerHTML);
-                }
-            }
-            const pages = [];
-            for (let i = 0; i < blocks.length; i += maxBlocks) pages.push(blocks.slice(i, i+maxBlocks).join(''));
-            if (!pages.length) pages.push('<p>✨ Сторінка порожня</p>');
-            return pages;
-        }
-
-        function wrapWordsInHtml(html) {
-            const div = document.createElement('div');
-            div.innerHTML = html;
-            const walk = (node) => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    const words = node.textContent.split(/(\b[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?\b)/g);
-                    const frag = document.createDocumentFragment();
-                    for (let part of words) {
-                        if (part && part.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) {
-                            const span = document.createElement('span');
-                            span.className = 'word';
-                            span.textContent = part;
-                            frag.appendChild(span);
-                        } else if (part) frag.appendChild(document.createTextNode(part));
-                    }
-                    node.parentNode.replaceChild(frag, node);
-                } else if (node.nodeType === Node.ELEMENT_NODE && !['IMG','SCRIPT','STYLE'].includes(node.tagName)) {
-                    [...node.childNodes].forEach(walk);
-                }
-            };
-            walk(div);
-            return div.innerHTML;
-        }
-
-        function updateTooltipPosition() {
-            if (!tooltip || tooltip.classList.contains('hidden') || !currentTooltipWordElement) return;
-            const rect = currentTooltipWordElement.getBoundingClientRect();
-            const tRect = tooltip.getBoundingClientRect();
-            let top = rect.top - tRect.height - 12;
-            if (top < 10) top = rect.bottom + 12;
-            let left = rect.left + (rect.width/2) - (tRect.width/2);
-            left = Math.max(12, Math.min(left, window.innerWidth - tRect.width - 12));
-            tooltip.style.top = `${top}px`;
-            tooltip.style.left = `${left}px`;
-        }
-        function showTooltip(wordElement, text, autoHide = true) {
-            if (!tooltip) { tooltip = document.createElement('div'); tooltip.className = 'word-tooltip hidden'; document.body.appendChild(tooltip); }
-            if (tooltipTimeout) clearTimeout(tooltipTimeout);
-            tooltip.innerHTML = text;
-            tooltip.classList.remove('hidden');
-            currentTooltipWordElement = wordElement;
-            updateTooltipPosition();
-            if (autoHide) tooltipTimeout = setTimeout(() => { tooltip.classList.add('hidden'); currentTooltipWordElement = null; }, 3000);
-        }
-        function hideTooltip() { if(tooltip) tooltip.classList.add('hidden'); if(tooltipTimeout) clearTimeout(tooltipTimeout); currentTooltipWordElement = null; }
-
-        function highlightWordByPosition(pos) {
-            const spans = document.querySelectorAll('#bookPage .word');
-            if (pos !== null && spans[pos]) {
-                spans[pos].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                spans[pos].classList.add('word-highlight');
-                setTimeout(() => spans[pos].classList.remove('word-highlight'), 1500);
-                return true;
-            }
-            return false;
-        }
-
-        function render() {
-            if (!allPages.length) {
-                bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Немає відкритої книги<br>Завантажте книгу</p>';
-                pageIndicator.innerText = `Стор. 0 / 0`;
+        
+        function updateLanguagesFromSelects() {
+            const newSource = sourceLangSelect.value;
+            const newTarget = targetLangSelect.value;
+            if (newSource === newTarget) {
+                showToast("Мова тексту та перекладу не можуть збігатися");
+                sourceLangSelect.value = sourceLang;
+                targetLangSelect.value = targetLang;
                 return;
             }
-            bookPageDiv.innerHTML = wrapWordsInHtml(allPages[currentPage]);
-            pageIndicator.innerText = `Стор. ${currentPage+1} / ${allPages.length}`;
-            attachListeners();
-            bookPageDiv.scrollTop = 0;
-            if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) setTimeout(() => highlightWordByPosition(lastWordPosition), 200);
-        }
-        function attachListeners() {
-            document.querySelectorAll('#bookPage .word').forEach(span => {
-                span.removeEventListener('click', wordClickHandler);
-                span.addEventListener('click', wordClickHandler);
-            });
+            if (newSource === sourceLang && newTarget === targetLang) return;
+            sourceLang = newSource;
+            targetLang = newTarget;
+            vocabularyHistory = [];
+            translationCache.clear();
+            wordProgress.clear();
+            saveVocabulary();
+            renderVocabularyList();
+            showToast(`Мови змінено: ${sourceLang.toUpperCase()} → ${targetLang.toUpperCase()}. Словник очищено.`);
+            if (gameModal.classList.contains('active')) refreshGame();
         }
 
         async function fetchTranslation(word) {
             const lower = word.toLowerCase();
             if (translationCache.has(lower)) return translationCache.get(lower);
             try {
-                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=uk&dt=t&q=${encodeURIComponent(word)}`;
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(word)}`;
                 const resp = await fetch(url);
                 if (resp.ok) {
                     const data = await resp.json();
-                    if (data?.[0]?.[0]?.[0]) {
+                    if (data && data[0] && data[0][0] && data[0][0][0]) {
                         let trans = data[0][0][0];
                         translationCache.set(lower, trans);
                         return trans;
                     }
                 }
-            } catch(e) {}
-            const fallback = "❓ (немає перекладу)";
-            translationCache.set(lower, fallback);
-            return fallback;
+                throw new Error('Google translate failed');
+            } catch(e) {
+                try {
+                    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${sourceLang}|${targetLang}`;
+                    const resp2 = await fetch(myMemoryUrl);
+                    if (resp2.ok) {
+                        const data2 = await resp2.json();
+                        if (data2 && data2.responseData && data2.responseData.translatedText) {
+                            let trans = data2.responseData.translatedText;
+                            translationCache.set(lower, trans);
+                            return trans;
+                        }
+                    }
+                } catch(e2) { }
+                const fallback = "❓ (немає перекладу)";
+                translationCache.set(lower, fallback);
+                return fallback;
+            }
         }
 
+        function detectLanguage(text) {
+            const cyrillicPattern = /[а-яіїєґА-ЯІЇЄҐ]/;
+            const germanPattern = /[äöüßÄÖÜ]/;
+            const frenchPattern = /[éèêëàâçîïôùû]/;
+            const sample = text.slice(0, 500);
+            if ((sample.match(cyrillicPattern) || []).length > sample.replace(/\s/g, '').length * 0.3) return 'uk';
+            if (germanPattern.test(sample)) return 'de';
+            if (frenchPattern.test(sample)) return 'fr';
+            if (sample.match(/[áéíóúñ¿¡]/i)) return 'es';
+            if (sample.match(/[ąćęłńóśźż]/i)) return 'pl';
+            if (sample.match(/[àèéìíòóùú]/i)) return 'it';
+            return 'en';
+        }
+
+        function setDirectionFromBookContent(htmlContent) { 
+            const detected = detectLanguage(htmlContent); 
+            if (detected !== sourceLang) {
+                sourceLang = detected;
+                sourceLangSelect.value = sourceLang;
+                showToast(`Мова тексту визначена: ${sourceLang.toUpperCase()}. Переклад на ${targetLang.toUpperCase()}`);
+                translationCache.clear();
+            }
+        }
+
+        function speakWord(word, isGameSound = false) {
+            if ((isGameSound && !gameSoundEnabled) || (!isGameSound && !soundEnabled)) return;
+            if (!window.speechSynthesis) return;
+            if (currentUtterance) window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(word);
+            let langCode = sourceLang;
+            if (langCode === 'uk') utter.lang = 'uk-UA';
+            else if (langCode === 'de') utter.lang = 'de-DE';
+            else if (langCode === 'fr') utter.lang = 'fr-FR';
+            else if (langCode === 'es') utter.lang = 'es-ES';
+            else if (langCode === 'pl') utter.lang = 'pl-PL';
+            else if (langCode === 'it') utter.lang = 'it-IT';
+            else utter.lang = 'en-US';
+            utter.rate = 0.9;
+            window.speechSynthesis.speak(utter);
+            currentUtterance = utter;
+        }
+        function speakCurrentGameWord() { if (currentGameWord) speakWord(currentGameWord, true); }
+
+        function removeAllImagesFromHtml(html) { const div = document.createElement('div'); div.innerHTML = html; div.querySelectorAll('img, svg').forEach(el => el.remove()); return div.innerHTML; }
+        function splitHtmlIntoPages(html, maxBlocks = 7) {
+            let clean = removeAllImagesFromHtml(html);
+            const temp = document.createElement('div'); temp.innerHTML = clean;
+            const blocks = []; const nodes = [...temp.childNodes];
+            for (let node of nodes) {
+                if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                    node.textContent.split(/\n\s*\n/).forEach(p => { if(p.trim()) blocks.push(`<p>${p.trim()}</p>`); });
+                } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT','STYLE','IMG'].includes(node.tagName)) blocks.push(node.outerHTML);
+            }
+            const pages = []; for (let i = 0; i < blocks.length; i += maxBlocks) pages.push(blocks.slice(i, i+maxBlocks).join(''));
+            if (!pages.length) pages.push('<p>✨ Сторінка порожня</p>');
+            return pages;
+        }
+
+        function wrapWordsInHtml(html) {
+            const container = document.createElement('div');
+            container.innerHTML = html;
+            function processNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const wordRegex = /([A-Za-zА-ЯІЇЄҐа-яіїєґ']+(?:-[A-Za-zА-ЯІЇЄҐа-яіїєґ']+)?)/g;
+                    let lastIndex = 0;
+                    let match;
+                    const fragment = document.createDocumentFragment();
+                    while ((match = wordRegex.exec(node.textContent)) !== null) {
+                        if (match.index > lastIndex) {
+                            fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex, match.index)));
+                        }
+                        const wordSpan = document.createElement('span');
+                        wordSpan.className = 'word';
+                        wordSpan.textContent = match[0];
+                        fragment.appendChild(wordSpan);
+                        lastIndex = match.index + match[0].length;
+                    }
+                    if (lastIndex < node.textContent.length) {
+                        fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex)));
+                    }
+                    node.parentNode.replaceChild(fragment, node);
+                } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'IMG', 'BUTTON', 'INPUT'].includes(node.tagName)) {
+                    Array.from(node.childNodes).forEach(child => processNode(child));
+                }
+            }
+            processNode(container);
+            return container.innerHTML;
+        }
+
+        function updateTooltipPosition() { if (!tooltip || tooltip.classList.contains('hidden') || !currentTooltipWordElement) return; const rect = currentTooltipWordElement.getBoundingClientRect(); const tRect = tooltip.getBoundingClientRect(); let top = rect.top - tRect.height - 12; if (top < 10) top = rect.bottom + 12; let left = rect.left + (rect.width/2) - (tRect.width/2); left = Math.max(12, Math.min(left, window.innerWidth - tRect.width - 12)); tooltip.style.top = `${top}px`; tooltip.style.left = `${left}px`; }
+        function showTooltip(wordElement, text, autoHide = true) { if (!tooltip) { tooltip = document.createElement('div'); tooltip.className = 'word-tooltip hidden'; document.body.appendChild(tooltip); } if (tooltipTimeout) clearTimeout(tooltipTimeout); tooltip.innerHTML = text; tooltip.classList.remove('hidden'); currentTooltipWordElement = wordElement; updateTooltipPosition(); if (autoHide) tooltipTimeout = setTimeout(() => { tooltip.classList.add('hidden'); currentTooltipWordElement = null; }, 3000); }
+        function hideTooltip() { if(tooltip) tooltip.classList.add('hidden'); if(tooltipTimeout) clearTimeout(tooltipTimeout); currentTooltipWordElement = null; }
+        function highlightWordByPosition(pos) { const spans = document.querySelectorAll('#bookPage .word'); if (pos !== null && spans[pos]) { spans[pos].scrollIntoView({ behavior: 'smooth', block: 'center' }); spans[pos].classList.add('word-highlight'); setTimeout(() => spans[pos].classList.remove('word-highlight'), 1500); return true; } return false; }
+        
+        function render() { 
+            if (!allPages.length) { 
+                bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Немає відкритої книги<br>Завантажте книгу</p>'; 
+                pageIndicator.innerText = `Стор. 0 / 0`; 
+                pageJumpInput.max = 0;
+                pageJumpInput.value = 0;
+                return; 
+            } 
+            bookPageDiv.innerHTML = wrapWordsInHtml(allPages[currentPage]); 
+            pageIndicator.innerText = `Стор. ${currentPage+1} / ${allPages.length}`; 
+            pageJumpInput.max = allPages.length;
+            pageJumpInput.value = currentPage+1;
+            attachListeners(); 
+            bookPageDiv.scrollTop = 0; 
+            if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) setTimeout(() => highlightWordByPosition(lastWordPosition), 200); 
+        }
+        
+        function goToPage(pageNum) {
+            if (!allPages.length) { showToast("Немає відкритої книги"); return; }
+            let target = parseInt(pageNum);
+            if (isNaN(target)) target = 1;
+            target = Math.max(1, Math.min(target, allPages.length));
+            if (target === currentPage+1) return;
+            currentPage = target-1;
+            render();
+            hideTooltip();
+            showToast(`Перехід на сторінку ${target}`);
+        }
+        
+        function attachListeners() { document.querySelectorAll('#bookPage .word').forEach(span => { span.removeEventListener('click', wordClickHandler); span.addEventListener('click', wordClickHandler); }); }
+        
         async function wordClickHandler(e) {
             const span = e.currentTarget;
             const word = span.innerText.trim();
-            if (!word.match(/^[a-zA-Z'’]+(?:\-[a-zA-Z'’]+)?$/)) return;
+            if (!word || !word.match(/[A-Za-zА-ЯІЇЄҐа-яіїєґ]/)) return;
             const allWords = Array.from(document.querySelectorAll('#bookPage .word'));
             const wordIndex = allWords.indexOf(span);
             if (!showTranslation) {
@@ -806,7 +438,7 @@
                 localStorage.setItem('lastWord', word); localStorage.setItem('lastWordPage', currentPage); localStorage.setItem('lastWordPosition', wordIndex);
                 return;
             }
-            showTooltip(span, `⏳...`, false);
+            showTooltip(span, `⏳ Переклад...`, false);
             let translation = await fetchTranslation(word);
             if (translation.includes("❓")) translation = `❓ (немає перекладу)`;
             showTooltip(span, translation, true);
@@ -817,80 +449,25 @@
             lastWordText = word; lastWordPageIndex = currentPage; lastWordPosition = wordIndex;
             localStorage.setItem('lastWord', word); localStorage.setItem('lastWordPage', currentPage); localStorage.setItem('lastWordPosition', wordIndex);
         }
-
-        function goToLastWord() {
-            if (!lastWordText) { showToast("⚠️ Немає останнього слова"); return; }
-            if (!allPages.length) { showToast("⚠️ Немає відкритої книги"); return; }
-            if (currentPage === lastWordPageIndex && lastWordPosition !== null && highlightWordByPosition(lastWordPosition)) {
-                showToast(`📍 "${lastWordText}"`); return;
-            }
-            if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) {
-                currentPage = lastWordPageIndex;
-                render();
-                setTimeout(() => { if(lastWordPosition !== null) highlightWordByPosition(lastWordPosition); showToast(`📍 "${lastWordText}"`); }, 200);
-            } else showToast(`⚠️ Слово "${lastWordText}" не знайдено`);
-        }
-
+        
+        function goToLastWord() { if (!lastWordText) { showToast("⚠️ Немає останнього слова"); return; } if (!allPages.length) { showToast("⚠️ Немає відкритої книги"); return; } if (currentPage === lastWordPageIndex && lastWordPosition !== null && highlightWordByPosition(lastWordPosition)) { showToast(`📍 "${lastWordText}"`); return; } if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) { currentPage = lastWordPageIndex; render(); setTimeout(() => { if(lastWordPosition !== null) highlightWordByPosition(lastWordPosition); showToast(`📍 "${lastWordText}"`); }, 200); } else showToast(`⚠️ Слово "${lastWordText}" не знайдено`); }
         function nextPage() { if(currentPage+1 < allPages.length) { currentPage++; render(); hideTooltip(); } else showToast("Остання сторінка"); }
         function prevPage() { if(currentPage-1 >= 0) { currentPage--; render(); hideTooltip(); } else showToast("Перша сторінка"); }
-
         function updateFontSize() { const container = document.querySelector('.book-page'); if(container) container.style.fontSize = currentFontSize + 'rem'; localStorage.setItem('readerFontSize', currentFontSize); }
         function increaseFont() { if(currentFontSize < 2.2) { currentFontSize += 0.1; updateFontSize(); } else showToast("Максимальний шрифт"); }
         function decreaseFont() { if(currentFontSize > 0.7) { currentFontSize -= 0.1; updateFontSize(); } else showToast("Мінімальний шрифт"); }
-
-        function setTheme(dark) {
-            isDarkTheme = dark;
-            if(dark) { document.body.classList.add('dark'); themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла тема'; }
-            else { document.body.classList.remove('dark'); themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічний режим'; }
-            localStorage.setItem('darkTheme', dark);
-        }
+        function setTheme(dark) { isDarkTheme = dark; if(dark) { document.body.classList.add('dark'); themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла тема'; } else { document.body.classList.remove('dark'); themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічний режим'; } localStorage.setItem('darkTheme', dark); }
         function toggleTheme() { setTheme(!isDarkTheme); }
         function toggleSound() { soundEnabled = !soundEnabled; soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук читання' : '<i class="fas fa-volume-mute"></i> Звук читання'; if(!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel(); localStorage.setItem('soundEnabled', soundEnabled); }
         function toggleGameSound() { gameSoundEnabled = !gameSoundEnabled; gameSoundToggleBtn.innerHTML = gameSoundEnabled ? '🔊 Звук гри' : '🔇 Звук гри'; if(!gameSoundEnabled) window.speechSynthesis.cancel(); }
-        function toggleTranslationMode() {
-            showTranslation = !showTranslation;
-            toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' : '<i class="fas fa-language"></i> Переклад: вимк.';
-            localStorage.setItem('showTranslation', showTranslation);
-            showToast(showTranslation ? "Показ перекладу увімкнено" : "Показ перекладу вимкнено");
-        }
-
-        function saveVocabulary() {
-            localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory));
-            const progressObj = {}; for(let [word, data] of wordProgress.entries()) progressObj[word] = { consecutiveCorrect: data.consecutiveCorrect, isLearned: data.isLearned };
-            localStorage.setItem('wordProgress', JSON.stringify(progressObj));
-        }
-        function loadVocabulary() {
-            const saved = localStorage.getItem('reader_vocabulary');
-            if(saved) { try { const parsed = JSON.parse(saved); if(Array.isArray(parsed)) vocabularyHistory = parsed; } catch(e){} }
-            const savedProgress = localStorage.getItem('wordProgress');
-            if(savedProgress) { try { const progressObj = JSON.parse(savedProgress); for(let [word, data] of Object.entries(progressObj)) wordProgress.set(word, { consecutiveCorrect: data.consecutiveCorrect || 0, isLearned: data.isLearned || false }); } catch(e){} }
-            renderVocabularyList();
-        }
-        function addOrUpdateWord(word, translation) {
-            const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
-            if(idx !== -1) { vocabularyHistory[idx].translation = translation; const item = vocabularyHistory.splice(idx,1)[0]; vocabularyHistory.unshift(item); }
-            else { vocabularyHistory.unshift({ word, translation }); if(!wordProgress.has(word)) wordProgress.set(word, { consecutiveCorrect: 0, isLearned: false }); }
-            translationCache.set(word.toLowerCase(), translation);
-            saveVocabulary();
-            renderVocabularyList();
-        }
-        function renderVocabularyList() {
-            if(!vocabListUl) return;
-            let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []);
-            if(items.length === 0) { vocabListUl.innerHTML = '<li>📖 Натисніть на слово</li>'; return; }
-            vocabListUl.innerHTML = items.map((item, idx) => {
-                const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word);
-                const progress = wordProgress.get(item.word);
-                let progressText = progress ? (progress.isLearned ? ' ✓' : ` (${progress.consecutiveCorrect}/${NEEDED_CORRECT})`) : '';
-                return `<li class="vocab-item"><div><strong class="vocab-word">${escapeHtml(item.word)}${progressText}</strong> — ${escapeHtml(item.translation)}<br><button class="icon-btn edit-vocab" data-word="${escapeHtml(item.word)}" data-index="${globalIdx}">✎</button> <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}">🔄</button> <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}">🗑</button></div></li>`;
-            }).join('');
-            document.querySelectorAll('.edit-vocab').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); const idx=parseInt(btn.getAttribute('data-index')); const item=vocabularyHistory[idx]; if(item) { const newTrans = prompt(`Редагувати переклад для "${w}":`, item.translation); if(newTrans) { vocabularyHistory[idx].translation = newTrans; translationCache.set(w.toLowerCase(), newTrans); saveVocabulary(); renderVocabularyList(); showToast(`Оновлено`); } } }));
-            document.querySelectorAll('.retry-vocab').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); const newTrans=await fetchTranslation(w); addOrUpdateWord(w, newTrans); renderVocabularyList(); showToast(`Переклад оновлено`); }));
-            document.querySelectorAll('.remove-vocab').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); translationCache.delete(w.toLowerCase()); wordProgress.delete(w); saveVocabulary(); renderVocabularyList(); showToast(`"${w}" видалено`); if(gameModal.classList.contains('active')) refreshGame(); }));
-        }
+        function toggleTranslationMode() { showTranslation = !showTranslation; toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' : '<i class="fas fa-language"></i> Переклад: вимк.'; localStorage.setItem('showTranslation', showTranslation); showToast(showTranslation ? "Показ перекладу увімкнено" : "Показ перекладу вимкнено"); }
+        function saveVocabulary() { localStorage.setItem('reader_vocabulary', JSON.stringify(vocabularyHistory)); const progressObj = {}; for(let [word, data] of wordProgress.entries()) progressObj[word] = { consecutiveCorrect: data.consecutiveCorrect, isLearned: data.isLearned }; localStorage.setItem('wordProgress', JSON.stringify(progressObj)); }
+        function loadVocabulary() { const saved = localStorage.getItem('reader_vocabulary'); if(saved) try { const parsed = JSON.parse(saved); if(Array.isArray(parsed)) vocabularyHistory = parsed; } catch(e){} const savedProgress = localStorage.getItem('wordProgress'); if(savedProgress) try { const progressObj = JSON.parse(savedProgress); for(let [word, data] of Object.entries(progressObj)) wordProgress.set(word, { consecutiveCorrect: data.consecutiveCorrect || 0, isLearned: data.isLearned || false }); } catch(e){} renderVocabularyList(); }
+        function addOrUpdateWord(word, translation) { const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase()); if(idx !== -1) { vocabularyHistory[idx].translation = translation; const item = vocabularyHistory.splice(idx,1)[0]; vocabularyHistory.unshift(item); } else { vocabularyHistory.unshift({ word, translation }); if(!wordProgress.has(word)) wordProgress.set(word, { consecutiveCorrect: 0, isLearned: false }); } translationCache.set(word.toLowerCase(), translation); saveVocabulary(); renderVocabularyList(); }
+        function renderVocabularyList() { if(!vocabListUl) return; let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []); if(items.length === 0) { vocabListUl.innerHTML = '<li>📖 Натисніть на слово</li>'; return; } vocabListUl.innerHTML = items.map((item, idx) => { const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word); const progress = wordProgress.get(item.word); let progressText = progress ? (progress.isLearned ? ' ✓' : ` (${progress.consecutiveCorrect}/${NEEDED_CORRECT})`) : ''; return `<li class="vocab-item"><div><strong class="vocab-word">${escapeHtml(item.word)}${progressText}</strong> — ${escapeHtml(item.translation)}<br><button class="icon-btn edit-vocab" data-word="${escapeHtml(item.word)}" data-index="${globalIdx}">✎</button> <button class="icon-btn retry-vocab" data-word="${escapeHtml(item.word)}">🔄</button> <button class="icon-btn remove-vocab" data-word="${escapeHtml(item.word)}">🗑</button></div></li>`; }).join(''); document.querySelectorAll('.edit-vocab').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); const idx=parseInt(btn.getAttribute('data-index')); const item=vocabularyHistory[idx]; if(item) { const newTrans = prompt(`Редагувати переклад для "${w}":`, item.translation); if(newTrans) { vocabularyHistory[idx].translation = newTrans; translationCache.set(w.toLowerCase(), newTrans); saveVocabulary(); renderVocabularyList(); showToast(`Оновлено`); } } })); document.querySelectorAll('.retry-vocab').forEach(btn => btn.addEventListener('click', async (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); const newTrans=await fetchTranslation(w); addOrUpdateWord(w, newTrans); renderVocabularyList(); showToast(`Переклад оновлено`); })); document.querySelectorAll('.remove-vocab').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); const w=btn.getAttribute('data-word'); vocabularyHistory = vocabularyHistory.filter(v => v.word !== w); translationCache.delete(w.toLowerCase()); wordProgress.delete(w); saveVocabulary(); renderVocabularyList(); showToast(`"${w}" видалено`); if(gameModal.classList.contains('active')) refreshGame(); })); }
         function clearVocabulary() { vocabularyHistory = []; translationCache.clear(); wordProgress.clear(); saveVocabulary(); renderVocabularyList(); showToast("Словник очищено"); if(gameModal.classList.contains('active')) refreshGame(); }
         function toggleShowAllWords() { showAllWords = !showAllWords; toggleAllWordsBtn.innerHTML = showAllWords ? 'Приховати' : 'Всі слова'; renderVocabularyList(); }
-
+        
         // Парсинг книг
         async function parseEpub(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { try { const book = ePub(e.target.result); await book.ready; const spine = book.spine; let html = ''; for(let item of spine.spineItems || []) { try { const doc = await item.load(book.load.bind(book)); const body = doc.querySelector('body'); if(body) { const clone = body.cloneNode(true); clone.querySelectorAll('img').forEach(i=>i.remove()); html += clone.innerHTML; } item.unload(); } catch(e){} } resolve(html); } catch(err){ reject(err); } }; reader.onerror=reject; reader.readAsArrayBuffer(file); }); }
         async function parseFb2(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = (e) => { try { const xml=e.target.result; const doc=new DOMParser().parseFromString(xml,'text/xml'); const body=doc.querySelector('body'); if(!body) reject("No body"); let html=''; const process=(n)=>{ if(n.nodeType===Node.ELEMENT_NODE){ if(n.tagName==='p'){ html+='<p>'; n.childNodes.forEach(process); html+='</p>'; return; } if(n.tagName==='title'){ html+='<h2>'; n.childNodes.forEach(process); html+='</h2>'; return; } n.childNodes.forEach(process); } else if(n.nodeType===Node.TEXT_NODE) html+=n.textContent; }; body.childNodes.forEach(process); resolve(html); } catch(err){ reject(err); } }; reader.onerror=reject; reader.readAsText(file,'utf-8'); }); }
@@ -899,6 +476,8 @@
             const ext = file.name.split('.').pop().toLowerCase(); let html = ''; showToast("Завантаження...");
             try { if(ext==='epub') html = await parseEpub(file); else if(ext==='fb2') html = await parseFb2(file); else if(ext==='pdf') html = await parsePdf(file); else if(ext==='txt') { const text = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsText(file,'UTF-8'); }); html = text.split('\n').map(l=>l.trim()?`<p>${escapeHtml(l)}</p>`:'<br>').join(''); } else throw new Error("Формат не підтримується");
                 if(!html.trim()) html="<p>⚠️ Не вдалося витягнути текст</p>";
+                setDirectionFromBookContent(html);
+                translationCache.clear();
                 const id = Date.now()+'-'+Math.random().toString(36).substr(2,6);
                 uploadedBooks.unshift({ id, name: file.name, content: html });
                 localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
@@ -906,32 +485,21 @@
                 openBook(id);
             } catch(err) { showToast("Помилка: "+err.message); }
         }
-        function openBook(bookId) {
-            const book = uploadedBooks.find(b=>b.id===bookId); if(!book) return;
-            currentBookId=bookId; allPages=splitHtmlIntoPages(book.content,7); currentPage=0; lastWordPosition=null; lastWordPageIndex=-1; lastWordText=null; render();
-            localStorage.setItem('reader_current_book', book.content); localStorage.setItem('reader_current_book_id', bookId); showToast(`Відкрито: ${book.name}`);
-        }
-        function loadDefaultBook() { const defaultHtml = `<h2>The Lost Key</h2><p>Sam found a key. It opened a secret garden.</p>`; allPages = splitHtmlIntoPages(defaultHtml,7); currentPage=0; render(); }
-        function renderBooksList() {
-            if(!booksListUl) return;
-            if(uploadedBooks.length===0){ booksListUl.innerHTML='<li>📭 Немає збережених книг</li>'; return; }
-            booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item"><div style="display:flex; justify-content:space-between;"><span class="book-name" data-id="${book.id}" style="cursor:pointer;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`).join('');
-            document.querySelectorAll('.open-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); openBook(btn.getAttribute('data-id')); closeSidebar(); }));
-            document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); } renderBooksList(); showToast("Книгу видалено"); }));
-            document.querySelectorAll('.book-name').forEach(name=>name.addEventListener('click',()=>openBook(name.getAttribute('data-id'))));
-        }
+        function openBook(bookId) { const book = uploadedBooks.find(b=>b.id===bookId); if(!book) return; currentBookId=bookId; allPages=splitHtmlIntoPages(book.content,7); currentPage=0; lastWordPosition=null; lastWordPageIndex=-1; lastWordText=null; render(); localStorage.setItem('reader_current_book', book.content); localStorage.setItem('reader_current_book_id', bookId); showToast(`Відкрито: ${book.name}`); }
+        function loadDefaultBook() { const defaultHtml = `<h2>The Lost Key</h2><p>Sam found a key. It opened a secret garden.</p>`; setDirectionFromBookContent(defaultHtml); allPages = splitHtmlIntoPages(defaultHtml,7); currentPage=0; render(); }
+        function renderBooksList() { if(!booksListUl) return; if(uploadedBooks.length===0){ booksListUl.innerHTML='<li>📭 Немає збережених книг</li>'; return; } booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item"><div style="display:flex; justify-content:space-between;"><span class="book-name" data-id="${book.id}" style="cursor:pointer;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`).join(''); document.querySelectorAll('.open-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); openBook(btn.getAttribute('data-id')); closeSidebar(); })); document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); } renderBooksList(); showToast("Книгу видалено"); })); document.querySelectorAll('.book-name').forEach(name=>name.addEventListener('click',()=>openBook(name.getAttribute('data-id')))); }
         function loadUploadedBooks() { const saved = localStorage.getItem('reader_books'); if(saved) try { uploadedBooks = JSON.parse(saved); } catch(e){ uploadedBooks=[]; } renderBooksList(); }
         function loadSavedBook() { const savedId = localStorage.getItem('reader_current_book_id'); if(savedId && uploadedBooks.find(b=>b.id===savedId)) openBook(savedId); else if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); const savedLast=localStorage.getItem('lastWord'); if(savedLast) lastWordText=savedLast; const savedPage=localStorage.getItem('lastWordPage'); if(savedPage) lastWordPageIndex=parseInt(savedPage); const savedPos=localStorage.getItem('lastWordPosition'); if(savedPos) lastWordPosition=parseInt(savedPos); }
-
-        // Ігрова логіка
+        
+        // Гра
         function updateGameStatsDisplay() { const learned = Array.from(wordProgress.values()).filter(p=>p.isLearned).length; gameStats.innerHTML = `✅ Правильних: ${gameTotalCorrect} | 📚 Вивчено: ${learned}/${vocabularyHistory.length}`; }
         function getWordsNeedingPractice() { return vocabularyHistory.filter(item => { const p = wordProgress.get(item.word); return !p || !p.isLearned; }); }
         function getRandomWordFromVocabulary() { const needs = getWordsNeedingPractice(); if(!needs.length) return null; const valid = needs.filter(i=>i.translation && !i.translation.includes("❓") && i.translation.trim()); if(!valid.length) return null; return valid[Math.floor(Math.random()*valid.length)]; }
         function generateOptions(correct, trans) { let opts = [trans]; const others = vocabularyHistory.filter(i=>i.word!==correct && i.translation && !i.translation.includes("❓") && i.translation!==trans); const shuffled = [...others]; for(let i=shuffled.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; } for(let i=0;i<Math.min(3,shuffled.length);i++) opts.push(shuffled[i].translation); while(opts.length<4) opts.push("(новий переклад)"); for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; } return opts.slice(0,4); }
-        function enableGameButtons(enabled) { document.querySelectorAll('.option-btn').forEach(btn=>{ if(enabled) { btn.disabled=false; } else { btn.disabled=true; } }); }
+        function enableGameButtons(enabled) { document.querySelectorAll('.option-btn').forEach(btn=>{ if(enabled) btn.disabled=false; else btn.disabled=true; }); }
         function updateProgressInfo() { if(currentGameWord){ const p=wordProgress.get(currentGameWord); if(p?.isLearned) gameProgressInfo.innerHTML = `✅ "${currentGameWord}" вивчено!`; else gameProgressInfo.innerHTML = `📈 Прогрес: ${p?.consecutiveCorrect||0}/${NEEDED_CORRECT}`; } else gameProgressInfo.innerHTML=''; }
         function loadNewGameWord() { if(autoNextTimeout) clearTimeout(autoNextTimeout); const needs=getWordsNeedingPractice(); if(needs.length===0){ gameWordText.innerText="🎉 ВІТАЄМО!"; gameOptionsContainer.innerHTML='<div>Ви вивчили всі слова!</div>'; gameStatus.innerText="Чудово!"; speakGameWordBtn.style.display='none'; waitingForNext=false; return; } const wordItem=getRandomWordFromVocabulary(); if(!wordItem) return; currentGameWord=wordItem.word; currentGameTranslation=wordItem.translation; currentGameOptions=generateOptions(currentGameWord, currentGameTranslation); gameWordText.innerText=currentGameWord; speakGameWordBtn.style.display='inline-flex'; gameOptionsContainer.innerHTML=''; currentGameOptions.forEach(opt=>{ const btn=document.createElement('button'); btn.className='option-btn'; btn.style.padding='8px 16px'; btn.style.margin='4px'; btn.style.cursor='pointer'; btn.innerText=opt; btn.addEventListener('click',()=>handleGameAnswer(btn,opt)); gameOptionsContainer.appendChild(btn); }); gameStatus.innerText="Оберіть переклад!"; waitingForNext=false; enableGameButtons(true); updateProgressInfo(); if(gameSoundEnabled && currentGameWord) setTimeout(()=>speakWord(currentGameWord,true),300); }
-        function handleGameAnswer(btn, selected) { if(waitingForNext) return; const isCorrect = (selected === currentGameTranslation); let progress = wordProgress.get(currentGameWord); if(!progress) { progress={ consecutiveCorrect:0, isLearned:false }; wordProgress.set(currentGameWord,progress); } if(isCorrect){ progress.consecutiveCorrect++; gameTotalCorrect++; if(progress.consecutiveCorrect>=NEEDED_CORRECT){ progress.isLearned=true; gameStatus.innerText=`✅ ВІДМІННО! Слово вивчено!`; showToast(`🎉 Слово "${currentGameWord}" вивчено!`); } else gameStatus.innerText=`✅ Правильно! Залишилось ${NEEDED_CORRECT-progress.consecutiveCorrect}`; btn.style.background='#4caf50'; } else { const old=progress.consecutiveCorrect; progress.consecutiveCorrect=0; gameStatus.innerText=`❌ Помилка! Правильно: "${currentGameTranslation}"`; btn.style.background='#f44336'; document.querySelectorAll('.option-btn').forEach(el=>{ if(el.innerText===currentGameTranslation) el.style.background='#4caf50'; }); } updateGameStatsDisplay(); saveVocabulary(); waitingForNext=true; enableGameButtons(false); autoNextTimeout=setTimeout(()=>loadNewGameWord(),2000); }
+        function handleGameAnswer(btn, selected) { if(waitingForNext) return; const isCorrect = (selected === currentGameTranslation); let progress = wordProgress.get(currentGameWord); if(!progress) { progress={ consecutiveCorrect:0, isLearned:false }; wordProgress.set(currentGameWord,progress); } if(isCorrect){ progress.consecutiveCorrect++; gameTotalCorrect++; if(progress.consecutiveCorrect>=NEEDED_CORRECT){ progress.isLearned=true; gameStatus.innerText=`✅ ВІДМІННО! Слово вивчено!`; showToast(`🎉 Слово "${currentGameWord}" вивчено!`); } else gameStatus.innerText=`✅ Правильно! Залишилось ${NEEDED_CORRECT-progress.consecutiveCorrect}`; btn.style.background='#4caf50'; } else { progress.consecutiveCorrect=0; gameStatus.innerText=`❌ Помилка! Правильно: "${currentGameTranslation}"`; btn.style.background='#f44336'; document.querySelectorAll('.option-btn').forEach(el=>{ if(el.innerText===currentGameTranslation) el.style.background='#4caf50'; }); } updateGameStatsDisplay(); saveVocabulary(); waitingForNext=true; enableGameButtons(false); autoNextTimeout=setTimeout(()=>loadNewGameWord(),2000); }
         function refreshGame() { if(autoNextTimeout) clearTimeout(autoNextTimeout); wordProgress.clear(); for(let item of vocabularyHistory) wordProgress.set(item.word,{ consecutiveCorrect:0, isLearned:false }); gameTotalCorrect=0; saveVocabulary(); updateGameStatsDisplay(); loadNewGameWord(); showToast("Прогрес гри скинуто!"); }
         function showGameModal() { if(autoNextTimeout) clearTimeout(autoNextTimeout); updateGameStatsDisplay(); loadNewGameWord(); gameModal.classList.add('active'); }
         function hideGameModal() { if(autoNextTimeout) clearTimeout(autoNextTimeout); gameModal.classList.remove('active'); }
@@ -939,33 +507,42 @@
         function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
         function openSettings() { settingsModal.classList.add('active'); }
         function closeSettings() { settingsModal.classList.remove('active'); }
-
-        function repositionTooltipOnScroll() {
-            if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
-                updateTooltipPosition();
-            }
-        }
-
+        function repositionTooltipOnScroll() { if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition(); }
+        
         function init() {
+            populateLanguageSelects();
+            sourceLangSelect.addEventListener('change', updateLanguagesFromSelects);
+            targetLangSelect.addEventListener('change', updateLanguagesFromSelects);
+            
             loadUploadedBooks(); loadVocabulary(); loadSavedBook();
-            const savedShowTranslation = localStorage.getItem('showTranslation');
-            if (savedShowTranslation !== null) showTranslation = savedShowTranslation === 'true';
+            const savedShowTranslation = localStorage.getItem('showTranslation'); if (savedShowTranslation !== null) showTranslation = savedShowTranslation === 'true';
             toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' : '<i class="fas fa-language"></i> Переклад: вимк.';
             const savedSound = localStorage.getItem('soundEnabled'); if(savedSound !== null) soundEnabled = savedSound === 'true'; soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук читання' : '<i class="fas fa-volume-mute"></i> Звук читання';
             const savedFont = localStorage.getItem('readerFontSize'); if(savedFont) { currentFontSize = parseFloat(savedFont); if(isNaN(currentFontSize)) currentFontSize=1.0; } updateFontSize();
             const savedTheme = localStorage.getItem('darkTheme'); if(savedTheme === 'true') setTheme(true); else setTheme(false);
             soundToggleBtn.addEventListener('click', toggleSound); clearVocabBtn.addEventListener('click', clearVocabulary); toggleAllWordsBtn.addEventListener('click', toggleShowAllWords); lastWordTopBtn.addEventListener('click', goToLastWord); prevBtn.addEventListener('click', prevPage); nextBtn.addEventListener('click', nextPage); themeToggleBtn.addEventListener('click', toggleTheme); increaseFontBtn.addEventListener('click', increaseFont); decreaseFontBtn.addEventListener('click', decreaseFont);
             fileInput.addEventListener('change', (e) => { if(e.target.files[0]) loadBookFromFile(e.target.files[0]); fileInput.value=''; });
-            if (uploadBookSettingsBtn) {
-                uploadBookSettingsBtn.addEventListener('click', () => { fileInput.click(); });
-            }
+            if (uploadBookSettingsBtn) uploadBookSettingsBtn.addEventListener('click', () => { fileInput.click(); });
             gameLaunchBtn.addEventListener('click', showGameModal); closeGameBtn.addEventListener('click', hideGameModal);
             refreshGameBtn.addEventListener('click', refreshGame); gameSoundToggleBtn.addEventListener('click', toggleGameSound); speakGameWordBtn.addEventListener('click', speakCurrentGameWord);
             toggleTranslationBtn.addEventListener('click', toggleTranslationMode);
             settingsBtn.addEventListener('click', openSettings); closeSettingsBtn.addEventListener('click', closeSettings);
             sidebarBtn.addEventListener('click', openSidebar); closeSidebarBtn.addEventListener('click', closeSidebar); overlay.addEventListener('click', closeSidebar);
-            tooltip = document.createElement('div'); tooltip.className = 'word-tooltip hidden'; document.body.appendChild(tooltip);
             
+            pageJumpBtn.addEventListener('click', () => {
+                let val = parseInt(pageJumpInput.value);
+                if (isNaN(val)) val = 1;
+                goToPage(val);
+            });
+            pageJumpInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    let val = parseInt(pageJumpInput.value);
+                    if (isNaN(val)) val = 1;
+                    goToPage(val);
+                }
+            });
+            
+            tooltip = document.createElement('div'); tooltip.className = 'word-tooltip hidden'; document.body.appendChild(tooltip);
             bookPageDiv.addEventListener('scroll', repositionTooltipOnScroll);
             window.addEventListener('resize', repositionTooltipOnScroll);
         }
