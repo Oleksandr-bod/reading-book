@@ -114,6 +114,8 @@
         body.dark .word-tooltip { background: #3c3c3c; color: #ffffff; border: 1px solid #5a5a5a; }
         .word-tooltip.hidden { display: none; }
         .toast-message { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 16px; border-radius: 4px; z-index: 2200; font-size: 0.8rem; z-index: 2300; }
+        .lang-badge { position: fixed; bottom: 20px; right: 20px; background: var(--light-accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 500; z-index: 100; opacity: 0.8; pointer-events: none; }
+        body.dark .lang-badge { background: var(--dark-accent); color: #121212; }
         @media (max-width: 800px) { .main-container { padding: 12px; } .book-page { padding: 1rem; } .toolbar-buttons .tool-btn span { display: none; } .toolbar-buttons .tool-btn i { margin: 0; } .pagination-bar { gap: 8px; } .page-jump-input { width: 55px; } }
     </style>
 </head>
@@ -153,13 +155,13 @@
         <button class="close-settings" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
         <h3>Налаштування</h3>
         <button id="uploadBookSettingsBtn" class="tool-btn" style="width:100%; text-align:center;"><i class="fas fa-folder-open"></i> Відкрити книгу</button>
-        <div class="select-row"><label>Мова тексту:</label><select id="sourceLangSelect" class="lang-select"></select></div>
-        <div class="select-row"><label>Мова перекладу:</label><select id="targetLangSelect" class="lang-select"></select></div>
+        <div class="select-row"><label>🌍 Мова перекладу:</label><select id="targetLangSelect" class="lang-select"></select></div>
         <button id="decreaseFontBtn"><i class="fas fa-minus"></i> Зменшити шрифт</button>
         <button id="increaseFontBtn"><i class="fas fa-plus"></i> Збільшити шрифт</button>
         <button id="themeToggleBtn"><i class="fas fa-moon"></i> Нічний режим</button>
         <button id="soundToggleBtn"><i class="fas fa-volume-up"></i> Звук читання</button>
         <button id="toggleTranslationBtn"><i class="fas fa-language"></i> Переклад</button>
+        <div style="font-size:0.7rem; margin-top:12px; opacity:0.7;">💡 Мова тексту визначається автоматично</div>
     </div>
 </div>
 <div id="gameModal" class="game-modal">
@@ -174,25 +176,51 @@
         <div style="margin-top: 15px;"><button id="refreshGameBtn" class="tool-btn">Скинути прогрес</button><button id="gameSoundToggleBtn" class="tool-btn">🔊 Звук гри</button><button id="speakGameWordBtn" class="tool-btn">🔊 Вимовити</button></div>
     </div>
 </div>
+<div id="langBadge" class="lang-badge">📖 en → uk</div>
+
 <script>
     (function() {
         if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
+        // РОЗШИРЕНИЙ СПИСОК ПОПУЛЯРНИХ МОВ ПЕРЕКЛАДУ (20 мов)
         const LANGUAGES = [
-            { code: "en", name: "🇬🇧 English" },
             { code: "uk", name: "🇺🇦 Українська" },
+            { code: "en", name: "🇬🇧 English" },
             { code: "de", name: "🇩🇪 Deutsch" },
             { code: "fr", name: "🇫🇷 Français" },
             { code: "es", name: "🇪🇸 Español" },
             { code: "pl", name: "🇵🇱 Polski" },
-            { code: "it", name: "🇮🇹 Italiano" }
+            { code: "it", name: "🇮🇹 Italiano" },
+            { code: "pt", name: "🇵🇹 Português" },
+            { code: "nl", name: "🇳🇱 Nederlands" },
+            { code: "sv", name: "🇸🇪 Svenska" },
+            { code: "da", name: "🇩🇰 Dansk" },
+            { code: "no", name: "🇳🇴 Norsk" },
+            { code: "fi", name: "🇫🇮 Suomi" },
+            { code: "cs", name: "🇨🇿 Čeština" },
+            { code: "sk", name: "🇸🇰 Slovenčina" },
+            { code: "hu", name: "🇭🇺 Magyar" },
+            { code: "ro", name: "🇷🇴 Română" },
+            { code: "bg", name: "🇧🇬 Български" },
+            { code: "el", name: "🇬🇷 Ελληνικά" },
+            { code: "tr", name: "🇹🇷 Türkçe" },
+            { code: "ja", name: "🇯🇵 日本語" },
+            { code: "ko", name: "🇰🇷 한국어" },
+            { code: "zh", name: "🇨🇳 中文" },
+            { code: "th", name: "🇹🇭 ภาษาไทย" },
+            { code: "vi", name: "🇻🇳 Tiếng Việt" },
+            { code: "hi", name: "🇮🇳 हिन्दी" },
+            { code: "ar", name: "🇸🇦 العربية" },
+            { code: "he", name: "🇮🇱 עברית" },
+            { code: "ru", name: "🇷🇺 Русский" }
         ];
         
         let allPages = [], currentPage = 0, vocabularyHistory = [], translationCache = new Map();
         let soundEnabled = true, gameSoundEnabled = true, currentUtterance = null, showAllWords = false;
         let lastWordText = null, lastWordPageIndex = -1, lastWordPosition = null, uploadedBooks = [];
         let isDarkTheme = false, currentFontSize = 1.0, currentBookId = null, showTranslation = true;
-        let sourceLang = 'en', targetLang = 'uk';
+        let targetLang = 'uk'; // Мова перекладу (вибирає користувач)
+        let currentSourceLang = 'en'; // Автоматично визначена мова тексту
         let wordProgress = new Map();
         const NEEDED_CORRECT = 3;
         let currentGameWord = null, currentGameTranslation = null, currentGameOptions = [], gameTotalCorrect = 0, waitingForNext = false, autoNextTimeout = null;
@@ -210,8 +238,9 @@
         const toggleTranslationBtn = document.getElementById('toggleTranslationBtn'), settingsBtn = document.getElementById('settingsBtn'), settingsModal = document.getElementById('settingsModal');
         const closeSettingsBtn = document.getElementById('closeSettingsBtn'), sidebarBtn = document.getElementById('sidebarBtn'), closeSidebarBtn = document.getElementById('closeSidebarBtn');
         const uploadBookSettingsBtn = document.getElementById('uploadBookSettingsBtn');
-        const sourceLangSelect = document.getElementById('sourceLangSelect'), targetLangSelect = document.getElementById('targetLangSelect');
+        const targetLangSelect = document.getElementById('targetLangSelect');
         const pageJumpInput = document.getElementById('pageJumpInput'), pageJumpBtn = document.getElementById('pageJumpBtn');
+        const langBadge = document.getElementById('langBadge');
 
         let tooltip = null, tooltipTimeout = null, currentTooltipWordElement = null;
 
@@ -224,54 +253,138 @@
         }
         function escapeHtml(str) { return (str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
 
-        // Заповнення селектів
-        function populateLanguageSelects() {
-            sourceLangSelect.innerHTML = '';
+        // Заповнення селекту мови перекладу
+        function populateTargetLanguageSelect() {
             targetLangSelect.innerHTML = '';
             LANGUAGES.forEach(lang => {
-                const opt1 = document.createElement('option');
-                opt1.value = lang.code;
-                opt1.textContent = lang.name;
-                if (lang.code === sourceLang) opt1.selected = true;
-                sourceLangSelect.appendChild(opt1);
-                
-                const opt2 = document.createElement('option');
-                opt2.value = lang.code;
-                opt2.textContent = lang.name;
-                if (lang.code === targetLang) opt2.selected = true;
-                targetLangSelect.appendChild(opt2);
+                const opt = document.createElement('option');
+                opt.value = lang.code;
+                opt.textContent = lang.name;
+                if (lang.code === targetLang) opt.selected = true;
+                targetLangSelect.appendChild(opt);
             });
         }
         
-        // Оновлення мов
-        function updateLanguagesFromSelects() {
-            let newSource = sourceLangSelect.value;
+        // Оновлення мови перекладу
+        function updateTargetLanguage() {
             let newTarget = targetLangSelect.value;
-            if (newSource === newTarget) {
-                showToast("Мова тексту та перекладу не можуть збігатися");
-                // повертаємо старі значення
-                sourceLangSelect.value = sourceLang;
+            if (newTarget === currentSourceLang) {
+                showToast("⚠️ Мова перекладу не може збігатися з мовою тексту. Оберіть іншу.");
                 targetLangSelect.value = targetLang;
                 return;
             }
-            if (newSource === sourceLang && newTarget === targetLang) return;
-            sourceLang = newSource;
+            if (newTarget === targetLang) return;
             targetLang = newTarget;
-            // Очищаємо словник та кеш
-            vocabularyHistory = [];
+            updateLangBadge();
+            // Очищаємо кеш перекладів
             translationCache.clear();
-            wordProgress.clear();
-            saveVocabulary();
-            renderVocabularyList();
-            showToast(`Мови змінено: ${sourceLang.toUpperCase()} → ${targetLang.toUpperCase()}. Словник очищено.`);
+            // Оновлюємо переклади у словнику
+            for (let item of vocabularyHistory) {
+                if (translationCache.has(item.word.toLowerCase())) {
+                    translationCache.delete(item.word.toLowerCase());
+                }
+            }
+            showToast(`🌍 Мова перекладу: ${targetLang.toUpperCase()}`);
             if (gameModal.classList.contains('active')) refreshGame();
         }
+
+        // Оновлення бейджа з інформацією про мови
+        function updateLangBadge() {
+            const sourceName = currentSourceLang === 'uk' ? 'укр' : currentSourceLang.toUpperCase();
+            const targetName = targetLang === 'uk' ? 'укр' : targetLang.toUpperCase();
+            langBadge.innerHTML = `📖 ${sourceName} → ${targetName}`;
+        }
+
+        // Автоматичне визначення мови тексту
+        function detectLanguage(text) {
+            const sample = text.slice(0, 2000);
+            const cyrillicPattern = /[а-яіїєґА-ЯІЇЄҐ]/g;
+            const cyrillicMatches = sample.match(cyrillicPattern) || [];
+            const cyrillicCount = cyrillicMatches.length;
+            const latinPattern = /[a-zA-Z]/g;
+            const latinMatches = sample.match(latinPattern) || [];
+            const latinCount = latinMatches.length;
+            
+            if (cyrillicCount > latinCount && cyrillicCount > 10) return 'uk';
+            const ukrSpecific = /[іїєґІЇЄҐ]/;
+            if (ukrSpecific.test(sample) && cyrillicCount > 5) return 'uk';
+            return 'en';
+        }
+
+        // Оновлюємо поточну мову тексту на основі контенту книги
+        function updateSourceLanguageFromContent(htmlContent) { 
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+            const detected = detectLanguage(plainText); 
+            if (detected !== currentSourceLang) {
+                const oldLang = currentSourceLang;
+                currentSourceLang = detected;
+                updateLangBadge();
+                const langName = currentSourceLang === 'uk' ? 'українська' : 'англійська';
+                showToast(`📖 Мова тексту визначена: ${langName} (${currentSourceLang.toUpperCase()})`);
+                
+                if (targetLang === currentSourceLang) {
+                    targetLang = currentSourceLang === 'uk' ? 'en' : 'uk';
+                    targetLangSelect.value = targetLang;
+                    updateLangBadge();
+                    showToast(`🔄 Мова перекладу змінена на ${targetLang.toUpperCase()}`);
+                }
+                
+                translationCache.clear();
+                if (oldLang !== currentSourceLang) {
+                    vocabularyHistory = [];
+                    wordProgress.clear();
+                    saveVocabulary();
+                    renderVocabularyList();
+                }
+                if (gameModal.classList.contains('active')) refreshGame();
+            }
+        }
+
+        // Функція для відтворення звуку з правильною мовою
+        function speakWord(word, isGameSound = false) {
+            if ((isGameSound && !gameSoundEnabled) || (!isGameSound && !soundEnabled)) return;
+            if (!window.speechSynthesis) return;
+            if (currentUtterance) window.speechSynthesis.cancel();
+            
+            const hasCyrillic = /[а-яіїєґА-ЯІЇЄҐ]/.test(word);
+            const langToSpeak = hasCyrillic ? 'uk' : currentSourceLang;
+            
+            const utter = new SpeechSynthesisUtterance(word);
+            if (langToSpeak === 'uk') utter.lang = 'uk-UA';
+            else if (langToSpeak === 'de') utter.lang = 'de-DE';
+            else if (langToSpeak === 'fr') utter.lang = 'fr-FR';
+            else if (langToSpeak === 'es') utter.lang = 'es-ES';
+            else if (langToSpeak === 'pl') utter.lang = 'pl-PL';
+            else if (langToSpeak === 'it') utter.lang = 'it-IT';
+            else if (langToSpeak === 'pt') utter.lang = 'pt-PT';
+            else if (langToSpeak === 'nl') utter.lang = 'nl-NL';
+            else if (langToSpeak === 'sv') utter.lang = 'sv-SE';
+            else if (langToSpeak === 'da') utter.lang = 'da-DK';
+            else if (langToSpeak === 'no') utter.lang = 'no-NO';
+            else if (langToSpeak === 'fi') utter.lang = 'fi-FI';
+            else if (langToSpeak === 'cs') utter.lang = 'cs-CZ';
+            else if (langToSpeak === 'hu') utter.lang = 'hu-HU';
+            else if (langToSpeak === 'ro') utter.lang = 'ro-RO';
+            else if (langToSpeak === 'tr') utter.lang = 'tr-TR';
+            else if (langToSpeak === 'ja') utter.lang = 'ja-JP';
+            else if (langToSpeak === 'ko') utter.lang = 'ko-KR';
+            else if (langToSpeak === 'zh') utter.lang = 'zh-CN';
+            else utter.lang = 'en-US';
+            
+            utter.rate = 0.9;
+            window.speechSynthesis.speak(utter);
+            currentUtterance = utter;
+        }
+        
+        function speakCurrentGameWord() { if (currentGameWord) speakWord(currentGameWord, true); }
 
         async function fetchTranslation(word) {
             const lower = word.toLowerCase();
             if (translationCache.has(lower)) return translationCache.get(lower);
             try {
-                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(word)}`;
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${currentSourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(word)}`;
                 const resp = await fetch(url);
                 if (resp.ok) {
                     const data = await resp.json();
@@ -284,7 +397,7 @@
                 throw new Error('Google translate failed');
             } catch(e) {
                 try {
-                    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${sourceLang}|${targetLang}`;
+                    const myMemoryUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${currentSourceLang}|${targetLang}`;
                     const resp2 = await fetch(myMemoryUrl);
                     if (resp2.ok) {
                         const data2 = await resp2.json();
@@ -300,49 +413,6 @@
                 return fallback;
             }
         }
-
-        function detectLanguage(text) {
-            const cyrillicPattern = /[а-яіїєґА-ЯІЇЄҐ]/;
-            const germanPattern = /[äöüßÄÖÜ]/;
-            const frenchPattern = /[éèêëàâçîïôùû]/;
-            const sample = text.slice(0, 500);
-            if ((sample.match(cyrillicPattern) || []).length > sample.replace(/\s/g, '').length * 0.3) return 'uk';
-            if (germanPattern.test(sample)) return 'de';
-            if (frenchPattern.test(sample)) return 'fr';
-            if (sample.match(/[áéíóúñ¿¡]/i)) return 'es';
-            if (sample.match(/[ąćęłńóśźż]/i)) return 'pl';
-            if (sample.match(/[àèéìíòóùú]/i)) return 'it';
-            return 'en';
-        }
-
-        function setDirectionFromBookContent(htmlContent) { 
-            const detected = detectLanguage(htmlContent); 
-            if (detected !== sourceLang) {
-                sourceLang = detected;
-                sourceLangSelect.value = sourceLang;
-                showToast(`Мова тексту визначена: ${sourceLang.toUpperCase()}. Переклад на ${targetLang.toUpperCase()}`);
-                translationCache.clear();
-            }
-        }
-
-        function speakWord(word, isGameSound = false) {
-            if ((isGameSound && !gameSoundEnabled) || (!isGameSound && !soundEnabled)) return;
-            if (!window.speechSynthesis) return;
-            if (currentUtterance) window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(word);
-            let langCode = sourceLang;
-            if (langCode === 'uk') utter.lang = 'uk-UA';
-            else if (langCode === 'de') utter.lang = 'de-DE';
-            else if (langCode === 'fr') utter.lang = 'fr-FR';
-            else if (langCode === 'es') utter.lang = 'es-ES';
-            else if (langCode === 'pl') utter.lang = 'pl-PL';
-            else if (langCode === 'it') utter.lang = 'it-IT';
-            else utter.lang = 'en-US';
-            utter.rate = 0.9;
-            window.speechSynthesis.speak(utter);
-            currentUtterance = utter;
-        }
-        function speakCurrentGameWord() { if (currentGameWord) speakWord(currentGameWord, true); }
 
         function removeAllImagesFromHtml(html) { const div = document.createElement('div'); div.innerHTML = html; div.querySelectorAll('img, svg').forEach(el => el.remove()); return div.innerHTML; }
         function splitHtmlIntoPages(html, maxBlocks = 7) {
@@ -477,12 +547,23 @@
         async function parseEpub(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { try { const book = ePub(e.target.result); await book.ready; const spine = book.spine; let html = ''; for(let item of spine.spineItems || []) { try { const doc = await item.load(book.load.bind(book)); const body = doc.querySelector('body'); if(body) { const clone = body.cloneNode(true); clone.querySelectorAll('img').forEach(i=>i.remove()); html += clone.innerHTML; } item.unload(); } catch(e){} } resolve(html); } catch(err){ reject(err); } }; reader.onerror=reject; reader.readAsArrayBuffer(file); }); }
         async function parseFb2(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = (e) => { try { const xml=e.target.result; const doc=new DOMParser().parseFromString(xml,'text/xml'); const body=doc.querySelector('body'); if(!body) reject("No body"); let html=''; const process=(n)=>{ if(n.nodeType===Node.ELEMENT_NODE){ if(n.tagName==='p'){ html+='<p>'; n.childNodes.forEach(process); html+='</p>'; return; } if(n.tagName==='title'){ html+='<h2>'; n.childNodes.forEach(process); html+='</h2>'; return; } n.childNodes.forEach(process); } else if(n.nodeType===Node.TEXT_NODE) html+=n.textContent; }; body.childNodes.forEach(process); resolve(html); } catch(err){ reject(err); } }; reader.onerror=reject; reader.readAsText(file,'utf-8'); }); }
         async function parsePdf(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async (e) => { try { const pdf = await pdfjsLib.getDocument({ data: e.target.result }).promise; let text=''; for(let i=1;i<=pdf.numPages;i++){ const page=await pdf.getPage(i); const content=await page.getTextContent(); const pageText=content.items.map(item=>item.str).join(' '); if(pageText.trim()) text+=`<p>${escapeHtml(pageText)}</p>`; } resolve(text||'<p>⚠️ Немає тексту</p>'); } catch(err){ reject(err); } }; reader.onerror=reject; reader.readAsArrayBuffer(file); }); }
+        
         async function loadBookFromFile(file) {
             const ext = file.name.split('.').pop().toLowerCase(); let html = ''; showToast("Завантаження...");
-            try { if(ext==='epub') html = await parseEpub(file); else if(ext==='fb2') html = await parseFb2(file); else if(ext==='pdf') html = await parsePdf(file); else if(ext==='txt') { const text = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsText(file,'UTF-8'); }); html = text.split('\n').map(l=>l.trim()?`<p>${escapeHtml(l)}</p>`:'<br>').join(''); } else throw new Error("Формат не підтримується");
+            try { 
+                if(ext==='epub') html = await parseEpub(file); 
+                else if(ext==='fb2') html = await parseFb2(file); 
+                else if(ext==='pdf') html = await parsePdf(file); 
+                else if(ext==='txt') { 
+                    const text = await new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsText(file,'UTF-8'); }); 
+                    html = text.split('\n').map(l=>l.trim()?`<p>${escapeHtml(l)}</p>`:'<br>').join(''); 
+                } else throw new Error("Формат не підтримується");
+                
                 if(!html.trim()) html="<p>⚠️ Не вдалося витягнути текст</p>";
-                setDirectionFromBookContent(html);
+                
+                updateSourceLanguageFromContent(html);
                 translationCache.clear();
+                
                 const id = Date.now()+'-'+Math.random().toString(36).substr(2,6);
                 uploadedBooks.unshift({ id, name: file.name, content: html });
                 localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
@@ -490,11 +571,60 @@
                 openBook(id);
             } catch(err) { showToast("Помилка: "+err.message); }
         }
-        function openBook(bookId) { const book = uploadedBooks.find(b=>b.id===bookId); if(!book) return; currentBookId=bookId; allPages=splitHtmlIntoPages(book.content,7); currentPage=0; lastWordPosition=null; lastWordPageIndex=-1; lastWordText=null; render(); localStorage.setItem('reader_current_book', book.content); localStorage.setItem('reader_current_book_id', bookId); showToast(`Відкрито: ${book.name}`); }
-        function loadDefaultBook() { const defaultHtml = `<h2>The Lost Key</h2><p>Sam found a key. It opened a secret garden.</p>`; setDirectionFromBookContent(defaultHtml); allPages = splitHtmlIntoPages(defaultHtml,7); currentPage=0; render(); }
-        function renderBooksList() { if(!booksListUl) return; if(uploadedBooks.length===0){ booksListUl.innerHTML='<li>📭 Немає збережених книг</li>'; return; } booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item"><div style="display:flex; justify-content:space-between;"><span class="book-name" data-id="${book.id}" style="cursor:pointer;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`).join(''); document.querySelectorAll('.open-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); openBook(btn.getAttribute('data-id')); closeSidebar(); })); document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); } renderBooksList(); showToast("Книгу видалено"); })); document.querySelectorAll('.book-name').forEach(name=>name.addEventListener('click',()=>openBook(name.getAttribute('data-id')))); }
-        function loadUploadedBooks() { const saved = localStorage.getItem('reader_books'); if(saved) try { uploadedBooks = JSON.parse(saved); } catch(e){ uploadedBooks=[]; } renderBooksList(); }
-        function loadSavedBook() { const savedId = localStorage.getItem('reader_current_book_id'); if(savedId && uploadedBooks.find(b=>b.id===savedId)) openBook(savedId); else if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); const savedLast=localStorage.getItem('lastWord'); if(savedLast) lastWordText=savedLast; const savedPage=localStorage.getItem('lastWordPage'); if(savedPage) lastWordPageIndex=parseInt(savedPage); const savedPos=localStorage.getItem('lastWordPosition'); if(savedPos) lastWordPosition=parseInt(savedPos); }
+        
+        function openBook(bookId) { 
+            const book = uploadedBooks.find(b=>b.id===bookId); 
+            if(!book) return; 
+            currentBookId=bookId; 
+            allPages=splitHtmlIntoPages(book.content,7); 
+            currentPage=0; 
+            lastWordPosition=null; 
+            lastWordPageIndex=-1; 
+            lastWordText=null; 
+            render(); 
+            localStorage.setItem('reader_current_book', book.content); 
+            localStorage.setItem('reader_current_book_id', bookId); 
+            showToast(`Відкрито: ${book.name}`); 
+        }
+        
+        function loadDefaultBook() { 
+            const defaultHtml = `<h2>The Lost Key</h2><p>Sam found a key. It opened a secret garden.</p>`; 
+            updateSourceLanguageFromContent(defaultHtml); 
+            allPages = splitHtmlIntoPages(defaultHtml,7); 
+            currentPage=0; 
+            render(); 
+        }
+        
+        function renderBooksList() { 
+            if(!booksListUl) return; 
+            if(uploadedBooks.length===0){ 
+                booksListUl.innerHTML='<li>📭 Немає збережених книг</li>'; 
+                return; 
+            } 
+            booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item"><div style="display:flex; justify-content:space-between;"><span class="book-name" data-id="${book.id}" style="cursor:pointer;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`).join(''); 
+            document.querySelectorAll('.open-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); openBook(btn.getAttribute('data-id')); closeSidebar(); })); 
+            document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); } renderBooksList(); showToast("Книгу видалено"); })); 
+            document.querySelectorAll('.book-name').forEach(name=>name.addEventListener('click',()=>openBook(name.getAttribute('data-id')))); 
+        }
+        
+        function loadUploadedBooks() { 
+            const saved = localStorage.getItem('reader_books'); 
+            if(saved) try { uploadedBooks = JSON.parse(saved); } catch(e){ uploadedBooks=[]; } 
+            renderBooksList(); 
+        }
+        
+        function loadSavedBook() { 
+            const savedId = localStorage.getItem('reader_current_book_id'); 
+            if(savedId && uploadedBooks.find(b=>b.id===savedId)) openBook(savedId); 
+            else if(uploadedBooks.length) openBook(uploadedBooks[0].id); 
+            else loadDefaultBook(); 
+            const savedLast=localStorage.getItem('lastWord'); 
+            if(savedLast) lastWordText=savedLast; 
+            const savedPage=localStorage.getItem('lastWordPage'); 
+            if(savedPage) lastWordPageIndex=parseInt(savedPage); 
+            const savedPos=localStorage.getItem('lastWordPosition'); 
+            if(savedPos) lastWordPosition=parseInt(savedPos); 
+        }
         
         // Гра
         function updateGameStatsDisplay() { const learned = Array.from(wordProgress.values()).filter(p=>p.isLearned).length; gameStats.innerHTML = `✅ Правильних: ${gameTotalCorrect} | 📚 Вивчено: ${learned}/${vocabularyHistory.length}`; }
@@ -515,9 +645,8 @@
         function repositionTooltipOnScroll() { if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition(); }
         
         function init() {
-            populateLanguageSelects();
-            sourceLangSelect.addEventListener('change', updateLanguagesFromSelects);
-            targetLangSelect.addEventListener('change', updateLanguagesFromSelects);
+            populateTargetLanguageSelect();
+            targetLangSelect.addEventListener('change', updateTargetLanguage);
             
             loadUploadedBooks(); 
             loadVocabulary(); 
@@ -549,7 +678,6 @@
             increaseFontBtn.addEventListener('click', increaseFont);
             decreaseFontBtn.addEventListener('click', decreaseFont);
             
-            // Завантаження книги через кнопку "Відкрити книгу" в налаштуваннях
             uploadBookSettingsBtn.addEventListener('click', () => { fileInput.click(); });
             fileInput.addEventListener('change', (e) => { 
                 if(e.target.files && e.target.files[0]) loadBookFromFile(e.target.files[0]); 
@@ -568,7 +696,6 @@
             closeSidebarBtn.addEventListener('click', closeSidebar);
             overlay.addEventListener('click', closeSidebar);
             
-            // Перехід по сторінках
             pageJumpBtn.addEventListener('click', () => {
                 let val = parseInt(pageJumpInput.value);
                 if (isNaN(val)) val = 1;
@@ -587,6 +714,8 @@
             document.body.appendChild(tooltip);
             bookPageDiv.addEventListener('scroll', repositionTooltipOnScroll);
             window.addEventListener('resize', repositionTooltipOnScroll);
+            
+            updateLangBadge();
         }
         init();
     })();
