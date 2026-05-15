@@ -102,7 +102,7 @@
         body.dark .settings-panel button { border-color: var(--dark-border); color: #f0f0f0; }
         .select-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
         .select-row label { font-size: 0.85rem; font-weight: 500; }
-        .lang-select { background: var(--light-surface); border: 1px solid var(--light-border); padding: 8px; border-radius: 4px; font-size: 0.85rem; color: var(--light-text); flex: 1; cursor: pointer; }
+        .lang-select { background: var(--light-surface); border: 1px solid var(--light-border); padding: 8px; border-radius: 4px; font-size: 0.85rem; color: var(--light-text); flex: 1; cursor: pointer; max-height: 300px; overflow-y: auto; }
         body.dark .lang-select { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
         .close-settings { float: right; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--light-text); margin-bottom: 12px; }
         body.dark .close-settings { color: #f0f0f0; }
@@ -161,7 +161,7 @@
         <button id="themeToggleBtn"><i class="fas fa-moon"></i> Нічний режим</button>
         <button id="soundToggleBtn"><i class="fas fa-volume-up"></i> Звук читання</button>
         <button id="toggleTranslationBtn"><i class="fas fa-language"></i> Переклад</button>
-        <div style="font-size:0.7rem; margin-top:12px; opacity:0.7;">💡 Мова тексту визначається автоматично</div>
+        <div style="font-size:0.7rem; margin-top:12px; opacity:0.7;">💡 Мова тексту визначається автоматично<br>🔊 Звук читає мовою оригіналу</div>
     </div>
 </div>
 <div id="gameModal" class="game-modal">
@@ -182,7 +182,7 @@
     (function() {
         if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         
-        // РОЗШИРЕНИЙ СПИСОК ПОПУЛЯРНИХ МОВ ПЕРЕКЛАДУ (20 мов)
+        // Розширений список популярних мов перекладу
         const LANGUAGES = [
             { code: "uk", name: "🇺🇦 Українська" },
             { code: "en", name: "🇬🇧 English" },
@@ -220,7 +220,7 @@
         let lastWordText = null, lastWordPageIndex = -1, lastWordPosition = null, uploadedBooks = [];
         let isDarkTheme = false, currentFontSize = 1.0, currentBookId = null, showTranslation = true;
         let targetLang = 'uk'; // Мова перекладу (вибирає користувач)
-        let currentSourceLang = 'en'; // Автоматично визначена мова тексту
+        let currentSourceLang = 'en'; // Автоматично визначена мова тексту (ДЛЯ ЗВУКУ - ВИКОРИСТОВУЄТЬСЯ САМЕ ВОНА)
         let wordProgress = new Map();
         const NEEDED_CORRECT = 3;
         let currentGameWord = null, currentGameTranslation = null, currentGameOptions = [], gameTotalCorrect = 0, waitingForNext = false, autoNextTimeout = null;
@@ -278,12 +278,6 @@
             updateLangBadge();
             // Очищаємо кеш перекладів
             translationCache.clear();
-            // Оновлюємо переклади у словнику
-            for (let item of vocabularyHistory) {
-                if (translationCache.has(item.word.toLowerCase())) {
-                    translationCache.delete(item.word.toLowerCase());
-                }
-            }
             showToast(`🌍 Мова перекладу: ${targetLang.toUpperCase()}`);
             if (gameModal.classList.contains('active')) refreshGame();
         }
@@ -295,7 +289,7 @@
             langBadge.innerHTML = `📖 ${sourceName} → ${targetName}`;
         }
 
-        // Автоматичне визначення мови тексту
+        // Автоматичне визначення мови тексту (для звуку ТІЛЬКИ мова оригіналу)
         function detectLanguage(text) {
             const sample = text.slice(0, 2000);
             const cyrillicPattern = /[а-яіїєґА-ЯІЇЄҐ]/g;
@@ -318,12 +312,13 @@
             const plainText = tempDiv.textContent || tempDiv.innerText || '';
             const detected = detectLanguage(plainText); 
             if (detected !== currentSourceLang) {
-                const oldLang = currentSourceLang;
                 currentSourceLang = detected;
                 updateLangBadge();
                 const langName = currentSourceLang === 'uk' ? 'українська' : 'англійська';
                 showToast(`📖 Мова тексту визначена: ${langName} (${currentSourceLang.toUpperCase()})`);
+                showToast(`🔊 Звук читатиме мовою оригіналу: ${langName}`);
                 
+                // Якщо мова перекладу така сама, змінюємо її на протилежну
                 if (targetLang === currentSourceLang) {
                     targetLang = currentSourceLang === 'uk' ? 'en' : 'uk';
                     targetLangSelect.value = targetLang;
@@ -332,47 +327,54 @@
                 }
                 
                 translationCache.clear();
-                if (oldLang !== currentSourceLang) {
-                    vocabularyHistory = [];
-                    wordProgress.clear();
-                    saveVocabulary();
-                    renderVocabularyList();
-                }
+                vocabularyHistory = [];
+                wordProgress.clear();
+                saveVocabulary();
+                renderVocabularyList();
                 if (gameModal.classList.contains('active')) refreshGame();
             }
         }
 
-        // Функція для відтворення звуку з правильною мовою
+        // Функція для відтворення звуку - завжди використовує мову ОРИГІНАЛУ (currentSourceLang)
         function speakWord(word, isGameSound = false) {
             if ((isGameSound && !gameSoundEnabled) || (!isGameSound && !soundEnabled)) return;
             if (!window.speechSynthesis) return;
             if (currentUtterance) window.speechSynthesis.cancel();
             
+            // Визначаємо мову для озвучування на основі currentSourceLang (мова книги)
+            let speechLang = currentSourceLang;
+            
+            // Якщо слово містить кирилицю, але currentSourceLang чомусь en - примусово ставимо uk
             const hasCyrillic = /[а-яіїєґА-ЯІЇЄҐ]/.test(word);
-            const langToSpeak = hasCyrillic ? 'uk' : currentSourceLang;
+            if (hasCyrillic && currentSourceLang !== 'uk') {
+                speechLang = 'uk';
+            } else if (!hasCyrillic && currentSourceLang !== 'en') {
+                speechLang = 'en';
+            }
             
             const utter = new SpeechSynthesisUtterance(word);
-            if (langToSpeak === 'uk') utter.lang = 'uk-UA';
-            else if (langToSpeak === 'de') utter.lang = 'de-DE';
-            else if (langToSpeak === 'fr') utter.lang = 'fr-FR';
-            else if (langToSpeak === 'es') utter.lang = 'es-ES';
-            else if (langToSpeak === 'pl') utter.lang = 'pl-PL';
-            else if (langToSpeak === 'it') utter.lang = 'it-IT';
-            else if (langToSpeak === 'pt') utter.lang = 'pt-PT';
-            else if (langToSpeak === 'nl') utter.lang = 'nl-NL';
-            else if (langToSpeak === 'sv') utter.lang = 'sv-SE';
-            else if (langToSpeak === 'da') utter.lang = 'da-DK';
-            else if (langToSpeak === 'no') utter.lang = 'no-NO';
-            else if (langToSpeak === 'fi') utter.lang = 'fi-FI';
-            else if (langToSpeak === 'cs') utter.lang = 'cs-CZ';
-            else if (langToSpeak === 'hu') utter.lang = 'hu-HU';
-            else if (langToSpeak === 'ro') utter.lang = 'ro-RO';
-            else if (langToSpeak === 'tr') utter.lang = 'tr-TR';
-            else if (langToSpeak === 'ja') utter.lang = 'ja-JP';
-            else if (langToSpeak === 'ko') utter.lang = 'ko-KR';
-            else if (langToSpeak === 'zh') utter.lang = 'zh-CN';
-            else utter.lang = 'en-US';
-            
+            switch(speechLang) {
+                case 'uk': utter.lang = 'uk-UA'; break;
+                case 'de': utter.lang = 'de-DE'; break;
+                case 'fr': utter.lang = 'fr-FR'; break;
+                case 'es': utter.lang = 'es-ES'; break;
+                case 'pl': utter.lang = 'pl-PL'; break;
+                case 'it': utter.lang = 'it-IT'; break;
+                case 'pt': utter.lang = 'pt-PT'; break;
+                case 'nl': utter.lang = 'nl-NL'; break;
+                case 'sv': utter.lang = 'sv-SE'; break;
+                case 'da': utter.lang = 'da-DK'; break;
+                case 'no': utter.lang = 'no-NO'; break;
+                case 'fi': utter.lang = 'fi-FI'; break;
+                case 'cs': utter.lang = 'cs-CZ'; break;
+                case 'hu': utter.lang = 'hu-HU'; break;
+                case 'ro': utter.lang = 'ro-RO'; break;
+                case 'tr': utter.lang = 'tr-TR'; break;
+                case 'ja': utter.lang = 'ja-JP'; break;
+                case 'ko': utter.lang = 'ko-KR'; break;
+                case 'zh': utter.lang = 'zh-CN'; break;
+                default: utter.lang = 'en-US';
+            }
             utter.rate = 0.9;
             window.speechSynthesis.speak(utter);
             currentUtterance = utter;
@@ -667,7 +669,6 @@
             const savedTheme = localStorage.getItem('darkTheme'); 
             if(savedTheme === 'true') setTheme(true); else setTheme(false);
             
-            // Кнопки
             soundToggleBtn.addEventListener('click', toggleSound);
             clearVocabBtn.addEventListener('click', clearVocabulary);
             toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
