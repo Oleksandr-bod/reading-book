@@ -108,7 +108,7 @@
         body.dark .close-settings { color: #f0f0f0; }
         .game-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
         .game-modal.active { visibility: visible; opacity: 1; }
-        .game-card { background: var(--light-surface); width: 90%; max-width: 500px; padding: 24px; border-radius: 8px; text-align: center; color: var(--light-text); }
+        .game-card { background: var(--light-surface); width: 90%; max-width: 550px; padding: 24px; border-radius: 12px; text-align: center; color: var(--light-text); box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         body.dark .game-card { background: var(--dark-surface); color: var(--dark-text); }
         .game-card button { margin: 4px; }
         .word-tooltip { position: fixed; background: #2c2c2c; color: #fff; padding: 8px 16px; border-radius: 4px; font-size: 0.9rem; z-index: 2100; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
@@ -117,12 +117,30 @@
         .toast-message { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 16px; border-radius: 4px; z-index: 2200; font-size: 0.8rem; }
         .lang-badge { position: fixed; bottom: 20px; right: 20px; background: var(--light-accent); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 500; z-index: 100; opacity: 0.8; pointer-events: none; }
         body.dark .lang-badge { background: var(--dark-accent); color: #121212; }
-        .option-btn { padding: 8px 16px; margin: 4px; cursor: pointer; border: 1px solid var(--light-border); background: var(--light-surface); border-radius: 4px; transition: 0.2s; }
+        .option-btn { padding: 12px 20px; margin: 8px; cursor: pointer; border: 2px solid var(--light-border); background: var(--light-surface); border-radius: 8px; transition: all 0.2s ease; font-size: 1rem; font-weight: 500; min-width: 120px; color: var(--light-text); }
         body.dark .option-btn { background: var(--dark-surface); color: var(--dark-text); border-color: var(--dark-border); }
-        .option-btn:hover:not(:disabled) { background: var(--light-accent); color: white; }
+        .option-btn:hover:not(:disabled) { background: var(--light-accent); color: white; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         body.dark .option-btn:hover:not(:disabled) { background: var(--dark-accent); color: #121212; }
-        .option-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        @media (max-width: 800px) { .main-container { padding: 12px; } .book-page { padding: 1rem; } .toolbar-buttons .tool-btn span { display: none; } .toolbar-buttons .tool-btn i { margin: 0; } .pagination-bar { gap: 8px; } .page-jump-input { width: 55px; } }
+        .option-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .option-btn.correct-answer { background: linear-gradient(135deg, #4caf50, #388e3c) !important; color: white !important; border-color: #2e7d32 !important; }
+        .option-btn.wrong-answer { background: linear-gradient(135deg, #f44336, #d32f2f) !important; color: white !important; border-color: #c62828 !important; }
+        body.dark .option-btn.correct-answer { background: linear-gradient(135deg, #2e7d32, #1b5e20) !important; color: #ffffff !important; }
+        body.dark .option-btn.wrong-answer { background: linear-gradient(135deg, #c62828, #b71c1c) !important; color: #ffffff !important; }
+        #gameWordText { font-size: 1.8rem; font-weight: bold; word-break: break-word; margin: 20px 0; transition: font-size 0.2s ease; }
+        @media (max-width: 600px) {
+            .option-btn { padding: 10px 16px !important; font-size: 0.9rem !important; min-width: 100px; margin: 6px !important; }
+            #gameWordText { font-size: 1.3rem !important; }
+            .game-card { width: 95%; padding: 16px; }
+            .book-page { padding: 1rem; }
+            .toolbar-buttons .tool-btn span { display: none; }
+            .toolbar-buttons .tool-btn i { margin: 0; }
+            .pagination-bar { gap: 8px; }
+            .page-jump-input { width: 55px; }
+        }
+        @media (max-width: 480px) {
+            .option-btn { padding: 8px 12px !important; font-size: 0.85rem !important; min-width: 80px; }
+            #gameWordText { font-size: 1.2rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -174,7 +192,7 @@
     <div class="game-card">
         <button id="closeGameBtn" style="float:right; background:none; border:none; font-size:1.2rem; cursor:pointer;">✕</button>
         <h3>🎮 Гра: переклад слова</h3>
-        <div style="margin: 20px 0; font-size: 1.8rem; font-weight: bold;" id="gameWordText">---</div>
+        <div style="margin: 20px 0;" id="gameWordText">---</div>
         <div id="gameOptionsContainer" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
         <div id="gameStatus" style="margin: 10px;"></div>
         <div id="gameStats" style="font-size:0.8rem;"></div>
@@ -529,29 +547,23 @@
             const allWords = Array.from(document.querySelectorAll('#bookPage .word'));
             const wordIndex = allWords.indexOf(span);
             
-            // Відтворюємо звук
             if (soundEnabled) speakWord(word, false);
             
-            // Отримуємо переклад (завжди, але показуємо залежно від налаштування)
             showTooltip(span, `⏳ Переклад...`, false);
             let translation = await fetchTranslation(word);
             if (translation.includes("❓")) translation = `❓ (немає перекладу)`;
             
-            // Додаємо в словник
             addOrUpdateWord(word, translation);
             
-            // Показуємо переклад тільки якщо showTranslation true
             if (showTranslation) {
                 showTooltip(span, translation, true);
             } else {
                 showTooltip(span, `🔇 Переклад вимкнено`, true);
             }
             
-            // Підсвічуємо слово
             span.classList.add('word-highlight');
             setTimeout(() => span.classList.remove('word-highlight'), 600);
             
-            // Зберігаємо останнє слово
             lastWordText = word; 
             lastWordPageIndex = currentPage; 
             lastWordPosition = wordIndex;
@@ -580,7 +592,21 @@
         function nextPage() { if(currentPage+1 < allPages.length) { currentPage++; render(); hideTooltip(); } else showToast("Остання сторінка"); }
         function prevPage() { if(currentPage-1 >= 0) { currentPage--; render(); hideTooltip(); } else showToast("Перша сторінка"); }
         
-        function updateFontSize() { const container = document.querySelector('.book-page'); if(container) container.style.fontSize = currentFontSize + 'rem'; localStorage.setItem('readerFontSize', currentFontSize); }
+        function updateFontSize() { 
+            const container = document.querySelector('.book-page'); 
+            if(container) container.style.fontSize = currentFontSize + 'rem'; 
+            localStorage.setItem('readerFontSize', currentFontSize);
+            syncGameFontSize();
+        }
+        
+        function syncGameFontSize() {
+            const gameWord = document.getElementById('gameWordText');
+            if (gameWord) {
+                const scale = Math.min(1.5, Math.max(0.8, currentFontSize / 1.0));
+                gameWord.style.fontSize = `${1.8 * scale}rem`;
+            }
+        }
+        
         function increaseFont() { if(currentFontSize < 2.2) { currentFontSize += 0.1; updateFontSize(); } else showToast("Максимальний шрифт"); }
         function decreaseFont() { if(currentFontSize > 0.7) { currentFontSize -= 0.1; updateFontSize(); } else showToast("Мінімальний шрифт"); }
         
@@ -844,89 +870,225 @@
         }
         
         function updateGameStatsDisplay() { const learned = Array.from(wordProgress.values()).filter(p=>p.isLearned).length; gameStats.innerHTML = `✅ Правильних: ${gameTotalCorrect} | 📚 Вивчено: ${learned}/${vocabularyHistory.length}`; }
-        function getWordsNeedingPractice() { return vocabularyHistory.filter(item => { const p = wordProgress.get(item.word); return !p || !p.isLearned; }); }
-        function getRandomWordFromVocabulary() { const needs = getWordsNeedingPractice(); if(!needs.length) return null; const valid = needs.filter(i=>i.translation && !i.translation.includes("❓") && i.translation.trim()); if(!valid.length) return null; return valid[Math.floor(Math.random()*valid.length)]; }
-        function generateOptions(correct, trans) { let opts = [trans]; const others = vocabularyHistory.filter(i=>i.word!==correct && i.translation && !i.translation.includes("❓") && i.translation!==trans); const shuffled = [...others]; for(let i=shuffled.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; } for(let i=0;i<Math.min(3,shuffled.length);i++) opts.push(shuffled[i].translation); while(opts.length<4) opts.push("(новий переклад)"); for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; } return opts.slice(0,4); }
-        function enableGameButtons(enabled) { document.querySelectorAll('.option-btn').forEach(btn=>{ if(enabled) btn.disabled=false; else btn.disabled=true; }); }
-        function updateProgressInfo() { if(currentGameWord){ const p=wordProgress.get(currentGameWord); if(p?.isLearned) gameProgressInfo.innerHTML = `✅ "${currentGameWord}" вивчено!`; else gameProgressInfo.innerHTML = `📈 Прогрес: ${p?.consecutiveCorrect||0}/${NEEDED_CORRECT}`; } else gameProgressInfo.innerHTML=''; }
-        function loadNewGameWord() { 
-            if(autoNextTimeout) clearTimeout(autoNextTimeout); 
-            const needs=getWordsNeedingPractice(); 
-            if(needs.length===0){ 
-                gameWordText.innerText="🎉 ВІТАЄМО!"; 
-                gameOptionsContainer.innerHTML='<div>Ви вивчили всі слова!</div>'; 
-                gameStatus.innerText="Чудово!"; 
-                speakGameWordBtn.style.display='none'; 
-                waitingForNext=false; 
-                return; 
-            } 
-            const wordItem=getRandomWordFromVocabulary(); 
-            if(!wordItem) return; 
-            currentGameWord=wordItem.word; 
-            currentGameTranslation=wordItem.translation; 
-            currentGameOptions=generateOptions(currentGameWord, currentGameTranslation); 
-            gameWordText.innerText=currentGameWord; 
-            speakGameWordBtn.style.display='inline-flex'; 
-            gameOptionsContainer.innerHTML=''; 
-            currentGameOptions.forEach(opt=>{ 
-                const btn=document.createElement('button'); 
-                btn.className='option-btn'; 
-                btn.style.padding='8px 16px'; 
-                btn.style.margin='4px'; 
-                btn.style.cursor='pointer'; 
-                btn.innerText=opt; 
-                btn.addEventListener('click',()=>handleGameAnswer(btn,opt)); 
-                gameOptionsContainer.appendChild(btn); 
+        
+        function getWordsNeedingPractice() { 
+            return vocabularyHistory.filter(item => { 
+                const p = wordProgress.get(item.word); 
+                return !p || !p.isLearned; 
             }); 
-            gameStatus.innerText="Оберіть переклад!"; 
-            waitingForNext=false; 
-            enableGameButtons(true); 
-            updateProgressInfo(); 
-            if(gameSoundEnabled && currentGameWord) setTimeout(()=>speakWord(currentGameWord,true),300); 
         }
+        
+        function getRandomWordFromVocabulary() { 
+            const needs = getWordsNeedingPractice(); 
+            if(!needs.length) return null; 
+            const valid = needs.filter(i=>i.translation && !i.translation.includes("❓") && i.translation.trim()); 
+            if(!valid.length) return null; 
+            return valid[Math.floor(Math.random()*valid.length)]; 
+        }
+        
+        function generateOptions(correct, trans) {
+            let opts = [trans];
+            const others = vocabularyHistory.filter(i => 
+                i.word !== correct && 
+                i.translation && 
+                !i.translation.includes("❓") && 
+                i.translation !== trans &&
+                i.translation.trim() !== ""
+            );
+            
+            const uniqueOthers = [];
+            for (let item of others) {
+                if (!uniqueOthers.includes(item.translation)) {
+                    uniqueOthers.push(item.translation);
+                }
+            }
+            
+            const shuffled = [...uniqueOthers];
+            for(let i = shuffled.length-1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i+1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            
+            for(let i = 0; i < Math.min(3, shuffled.length); i++) {
+                opts.push(shuffled[i]);
+            }
+            
+            while(opts.length < 4) {
+                opts.push("(новий варіант)");
+            }
+            
+            for(let i = opts.length-1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i+1));
+                [opts[i], opts[j]] = [opts[j], opts[i]];
+            }
+            
+            return opts.slice(0,4);
+        }
+        
+        function enableGameButtons(enabled) { 
+            document.querySelectorAll('.option-btn').forEach(btn => { 
+                if(enabled) btn.disabled = false;
+                else btn.disabled = true;
+            }); 
+        }
+        
+        function updateProgressInfo() { 
+            if(currentGameWord) { 
+                const p = wordProgress.get(currentGameWord); 
+                if(p?.isLearned) gameProgressInfo.innerHTML = `✅ "${currentGameWord}" вивчено!`; 
+                else gameProgressInfo.innerHTML = `📈 Прогрес: ${p?.consecutiveCorrect||0}/${NEEDED_CORRECT}`; 
+            } else gameProgressInfo.innerHTML = ''; 
+        }
+        
         function handleGameAnswer(btn, selected) { 
             if(waitingForNext) return; 
+            
+            waitingForNext = true;
+            enableGameButtons(false);
+            
             const isCorrect = (selected === currentGameTranslation); 
             let progress = wordProgress.get(currentGameWord); 
+            
             if(!progress) { 
-                progress={ consecutiveCorrect:0, isLearned:false }; 
-                wordProgress.set(currentGameWord,progress); 
+                progress = { consecutiveCorrect:0, isLearned:false }; 
+                wordProgress.set(currentGameWord, progress); 
             } 
-            if(isCorrect){ 
+            
+            if(isCorrect) { 
                 progress.consecutiveCorrect++; 
                 gameTotalCorrect++; 
-                if(progress.consecutiveCorrect>=NEEDED_CORRECT){ 
-                    progress.isLearned=true; 
-                    gameStatus.innerText=`✅ ВІДМІННО! Слово вивчено!`; 
+                
+                if(progress.consecutiveCorrect >= NEEDED_CORRECT) { 
+                    progress.isLearned = true; 
+                    gameStatus.innerText = `✅ ВІДМІННО! Слово вивчено!`; 
                     showToast(`🎉 Слово "${currentGameWord}" вивчено!`); 
-                } else gameStatus.innerText=`✅ Правильно! Залишилось ${NEEDED_CORRECT-progress.consecutiveCorrect}`; 
-                btn.style.background='#4caf50'; 
+                } else {
+                    gameStatus.innerText = `✅ Правильно! Залишилось ${NEEDED_CORRECT - progress.consecutiveCorrect}`; 
+                }
+                
+                btn.classList.add('correct-answer');
+                
+                if(gameSoundEnabled) {
+                    setTimeout(() => speakWord(currentGameWord, true), 500);
+                }
             } else { 
-                progress.consecutiveCorrect=0; 
-                gameStatus.innerText=`❌ Помилка! Правильно: "${currentGameTranslation}"`; 
-                btn.style.background='#f44336'; 
-                document.querySelectorAll('.option-btn').forEach(el=>{ 
-                    if(el.innerText===currentGameTranslation) el.style.background='#4caf50'; 
+                progress.consecutiveCorrect = 0; 
+                gameStatus.innerText = `❌ Помилка! Правильно: "${currentGameTranslation}"`; 
+                
+                btn.classList.add('wrong-answer');
+                
+                document.querySelectorAll('.option-btn').forEach(el => { 
+                    if(el.innerText === currentGameTranslation) {
+                        el.classList.add('correct-answer');
+                    }
                 }); 
             } 
+            
             updateGameStatsDisplay(); 
             saveVocabulary(); 
-            waitingForNext=true; 
-            enableGameButtons(false); 
-            autoNextTimeout=setTimeout(()=>loadNewGameWord(),2000); 
+            
+            if(autoNextTimeout) clearTimeout(autoNextTimeout);
+            autoNextTimeout = setTimeout(() => loadNewGameWord(), 2000); 
         }
+        
+        function loadNewGameWord() { 
+            if(autoNextTimeout) clearTimeout(autoNextTimeout); 
+            
+            const needs = getWordsNeedingPractice(); 
+            if(needs.length === 0) { 
+                gameWordText.innerText = "🎉 ВІТАЄМО!"; 
+                gameOptionsContainer.innerHTML = '<div style="text-align:center; padding:20px;">✨ Ви вивчили всі слова! ✨<br><button id="gameRestartBtn" class="tool-btn" style="margin-top:15px;">🔄 Почати заново</button></div>'; 
+                gameStatus.innerText = "Чудова робота!"; 
+                speakGameWordBtn.style.display = 'none'; 
+                waitingForNext = false;
+                
+                const restartBtn = document.getElementById('gameRestartBtn');
+                if(restartBtn) restartBtn.addEventListener('click', () => refreshGame());
+                return; 
+            } 
+            
+            const wordItem = getRandomWordFromVocabulary(); 
+            if(!wordItem) return; 
+            
+            currentGameWord = wordItem.word; 
+            currentGameTranslation = wordItem.translation; 
+            currentGameOptions = generateOptions(currentGameWord, currentGameTranslation); 
+            
+            const maxLength = 30;
+            let displayWord = currentGameWord;
+            if (displayWord.length > maxLength) {
+                displayWord = displayWord.substring(0, maxLength) + '...';
+            }
+            gameWordText.innerText = displayWord;
+            
+            if (currentGameWord.length > maxLength) {
+                gameWordText.title = currentGameWord;
+            }
+            
+            speakGameWordBtn.style.display = 'inline-flex'; 
+            
+            gameOptionsContainer.innerHTML = ''; 
+            currentGameOptions.forEach(opt => { 
+                const btn = document.createElement('button'); 
+                btn.className = 'option-btn'; 
+                
+                let displayOpt = opt;
+                if (opt.length > 40) {
+                    displayOpt = opt.substring(0, 37) + '...';
+                    btn.title = opt;
+                }
+                
+                btn.innerText = displayOpt; 
+                btn.addEventListener('click', () => handleGameAnswer(btn, opt)); 
+                gameOptionsContainer.appendChild(btn); 
+            }); 
+            
+            gameStatus.innerText = "Оберіть переклад!"; 
+            waitingForNext = false; 
+            enableGameButtons(true);
+            updateProgressInfo(); 
+            
+            if(gameSoundEnabled && currentGameWord) {
+                setTimeout(() => speakWord(currentGameWord, true), 300);
+            }
+        }
+        
         function refreshGame() { 
             if(autoNextTimeout) clearTimeout(autoNextTimeout); 
             wordProgress.clear(); 
-            for(let item of vocabularyHistory) wordProgress.set(item.word,{ consecutiveCorrect:0, isLearned:false }); 
-            gameTotalCorrect=0; 
+            for(let item of vocabularyHistory) {
+                wordProgress.set(item.word, { consecutiveCorrect: 0, isLearned: false });
+            }
+            gameTotalCorrect = 0; 
             saveVocabulary(); 
             updateGameStatsDisplay(); 
             loadNewGameWord(); 
             showToast("Прогрес гри скинуто!"); 
         }
-        function showGameModal() { if(autoNextTimeout) clearTimeout(autoNextTimeout); updateGameStatsDisplay(); loadNewGameWord(); gameModal.classList.add('active'); }
-        function hideGameModal() { if(autoNextTimeout) clearTimeout(autoNextTimeout); gameModal.classList.remove('active'); }
+        
+        function showGameModal() { 
+            if(autoNextTimeout) clearTimeout(autoNextTimeout); 
+            
+            if(vocabularyHistory.length === 0) {
+                gameWordText.innerText = "📚 Немає слів!";
+                gameOptionsContainer.innerHTML = '<div style="text-align:center; padding:20px;">Спочатку додайте слова в словник, натискаючи на них під час читання.</div>';
+                gameStatus.innerText = "Додайте слова для гри";
+                speakGameWordBtn.style.display = 'none';
+                waitingForNext = false;
+                gameModal.classList.add('active');
+                return;
+            }
+            
+            updateGameStatsDisplay(); 
+            loadNewGameWord(); 
+            gameModal.classList.add('active'); 
+        }
+        
+        function hideGameModal() { 
+            if(autoNextTimeout) clearTimeout(autoNextTimeout); 
+            gameModal.classList.remove('active'); 
+        }
+        
         function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
         function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
         function openSettings() { settingsModal.classList.add('active'); }
@@ -1004,6 +1166,7 @@
             window.addEventListener('resize', repositionTooltipOnScroll);
             
             updateLangBadge();
+            syncGameFontSize();
         }
         init();
     })();
