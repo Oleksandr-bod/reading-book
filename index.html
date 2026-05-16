@@ -127,6 +127,147 @@
         body.dark .option-btn.correct-answer { background: linear-gradient(135deg, #2e7d32, #1b5e20) !important; color: #ffffff !important; }
         body.dark .option-btn.wrong-answer { background: linear-gradient(135deg, #c62828, #b71c1c) !important; color: #ffffff !important; }
         #gameWordText { font-size: 1.8rem; font-weight: bold; word-break: break-word; margin: 20px 0; transition: font-size 0.2s ease; }
+        
+        /* Стилі для онбордингу */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .onboarding-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .onboarding-card {
+            background: var(--light-surface);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+        body.dark .onboarding-card {
+            background: var(--dark-surface);
+            color: var(--dark-text);
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .onboarding-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .onboarding-card h2 i {
+            margin-right: 10px;
+        }
+        .onboarding-steps {
+            text-align: left;
+            margin: 25px 0;
+        }
+        .onboarding-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 12px;
+            background: var(--light-accent-soft);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        body.dark .onboarding-step {
+            background: var(--dark-accent-soft);
+        }
+        .onboarding-step:hover {
+            transform: translateX(5px);
+            background: var(--light-accent);
+            color: white;
+        }
+        body.dark .onboarding-step:hover {
+            background: var(--dark-accent);
+            color: #121212;
+        }
+        .onboarding-step .step-icon {
+            font-size: 2rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        .onboarding-step .step-text {
+            flex: 1;
+        }
+        .onboarding-step .step-text h4 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        .onboarding-step .step-text p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+        .onboarding-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .onboarding-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .onboarding-buttons .btn-primary {
+            background: var(--light-accent);
+            color: white;
+        }
+        body.dark .onboarding-buttons .btn-primary {
+            background: var(--dark-accent);
+            color: #121212;
+        }
+        .onboarding-buttons .btn-primary:hover {
+            transform: scale(1.02);
+            filter: brightness(0.95);
+        }
+        .onboarding-buttons .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--light-border);
+            color: var(--light-text);
+        }
+        body.dark .onboarding-buttons .btn-secondary {
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        .demo-highlight {
+            animation: pulse 1.5s infinite;
+            position: relative;
+            z-index: 3001;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(63, 81, 181, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(63, 81, 181, 0); }
+        }
+        
         @media (max-width: 600px) {
             .option-btn { padding: 10px 16px !important; font-size: 0.9rem !important; min-width: 100px; margin: 6px !important; }
             #gameWordText { font-size: 1.3rem !important; }
@@ -136,10 +277,48 @@
             .toolbar-buttons .tool-btn i { margin: 0; }
             .pagination-bar { gap: 8px; }
             .page-jump-input { width: 55px; }
+            .onboarding-step { padding: 8px; }
+            .onboarding-step .step-icon { font-size: 1.5rem; min-width: 40px; }
+            .onboarding-step .step-text h4 { font-size: 0.95rem; }
+            .onboarding-step .step-text p { font-size: 0.75rem; }
         }
         @media (max-width: 480px) {
             .option-btn { padding: 8px 12px !important; font-size: 0.85rem !important; min-width: 80px; }
             #gameWordText { font-size: 1.2rem !important; }
+        }
+        
+        /* Порожній стан */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+        .empty-state .upload-btn {
+            background: var(--light-accent);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        body.dark .empty-state .upload-btn {
+            background: var(--dark-accent);
+            color: #121212;
         }
     </style>
 </head>
@@ -151,12 +330,20 @@
         <button id="gameLaunchBtn" class="tool-btn"><i class="fas fa-gamepad"></i><span> Гра</span></button>
         <button id="sidebarBtn" class="tool-btn"><i class="fas fa-book"></i><span> Словник</span></button>
         <button id="settingsBtn" class="tool-btn"><i class="fas fa-cog"></i><span> Налаштування</span></button>
+        <button id="helpBtn" class="tool-btn"><i class="fas fa-question-circle"></i><span> Допомога</span></button>
     </div>
 </div>
 <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt" style="display:none">
 <div class="main-container">
     <div class="reading-area">
-        <div id="bookPage" class="book-page"></div>
+        <div id="bookPage" class="book-page">
+            <div class="empty-state">
+                <i class="fas fa-book-open"></i>
+                <h3>📘 Ваша бібліотека порожня</h3>
+                <p>Завантажте книгу, щоб почати читати та вивчати нові слова</p>
+                <button id="emptyUploadBtn" class="upload-btn"><i class="fas fa-upload"></i> Завантажити книгу</button>
+            </div>
+        </div>
         <div class="pagination-bar">
             <button id="prevPageBtn"><i class="fas fa-chevron-left"></i></button>
             <span id="pageIndicator" class="page-indicator">Стор. 0 / 0</span>
@@ -170,15 +357,15 @@
 <div id="sidebar" class="sidebar">
     <div class="sidebar-header"><h3><i class="fas fa-graduation-cap"></i> Мій словник</h3><button id="closeSidebarBtn" class="icon-btn"><i class="fas fa-times"></i></button></div>
     <div style="display: flex; gap: 8px; margin-bottom: 12px;"><button id="clearVocabBtn" class="tool-btn" style="padding: 6px 12px;">Очистити</button><button id="toggleAllWordsBtn" class="tool-btn" style="padding: 6px 12px;">Всі слова</button></div>
-    <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово</li></ul>
+    <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово під час читання, щоб додати його в словник</li></ul>
     <div style="margin-top: 24px;"><h3><i class="fas fa-layer-group"></i> Мої книги</h3><ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul></div>
-    <div style="margin-top: 16px; font-size: 0.7rem; color: var(--light-text-secondary);">Клік на слово → переклад + словник.</div>
+    <div style="margin-top: 16px; font-size: 0.7rem; color: var(--light-text-secondary);">💡 Порада: клік на слово → переклад + додавання в словник</div>
 </div>
 <div id="settingsModal" class="settings-modal">
     <div class="settings-panel">
         <button class="close-settings" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
-        <h3>Налаштування</h3>
-        <button id="uploadBookSettingsBtn" class="tool-btn" style="width:100%; text-align:center;"><i class="fas fa-folder-open"></i> Відкрити книгу</button>
+        <h3>⚙️ Налаштування</h3>
+        <button id="uploadBookSettingsBtn" class="tool-btn" style="width:100%; text-align:center;"><i class="fas fa-folder-open"></i> 📂 Відкрити книгу</button>
         <div class="select-row"><label>🌍 Мова перекладу:</label><select id="targetLangSelect" class="lang-select"></select></div>
         <button id="decreaseFontBtn"><i class="fas fa-minus"></i> Зменшити шрифт</button>
         <button id="increaseFontBtn"><i class="fas fa-plus"></i> Збільшити шрифт</button>
@@ -201,6 +388,48 @@
     </div>
 </div>
 <div id="langBadge" class="lang-badge">📖 en → uk</div>
+
+<!-- Онбординг модальне вікно -->
+<div id="onboardingOverlay" class="onboarding-overlay">
+    <div class="onboarding-card">
+        <h2><i class="fas fa-graduation-cap"></i> Ласкаво просимо!</h2>
+        <p>LinguaReader допоможе вам вивчати мову під час читання</p>
+        <div class="onboarding-steps">
+            <div class="onboarding-step" data-action="upload">
+                <div class="step-icon">📂</div>
+                <div class="step-text">
+                    <h4>1. Завантажте книгу</h4>
+                    <p>Підтримуються EPUB, FB2, PDF, TXT</p>
+                </div>
+            </div>
+            <div class="onboarding-step" data-action="click">
+                <div class="step-icon">👆</div>
+                <div class="step-text">
+                    <h4>2. Клікайте на слова</h4>
+                    <p>Отримуйте переклад та додавайте в словник</p>
+                </div>
+            </div>
+            <div class="onboarding-step" data-action="game">
+                <div class="step-icon">🎮</div>
+                <div class="step-text">
+                    <h4>3. Грайте</h4>
+                    <p>Тренуйте вивчені слова в інтерактивній грі</p>
+                </div>
+            </div>
+            <div class="onboarding-step" data-action="settings">
+                <div class="step-icon">⚙️</div>
+                <div class="step-text">
+                    <h4>4. Налаштовуйте</h4>
+                    <p>Змінюйте тему, шрифт, мову перекладу</p>
+                </div>
+            </div>
+        </div>
+        <div class="onboarding-buttons">
+            <button class="btn-secondary" id="skipOnboardingBtn">Пропустити</button>
+            <button class="btn-primary" id="startOnboardingBtn">Почати!</button>
+        </div>
+    </div>
+</div>
 
 <script>
     (function() {
@@ -263,6 +492,11 @@
         const targetLangSelect = document.getElementById('targetLangSelect');
         const pageJumpInput = document.getElementById('pageJumpInput'), pageJumpBtn = document.getElementById('pageJumpBtn');
         const langBadge = document.getElementById('langBadge');
+        const helpBtn = document.getElementById('helpBtn');
+        const onboardingOverlay = document.getElementById('onboardingOverlay');
+        const skipOnboardingBtn = document.getElementById('skipOnboardingBtn');
+        const startOnboardingBtn = document.getElementById('startOnboardingBtn');
+        const emptyUploadBtn = document.getElementById('emptyUploadBtn');
 
         let tooltip = null, tooltipTimeout = null, currentTooltipWordElement = null;
 
@@ -502,12 +736,27 @@
             return false; 
         }
         
+        function renderEmptyState() {
+            bookPageDiv.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-book-open"></i>
+                    <h3>📘 Ваша бібліотека порожня</h3>
+                    <p>Завантажте книгу, щоб почати читати та вивчати нові слова</p>
+                    <button id="emptyUploadStateBtn" class="upload-btn"><i class="fas fa-upload"></i> Завантажити книгу</button>
+                </div>
+            `;
+            const emptyUploadStateBtn = document.getElementById('emptyUploadStateBtn');
+            if (emptyUploadStateBtn) {
+                emptyUploadStateBtn.addEventListener('click', () => fileInput.click());
+            }
+            pageIndicator.innerText = `Стор. 0 / 0`; 
+            pageJumpInput.max = 0;
+            pageJumpInput.value = 0;
+        }
+        
         function render() { 
             if (!allPages.length) { 
-                bookPageDiv.innerHTML = '<p style="text-align:center;">📘 Немає відкритої книги<br>Завантажте книгу</p>'; 
-                pageIndicator.innerText = `Стор. 0 / 0`; 
-                pageJumpInput.max = 0;
-                pageJumpInput.value = 0;
+                renderEmptyState();
                 return; 
             } 
             bookPageDiv.innerHTML = wrapWordsInHtml(allPages[currentPage]); 
@@ -649,7 +898,7 @@
         function renderVocabularyList() { 
             if(!vocabListUl) return; 
             let items = showAllWords ? vocabularyHistory : (vocabularyHistory.length ? [vocabularyHistory[0]] : []); 
-            if(items.length === 0) { vocabListUl.innerHTML = '<li>📖 Натисніть на слово</li>'; return; } 
+            if(items.length === 0) { vocabListUl.innerHTML = '<li>📖 Натисніть на слово під час читання, щоб додати його в словник</li>'; return; } 
             vocabListUl.innerHTML = items.map((item, idx) => { 
                 const globalIdx = vocabularyHistory.findIndex(v => v.word === item.word); 
                 const progress = wordProgress.get(item.word); 
@@ -846,7 +1095,7 @@
             } 
             booksListUl.innerHTML = uploadedBooks.map(book => `<li class="book-item"><div style="display:flex; justify-content:space-between;"><span class="book-name" data-id="${book.id}" style="cursor:pointer;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`).join(''); 
             document.querySelectorAll('.open-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); openBook(btn.getAttribute('data-id')); closeSidebar(); })); 
-            document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else loadDefaultBook(); } renderBooksList(); showToast("Книгу видалено"); })); 
+            document.querySelectorAll('.delete-book').forEach(btn=>btn.addEventListener('click',(e)=>{ e.stopPropagation(); const id=btn.getAttribute('data-id'); uploadedBooks=uploadedBooks.filter(b=>b.id!==id); localStorage.setItem('reader_books',JSON.stringify(uploadedBooks)); if(currentBookId===id){ if(uploadedBooks.length) openBook(uploadedBooks[0].id); else renderEmptyState(); } renderBooksList(); showToast("Книгу видалено"); })); 
             document.querySelectorAll('.book-name').forEach(name=>name.addEventListener('click',()=>openBook(name.getAttribute('data-id')))); 
         }
         
@@ -860,7 +1109,7 @@
             const savedId = localStorage.getItem('reader_current_book_id'); 
             if(savedId && uploadedBooks.find(b=>b.id===savedId)) openBook(savedId); 
             else if(uploadedBooks.length) openBook(uploadedBooks[0].id); 
-            else loadDefaultBook(); 
+            else renderEmptyState(); 
             const savedLast=localStorage.getItem('lastWord'); 
             if(savedLast) lastWordText=savedLast; 
             const savedPage=localStorage.getItem('lastWordPage'); 
@@ -1095,6 +1344,24 @@
         function closeSettings() { settingsModal.classList.remove('active'); }
         function repositionTooltipOnScroll() { if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition(); }
         
+        // Онбординг функції
+        function showOnboarding() {
+            onboardingOverlay.classList.add('active');
+        }
+        
+        function hideOnboarding() {
+            onboardingOverlay.classList.remove('active');
+            localStorage.setItem('onboardingShown', 'true');
+        }
+        
+        function startOnboardingTour() {
+            hideOnboarding();
+            showToast("💡 Спробуйте завантажити книгу та натисніть на будь-яке слово!");
+            setTimeout(() => {
+                fileInput.click();
+            }, 1000);
+        }
+        
         function init() {
             populateTargetLanguageSelect();
             targetLangSelect.addEventListener('change', updateTargetLanguage);
@@ -1129,6 +1396,9 @@
             decreaseFontBtn.addEventListener('click', decreaseFont);
             
             uploadBookSettingsBtn.addEventListener('click', () => { fileInput.click(); });
+            if (emptyUploadBtn) {
+                emptyUploadBtn.addEventListener('click', () => fileInput.click());
+            }
             fileInput.addEventListener('change', (e) => { 
                 if(e.target.files && e.target.files[0]) loadBookFromFile(e.target.files[0]); 
                 fileInput.value = ''; 
@@ -1159,6 +1429,36 @@
                 }
             });
             
+            // Онбординг події
+            helpBtn.addEventListener('click', showOnboarding);
+            skipOnboardingBtn.addEventListener('click', hideOnboarding);
+            startOnboardingBtn.addEventListener('click', startOnboardingTour);
+            
+            // Кліки по кроках онбордингу
+            document.querySelectorAll('.onboarding-step').forEach(step => {
+                step.addEventListener('click', () => {
+                    const action = step.dataset.action;
+                    hideOnboarding();
+                    if (action === 'upload') {
+                        fileInput.click();
+                    } else if (action === 'game') {
+                        if (vocabularyHistory.length > 0) {
+                            showGameModal();
+                        } else {
+                            showToast("Спочатку додайте слова в словник!");
+                            fileInput.click();
+                        }
+                    } else if (action === 'settings') {
+                        openSettings();
+                    } else if (action === 'click') {
+                        showToast("Завантажте книгу та натисніть на будь-яке слово!");
+                        if (uploadedBooks.length === 0) {
+                            fileInput.click();
+                        }
+                    }
+                });
+            });
+            
             tooltip = document.createElement('div'); 
             tooltip.className = 'word-tooltip hidden'; 
             document.body.appendChild(tooltip);
@@ -1167,6 +1467,12 @@
             
             updateLangBadge();
             syncGameFontSize();
+            
+            // Показуємо онбординг, якщо користувач вперше
+            const onboardingShown = localStorage.getItem('onboardingShown');
+            if (!onboardingShown && uploadedBooks.length === 0) {
+                setTimeout(() => showOnboarding(), 500);
+            }
         }
         init();
     })();
