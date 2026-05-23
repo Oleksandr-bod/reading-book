@@ -57,6 +57,7 @@
         body.dark .pagination-bar button:hover { background: var(--dark-btn-hover); }
         .page-indicator { background: var(--light-surface); padding: 8px 20px; border: 1px solid var(--light-border); font-size: 0.85rem; font-weight: 500; min-width: 120px; text-align: center; color: var(--light-text); }
         body.dark .page-indicator { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
+        .reading-progress { font-size: 0.7rem; text-align: center; margin-top: 5px; opacity: 0.7; }
         .page-jump-input { width: 70px; padding: 8px; border: 1px solid var(--light-border); border-radius: 4px; background: var(--light-surface); color: var(--light-text); text-align: center; font-size: 0.85rem; }
         body.dark .page-jump-input { background: var(--dark-surface); border-color: var(--dark-border); color: #f0f0f0; }
         .page-jump-btn {
@@ -287,7 +288,6 @@
             #gameWordText { font-size: 1.2rem !important; }
         }
         
-        /* Порожній стан */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -351,12 +351,19 @@
             <input type="number" id="pageJumpInput" class="page-jump-input" min="1" value="1" step="1">
             <button id="pageJumpBtn" class="page-jump-btn"><i class="fas fa-location-arrow"></i> Перейти</button>
         </div>
+        <div id="readingProgress" class="reading-progress"></div>
     </div>
 </div>
 <div id="sidebarOverlay" class="sidebar-overlay"></div>
 <div id="sidebar" class="sidebar">
     <div class="sidebar-header"><h3><i class="fas fa-graduation-cap"></i> Мій словник</h3><button id="closeSidebarBtn" class="icon-btn"><i class="fas fa-times"></i></button></div>
-    <div style="display: flex; gap: 8px; margin-bottom: 12px;"><button id="clearVocabBtn" class="tool-btn" style="padding: 6px 12px;">Очистити</button><button id="toggleAllWordsBtn" class="tool-btn" style="padding: 6px 12px;">Всі слова</button></div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+        <button id="clearVocabBtn" class="tool-btn" style="padding: 6px 12px;">Очистити</button>
+        <button id="toggleAllWordsBtn" class="tool-btn" style="padding: 6px 12px;">Всі слова</button>
+        <button id="exportVocabBtn" class="tool-btn" style="padding: 6px 12px;"><i class="fas fa-download"></i> Експорт</button>
+        <button id="importVocabBtn" class="tool-btn" style="padding: 6px 12px;"><i class="fas fa-upload"></i> Імпорт</button>
+        <input type="file" id="importVocabFile" accept=".json" style="display:none">
+    </div>
     <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово під час читання, щоб додати його в словник</li></ul>
     <div style="margin-top: 24px;"><h3><i class="fas fa-layer-group"></i> Мої книги</h3><ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul></div>
     <div style="margin-top: 16px; font-size: 0.7rem; color: var(--light-text-secondary);">💡 Порада: клік на слово → переклад + додавання в словник</div>
@@ -389,7 +396,6 @@
 </div>
 <div id="langBadge" class="lang-badge">📖 en → uk</div>
 
-<!-- Онбординг модальне вікно -->
 <div id="onboardingOverlay" class="onboarding-overlay">
     <div class="onboarding-card">
         <h2><i class="fas fa-graduation-cap"></i> Ласкаво просимо!</h2>
@@ -497,6 +503,10 @@
         const skipOnboardingBtn = document.getElementById('skipOnboardingBtn');
         const startOnboardingBtn = document.getElementById('startOnboardingBtn');
         const emptyUploadBtn = document.getElementById('emptyUploadBtn');
+        const readingProgressDiv = document.getElementById('readingProgress');
+        const exportVocabBtn = document.getElementById('exportVocabBtn');
+        const importVocabBtn = document.getElementById('importVocabBtn');
+        const importVocabFile = document.getElementById('importVocabFile');
 
         let tooltip = null, tooltipTimeout = null, currentTooltipWordElement = null;
 
@@ -556,6 +566,17 @@
             if (ukrSpecific.test(sample) && cyrillicCount > 5) return 'uk';
             return 'en';
         }
+        
+        function autoAdjustTargetLanguage() {
+            if (targetLang === currentSourceLang) {
+                const newTarget = currentSourceLang === 'uk' ? 'en' : 'uk';
+                targetLang = newTarget;
+                targetLangSelect.value = newTarget;
+                updateLangBadge();
+                translationCache.clear();
+                showToast(`🔄 Мова перекладу автоматично змінена на ${newTarget.toUpperCase()}`);
+            }
+        }
 
         function updateSourceLanguageFromContent(htmlContent) { 
             const tempDiv = document.createElement('div');
@@ -568,12 +589,7 @@
                 const langName = currentSourceLang === 'uk' ? 'українська' : 'англійська';
                 showToast(`📖 Мова тексту: ${langName}`);
                 
-                if (targetLang === currentSourceLang) {
-                    targetLang = currentSourceLang === 'uk' ? 'en' : 'uk';
-                    targetLangSelect.value = targetLang;
-                    updateLangBadge();
-                    showToast(`🔄 Мова перекладу змінена на ${targetLang.toUpperCase()}`);
-                }
+                autoAdjustTargetLanguage();
                 
                 translationCache.clear();
                 vocabularyHistory = [];
@@ -736,6 +752,15 @@
             return false; 
         }
         
+        function updateReadingProgress() {
+            if (readingProgressDiv && allPages.length) {
+                const percent = Math.round(((currentPage + 1) / allPages.length) * 100);
+                readingProgressDiv.innerHTML = `📊 Прогрес читання: ${percent}% (стор. ${currentPage+1} з ${allPages.length})`;
+            } else if (readingProgressDiv) {
+                readingProgressDiv.innerHTML = '';
+            }
+        }
+        
         function renderEmptyState() {
             bookPageDiv.innerHTML = `
                 <div class="empty-state">
@@ -752,6 +777,7 @@
             pageIndicator.innerText = `Стор. 0 / 0`; 
             pageJumpInput.max = 0;
             pageJumpInput.value = 0;
+            updateReadingProgress();
         }
         
         function render() { 
@@ -763,6 +789,7 @@
             pageIndicator.innerText = `Стор. ${currentPage+1} / ${allPages.length}`; 
             pageJumpInput.max = allPages.length;
             pageJumpInput.value = currentPage+1;
+            updateReadingProgress();
             attachListeners(); 
             bookPageDiv.scrollTop = 0; 
             if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) setTimeout(() => highlightWordByPosition(lastWordPosition), 200); 
@@ -878,6 +905,59 @@
             const savedProgress = localStorage.getItem('wordProgress'); 
             if(savedProgress) try { const progressObj = JSON.parse(savedProgress); for(let [word, data] of Object.entries(progressObj)) wordProgress.set(word, { consecutiveCorrect: data.consecutiveCorrect || 0, isLearned: data.isLearned || false }); } catch(e){} 
             renderVocabularyList(); 
+        }
+        
+        function exportVocabulary() {
+            if (vocabularyHistory.length === 0) {
+                showToast("Словник порожній, нічого експортувати");
+                return;
+            }
+            const data = {
+                version: "1.0",
+                exportedAt: new Date().toISOString(),
+                vocabulary: vocabularyHistory,
+                progress: Object.fromEntries(wordProgress)
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `linguareader_vocab_${new Date().toISOString().slice(0,19)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(`Експортовано ${vocabularyHistory.length} слів`);
+        }
+        
+        function importVocabulary(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.vocabulary && Array.isArray(data.vocabulary)) {
+                        vocabularyHistory = data.vocabulary;
+                    } else if (data.vocabularyHistory && Array.isArray(data.vocabularyHistory)) {
+                        vocabularyHistory = data.vocabularyHistory;
+                    } else {
+                        throw new Error("Невірний формат файлу");
+                    }
+                    
+                    if (data.progress) {
+                        wordProgress.clear();
+                        for (let [word, prog] of Object.entries(data.progress)) {
+                            wordProgress.set(word, { consecutiveCorrect: prog.consecutiveCorrect || 0, isLearned: prog.isLearned || false });
+                        }
+                    }
+                    
+                    saveVocabulary();
+                    renderVocabularyList();
+                    showToast(`Імпортовано ${vocabularyHistory.length} слів`);
+                    if (gameModal.classList.contains('active')) refreshGame();
+                } catch(err) { 
+                    showToast("Помилка імпорту: невірний формат"); 
+                }
+            };
+            reader.onerror = () => showToast("Помилка читання файлу");
+            reader.readAsText(file);
         }
         
         function addOrUpdateWord(word, translation) { 
@@ -1077,14 +1157,6 @@
             localStorage.setItem('reader_current_book', book.content); 
             localStorage.setItem('reader_current_book_id', bookId); 
             showToast(`Відкрито: ${book.name}`); 
-        }
-        
-        function loadDefaultBook() { 
-            const defaultHtml = `<h2>The Lost Key</h2><p>Sam found a key. It opened a secret garden.</p>`; 
-            updateSourceLanguageFromContent(defaultHtml); 
-            allPages = splitHtmlIntoPages(defaultHtml,7); 
-            currentPage=0; 
-            render(); 
         }
         
         function renderBooksList() { 
@@ -1344,7 +1416,6 @@
         function closeSettings() { settingsModal.classList.remove('active'); }
         function repositionTooltipOnScroll() { if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition(); }
         
-        // Онбординг функції
         function showOnboarding() {
             onboardingOverlay.classList.add('active');
         }
@@ -1429,12 +1500,18 @@
                 }
             });
             
-            // Онбординг події
+            // Експорт/імпорт словника
+            if (exportVocabBtn) exportVocabBtn.addEventListener('click', exportVocabulary);
+            if (importVocabBtn) importVocabBtn.addEventListener('click', () => importVocabFile.click());
+            if (importVocabFile) importVocabFile.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) importVocabulary(e.target.files[0]);
+                e.target.value = '';
+            });
+            
             helpBtn.addEventListener('click', showOnboarding);
             skipOnboardingBtn.addEventListener('click', hideOnboarding);
             startOnboardingBtn.addEventListener('click', startOnboardingTour);
             
-            // Кліки по кроках онбордингу
             document.querySelectorAll('.onboarding-step').forEach(step => {
                 step.addEventListener('click', () => {
                     const action = step.dataset.action;
@@ -1468,7 +1545,6 @@
             updateLangBadge();
             syncGameFontSize();
             
-            // Показуємо онбординг, якщо користувач вперше
             const onboardingShown = localStorage.getItem('onboardingShown');
             if (!onboardingShown && uploadedBooks.length === 0) {
                 setTimeout(() => showOnboarding(), 500);
