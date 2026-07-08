@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ВСІ ВАШІ СТИЛІ... */
         * {
             margin: 0;
             padding: 0;
@@ -315,15 +316,14 @@
             color: var(--dark-text);
         }
 
-        /* ⭐ ВИПРАВЛЕННЯ: СЛОВА БЕЗ БЛАКИТНОГО ⭐ */
+        /* ⭐ СТИЛЬ ДЛЯ СЛІВ - ЩОБ БУЛО ВИДНО ⭐ */
         .word {
             display: inline-block;
             cursor: pointer;
-            border-radius: 2px;
-            padding: 1px 2px;
-            margin: 0 -1px;
-            transition: background-color 0.15s ease;
-            -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin: 0 -2px;
+            transition: all 0.2s ease;
             -webkit-tap-highlight-color: transparent !important;
             user-select: none !important;
             -webkit-user-select: none !important;
@@ -331,25 +331,23 @@
             -ms-user-select: none !important;
             background: transparent !important;
             color: inherit !important;
+            position: relative;
         }
         
-        /* При наведенні - БІЛИЙ фон (не блакитний) */
         .word:hover {
-            background-color: rgba(255, 255, 255, 0.3) !important;
+            background-color: rgba(63, 81, 181, 0.1) !important;
         }
         body.dark .word:hover {
-            background-color: rgba(255, 255, 255, 0.08) !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
         }
         
-        /* При кліку - БІЛИЙ фон (не блакитний) */
         .word:active {
-            background-color: rgba(255, 255, 255, 0.5) !important;
+            background-color: rgba(63, 81, 181, 0.2) !important;
         }
         body.dark .word:active {
             background-color: rgba(255, 255, 255, 0.15) !important;
         }
         
-        /* Запобігаємо виділенню */
         .word::selection {
             background: transparent !important;
             color: inherit !important;
@@ -359,37 +357,108 @@
             color: inherit !important;
         }
 
-        /* ⭐ ПІДКАЗКА - БІЛА ⭐ */
+        /* ⭐ ПІДСВІЧУВАННЯ СЛОВА - СВІТЛА ТЕМА (ЖОВТИЙ) ⭐ */
+        .word-clicked {
+            background-color: #FFD700 !important;
+            color: #1a1a1a !important;
+            border-radius: 4px !important;
+            padding: 2px 8px !important;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6) !important;
+            transform: scale(1.08);
+            font-weight: 700 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* ⭐ ПІДСВІЧУВАННЯ СЛОВА - ТЕМНА ТЕМА (БІЛИЙ ТЕКСТ НА ТЕМНОМУ ФОНІ) ⭐ */
+        body.dark .word-clicked {
+            background-color: #FFC107 !important;
+            color: #ffffff !important;
+            border-radius: 6px !important;
+            padding: 2px 10px !important;
+            box-shadow: 0 0 40px rgba(255, 193, 7, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.2) !important;
+            transform: scale(1.12);
+            font-weight: 700 !important;
+            border: 2px solid rgba(255, 215, 0, 0.5) !important;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+        }
+        
+        /* Анімація пульсації - СВІТЛА ТЕМА */
+        .word-clicked-pulse {
+            animation: clickedPulseLight 1.5s ease;
+        }
+        
+        @keyframes clickedPulseLight {
+            0% { 
+                background-color: #FFD700 !important;
+                transform: scale(1.15);
+                box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+            }
+            50% { 
+                background-color: #FFC107 !important;
+                transform: scale(1.05);
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+            }
+            100% { 
+                background-color: #FFD700 !important;
+                transform: scale(1.08);
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            }
+        }
+        
+        /* Анімація пульсації - ТЕМНА ТЕМА */
+        body.dark .word-clicked-pulse {
+            animation: clickedPulseDark 1.5s ease;
+        }
+        
+        @keyframes clickedPulseDark {
+            0% { 
+                background-color: #FFC107 !important;
+                transform: scale(1.2);
+                box-shadow: 0 0 60px rgba(255, 193, 7, 0.9), inset 0 0 30px rgba(255, 215, 0, 0.3);
+                border-color: rgba(255, 215, 0, 0.8) !important;
+            }
+            50% { 
+                background-color: #FFB300 !important;
+                transform: scale(1.08);
+                box-shadow: 0 0 30px rgba(255, 193, 7, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.1);
+                border-color: rgba(255, 215, 0, 0.3) !important;
+            }
+            100% { 
+                background-color: #FFC107 !important;
+                transform: scale(1.12);
+                box-shadow: 0 0 40px rgba(255, 193, 7, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.2);
+                border-color: rgba(255, 215, 0, 0.5) !important;
+            }
+        }
+
+        /* ⭐ ПІДКАЗКА - ДОБРЕ ВИДНО В ОБОХ ТЕМАХ ⭐ */
         .word-tooltip {
             position: fixed;
-            background: #ffffff !important;
-            color: #1a1a1a !important;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            background: #1a1a1a !important;
+            color: #ffffff !important;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.95rem;
             z-index: 9999;
             pointer-events: none;
             white-space: nowrap;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            border: 1px solid #e0e0e0 !important;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
             transition: opacity 0.15s ease;
             font-family: 'Inter', system-ui, sans-serif;
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
+        
         body.dark .word-tooltip {
-            background: #2c2c2c !important;
+            background: #1a1a1a !important;
             color: #ffffff !important;
-            border: 1px solid #555 !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
         }
+        
         .word-tooltip.hidden {
             display: none !important;
-        }
-
-        /* Запобігаємо будь-якому блакитному підсвічуванню на мобільних */
-        .book-page {
-            -webkit-tap-highlight-color: transparent !important;
-            -webkit-touch-callout: none !important;
         }
 
         .pagination-bar {
@@ -682,6 +751,11 @@
         }
         body.dark .close-settings {
             color: #f0f0f0;
+        }
+
+        .book-page {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
         }
 
         .toast-message {
@@ -1064,6 +1138,7 @@
     </style>
 </head>
 <body>
+    <!-- ВЕСЬ ВАШ HTML КОД... (той самий, що був) -->
     <div class="top-bar">
         <div class="logo-area"><span class="logo">📖</span><span class="site-title">LinguaReader</span></div>
         <div class="toolbar-buttons">
@@ -2234,7 +2309,7 @@
                 });
             }
 
-            // ⭐ ВИПРАВЛЕНИЙ ОБРОБНИК - БЕЗ БЛАКИТНОГО ⭐
+            // ⭐ ВИПРАВЛЕНИЙ ОБРОБНИК КЛІКУ НА СЛОВІ - З ПІДСВІЧУВАННЯМ ⭐
             async function wordClickHandler(e) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -2247,6 +2322,15 @@
                 const span = e.currentTarget;
                 const word = span.innerText.trim();
                 if (!word || !word.match(/[A-Za-zА-ЯІЇЄҐа-яіїєґ]/)) return;
+
+                // ⭐ ПІДСВІЧУЄМО СЛОВО ПРИ КЛІКУ ⭐
+                // Видаляємо попереднє підсвічування
+                document.querySelectorAll('#pageCurrent .word').forEach(w => {
+                    w.classList.remove('word-clicked', 'word-clicked-pulse');
+                });
+                
+                // Додаємо класи для підсвічування
+                span.classList.add('word-clicked', 'word-clicked-pulse');
 
                 const allWords = Array.from(document.querySelectorAll('#pageCurrent .word'));
                 const wordIndex = allWords.indexOf(span);
@@ -2273,17 +2357,77 @@
                 localStorage.setItem('lastWordPosition', wordIndex);
 
                 longPressTranslation = translation;
+                
+                // Знімаємо підсвічування через 3 секунди
+                setTimeout(() => {
+                    span.classList.remove('word-clicked', 'word-clicked-pulse');
+                }, 3000);
             }
 
+            // ⭐ ВИПРАВЛЕНА ФУНКЦІЯ ДЛЯ ПІДСВІЧУВАННЯ СЛОВА ⭐
             function highlightWordByPosition(pos) {
                 const spans = document.querySelectorAll('#pageCurrent .word');
                 if (pos !== null && spans[pos]) {
                     const container = flipCurrent;
+                    
+                    // Видаляємо попередні виділення
+                    document.querySelectorAll('#pageCurrent .word').forEach(w => {
+                        w.classList.remove('word-clicked', 'word-clicked-pulse');
+                    });
+                    
+                    // Прокручуємо до слова
                     const targetTop = spans[pos].offsetTop - container.clientHeight / 2 + 30;
                     container.scrollTop = Math.max(0, targetTop);
+                    
+                    // Додаємо класи для виділення
+                    spans[pos].classList.add('word-clicked', 'word-clicked-pulse');
+                    
+                    // Знімаємо виділення через 3 секунди
+                    setTimeout(() => {
+                        spans[pos].classList.remove('word-clicked', 'word-clicked-pulse');
+                    }, 3000);
+                    
                     return true;
                 }
                 return false;
+            }
+
+            // ⭐ ВИПРАВЛЕНА ФУНКЦІЯ "ОСТАННЄ" ⭐
+            function goToLastWord() {
+                if (!lastWordText) { 
+                    showToast("⚠️ Немає збереженого слова"); 
+                    return; 
+                }
+                
+                if (!allPages.length) { 
+                    showToast("⚠️ Немає книги"); 
+                    return; 
+                }
+                
+                if (currentPage === lastWordPageIndex && lastWordPosition !== null) {
+                    if (highlightWordByPosition(lastWordPosition)) {
+                        showToast(`📍 "${lastWordText}"`);
+                        return;
+                    }
+                }
+                
+                if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) {
+                    currentPage = lastWordPageIndex;
+                    renderPage();
+                    
+                    setTimeout(() => {
+                        if (lastWordPosition !== null) {
+                            const found = highlightWordByPosition(lastWordPosition);
+                            if (found) {
+                                showToast(`📍 "${lastWordText}" (стор. ${currentPage + 1})`);
+                            } else {
+                                showToast(`⚠️ Слово "${lastWordText}" не знайдено на сторінці`);
+                            }
+                        }
+                    }, 400);
+                } else {
+                    showToast(`⚠️ Слово "${lastWordText}" не знайдено`);
+                }
             }
 
             function showTooltip(wordElement, text, autoHide = true) {
@@ -2334,24 +2478,6 @@
             function nextPage() { flipPage('forward'); }
 
             function prevPage() { flipPage('back'); }
-
-            function goToLastWord() {
-                if (!lastWordText) { showToast("⚠️ Немає слова"); return; }
-                if (!allPages.length) { showToast("⚠️ Немає книги"); return; }
-                if (currentPage === lastWordPageIndex && lastWordPosition !== null && highlightWordByPosition(
-                    lastWordPosition)) {
-                    showToast(`📍 "${lastWordText}"`);
-                    return;
-                }
-                if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) {
-                    currentPage = lastWordPageIndex;
-                    renderPage();
-                    setTimeout(() => {
-                        if (lastWordPosition !== null) highlightWordByPosition(lastWordPosition);
-                        showToast(`📍 "${lastWordText}"`);
-                    }, 400);
-                } else showToast(`⚠️ Слово не знайдено`);
-            }
 
             function updateFontSize() {
                 const container = document.querySelector('#pageCurrent');
@@ -2713,7 +2839,10 @@
                 soundToggleBtn.addEventListener('click', toggleSound);
                 clearVocabBtn.addEventListener('click', clearVocabulary);
                 toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
+                
+                // ⭐ ПРИВ'ЯЗУЄМО КНОПКУ "ОСТАННЄ" ⭐
                 lastWordTopBtn.addEventListener('click', goToLastWord);
+                
                 prevBtn.addEventListener('click', prevPage);
                 nextBtn.addEventListener('click', nextPage);
                 themeToggleBtn.addEventListener('click', toggleTheme);
