@@ -165,7 +165,6 @@
             color: var(--dark-text);
         }
 
-        /* Flipbook контейнери - ТУТ ДОДАНО overflow-y: auto */
         .flip-container {
             position: absolute;
             top: 0;
@@ -177,7 +176,7 @@
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
-            touch-action: pan-y; /* Дозволяємо вертикальний скрол */
+            touch-action: pan-y;
         }
         .flip-container.current {
             z-index: 2;
@@ -195,7 +194,6 @@
             pointer-events: none;
         }
 
-        /* Стилі для скролбару (як у FBReader - тонка смужка) */
         .flip-container::-webkit-scrollbar {
             width: 4px;
             height: 4px;
@@ -225,6 +223,10 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             min-height: 100%;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
         body.dark .page-content {
             background: var(--dark-surface);
@@ -235,7 +237,6 @@
             text-indent: 0;
         }
 
-        /* Ефект перегортання сторінки */
         .flipping {
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
         }
@@ -243,7 +244,6 @@
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
         }
 
-        /* Тінь сторінки при перегортанні */
         .page-shadow {
             position: absolute;
             top: 0;
@@ -271,7 +271,6 @@
             background: linear-gradient(to right, rgba(0,0,0,0.3), transparent);
         }
 
-        /* Зони для тапу - тепер вони НЕ заважають скролу */
         .tap-zones {
             position: absolute;
             top: 0;
@@ -316,27 +315,81 @@
             color: var(--dark-text);
         }
 
+        /* ⭐ ВИПРАВЛЕННЯ: СЛОВА БЕЗ БЛАКИТНОГО ⭐ */
         .word {
             display: inline-block;
             cursor: pointer;
             border-radius: 2px;
             padding: 1px 2px;
             margin: 0 -1px;
-            transition: all 0.2s ease;
+            transition: background-color 0.15s ease;
+            -webkit-tap-highlight-color: rgba(255,255,255,0) !important;
+            -webkit-tap-highlight-color: transparent !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            background: transparent !important;
+            color: inherit !important;
         }
+        
+        /* При наведенні - БІЛИЙ фон (не блакитний) */
         .word:hover {
-            background-color: var(--light-accent-soft);
+            background-color: rgba(255, 255, 255, 0.3) !important;
         }
         body.dark .word:hover {
-            background-color: var(--dark-accent-soft);
+            background-color: rgba(255, 255, 255, 0.08) !important;
         }
-        .word-highlight {
-            background-color: var(--light-accent) !important;
-            color: white !important;
+        
+        /* При кліку - БІЛИЙ фон (не блакитний) */
+        .word:active {
+            background-color: rgba(255, 255, 255, 0.5) !important;
         }
-        body.dark .word-highlight {
-            background-color: var(--dark-accent) !important;
-            color: #121212 !important;
+        body.dark .word:active {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+        }
+        
+        /* Запобігаємо виділенню */
+        .word::selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+        .word::-moz-selection {
+            background: transparent !important;
+            color: inherit !important;
+        }
+
+        /* ⭐ ПІДКАЗКА - БІЛА ⭐ */
+        .word-tooltip {
+            position: fixed;
+            background: #ffffff !important;
+            color: #1a1a1a !important;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            z-index: 9999;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e0e0e0 !important;
+            transition: opacity 0.15s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 500;
+        }
+        body.dark .word-tooltip {
+            background: #2c2c2c !important;
+            color: #ffffff !important;
+            border: 1px solid #555 !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .word-tooltip.hidden {
+            display: none !important;
+        }
+
+        /* Запобігаємо будь-якому блакитному підсвічуванню на мобільних */
+        .book-page {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
         }
 
         .pagination-bar {
@@ -630,26 +683,7 @@
         body.dark .close-settings {
             color: #f0f0f0;
         }
-        .word-tooltip {
-            position: fixed;
-            background: #2c2c2c;
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            z-index: 2100;
-            pointer-events: none;
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-        body.dark .word-tooltip {
-            background: #3c3c3c;
-            color: #ffffff;
-            border: 1px solid #5a5a5a;
-        }
-        .word-tooltip.hidden {
-            display: none;
-        }
+
         .toast-message {
             position: fixed;
             bottom: 20px;
@@ -680,6 +714,133 @@
         body.dark .lang-badge {
             background: var(--dark-accent);
             color: #121212;
+        }
+
+        .mini-translate-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .mini-translate-modal.active {
+            display: flex;
+        }
+        .mini-translate-box {
+            background: var(--light-surface);
+            border-radius: 12px;
+            max-width: 360px;
+            width: 92%;
+            padding: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.25s ease;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        body.dark .mini-translate-box {
+            background: var(--dark-surface);
+            color: var(--dark-text);
+            border: 1px solid var(--dark-border);
+        }
+        .mini-translate-box .close-translate {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--light-text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        body.dark .mini-translate-box .close-translate {
+            color: var(--dark-text-secondary);
+        }
+        .mini-translate-box .close-translate:hover {
+            background: var(--light-btn-hover);
+        }
+        body.dark .mini-translate-box .close-translate:hover {
+            background: var(--dark-btn-hover);
+        }
+        .mini-translate-box .word-display {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--light-accent);
+            padding-right: 30px;
+        }
+        body.dark .mini-translate-box .word-display {
+            color: var(--dark-accent);
+        }
+        .mini-translate-box .translation-display {
+            font-size: 1.1rem;
+            margin: 8px 0 12px 0;
+            padding: 8px 12px;
+            background: var(--light-accent-soft);
+            border-radius: 6px;
+        }
+        body.dark .mini-translate-box .translation-display {
+            background: var(--dark-accent-soft);
+        }
+        .mini-translate-box .lang-info {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-bottom: 10px;
+        }
+        .mini-translate-box .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .mini-translate-box .action-buttons button {
+            padding: 4px 12px;
+            border: 1px solid var(--light-border);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: var(--light-text);
+            transition: all 0.2s ease;
+        }
+        body.dark .mini-translate-box .action-buttons button {
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        .mini-translate-box .action-buttons button:hover {
+            background: var(--light-btn-hover);
+        }
+        body.dark .mini-translate-box .action-buttons button:hover {
+            background: var(--dark-btn-hover);
+        }
+        .mini-translate-box .action-buttons .btn-google {
+            background: #4285f4;
+            color: white;
+            border: none;
+        }
+        .mini-translate-box .action-buttons .btn-google:hover {
+            background: #3367d6;
+            color: white;
+        }
+        body.dark .mini-translate-box .action-buttons .btn-google {
+            background: #5a8de4;
+            color: #121212;
+        }
+        body.dark .mini-translate-box .action-buttons .btn-google:hover {
+            background: #7aa3f0;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .onboarding-overlay {
@@ -716,10 +877,6 @@
         body.dark .onboarding-card {
             background: var(--dark-surface);
             color: var(--dark-text);
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .onboarding-card h2 {
             margin-bottom: 16px;
@@ -848,7 +1005,6 @@
             color: #121212;
         }
 
-        /* Підказка про скрол */
         .scroll-hint {
             position: absolute;
             bottom: 8px;
@@ -889,6 +1045,9 @@
             .site-title { font-size: 0.8rem; }
             .tap-zone-left, .tap-zone-right { flex: 0 0 20%; }
             .tap-zone-center { flex: 0 0 60%; }
+            .mini-translate-box { max-width: 95%; padding: 16px; }
+            .mini-translate-box .word-display { font-size: 1.1rem; }
+            .mini-translate-box .translation-display { font-size: 1rem; }
         }
         @media (max-width:400px) {
             .page-content { padding: 8px 10px; font-size: 0.9rem; line-height: 1.5; }
@@ -900,6 +1059,7 @@
             .page-jump-btn { height: 24px; font-size: 0.6rem; padding: 2px 6px; }
             .tap-zone-left, .tap-zone-right { flex: 0 0 15%; }
             .tap-zone-center { flex: 0 0 70%; }
+            .mini-translate-box { padding: 14px; }
         }
     </style>
 </head>
@@ -917,7 +1077,6 @@
     <div class="main-container">
         <div class="reading-area">
             <div id="bookPage" class="book-page">
-                <!-- Flip контейнери -->
                 <div id="flipCurrent" class="flip-container current">
                     <div id="pageCurrent" class="page-content">
                         <div class="empty-state">
@@ -938,7 +1097,6 @@
                     <div id="pagePrev" class="page-content"></div>
                 </div>
 
-                <!-- Зони для тапу -->
                 <div class="tap-zones" id="tapZones">
                     <div class="tap-zone tap-zone-left" id="tapLeft">
                         <span class="tap-icon">‹</span>
@@ -959,6 +1117,21 @@
             <div id="readingProgress" class="reading-progress"></div>
         </div>
     </div>
+
+    <div id="miniTranslateModal" class="mini-translate-modal">
+        <div class="mini-translate-box">
+            <button class="close-translate" id="closeTranslateBtn">&times;</button>
+            <div class="word-display" id="translateWordDisplay">word</div>
+            <div class="lang-info" id="translateLangInfo">en → uk</div>
+            <div class="translation-display" id="translateTranslationDisplay">переклад...</div>
+            <div class="action-buttons">
+                <button id="translateGoogleBtn"><i class="fab fa-google"></i> Google</button>
+                <button id="translateCopyBtn"><i class="fas fa-copy"></i> Копіювати</button>
+                <button id="translateSpeakBtn"><i class="fas fa-volume-up"></i> Озвучити</button>
+            </div>
+        </div>
+    </div>
+
     <div id="sidebarOverlay" class="sidebar-overlay"></div>
     <div id="sidebar" class="sidebar">
         <div class="sidebar-header"><h3><i class="fas fa-graduation-cap"></i> Словник</h3><button id="closeSidebarBtn" class="icon-btn"><i class="fas fa-times"></i></button></div>
@@ -1091,7 +1264,9 @@
             let targetLang = 'uk',
                 currentSourceLang = 'en';
 
-            // Змінні для свайпу
+            let longPressWord = null;
+            let longPressTranslation = null;
+
             let touchStartX = 0,
                 touchStartY = 0,
                 touchStartTime = 0;
@@ -1103,8 +1278,11 @@
             const SWIPE_THRESHOLD = 30;
             const SWIPE_MAX_TIME = 500;
             const FLIP_DURATION = 400;
+            const LONG_PRESS_DURATION = 600;
 
-            // DOM елементи
+            let longPressTimer = null;
+            let isLongPress = false;
+
             const bookPageDiv = document.getElementById('bookPage');
             const flipCurrent = document.getElementById('flipCurrent');
             const pageCurrent = document.getElementById('pageCurrent');
@@ -1156,6 +1334,15 @@
             const tapRight = document.getElementById('tapRight');
             const tapCenter = document.getElementById('tapCenter');
 
+            const miniTranslateModal = document.getElementById('miniTranslateModal');
+            const closeTranslateBtn = document.getElementById('closeTranslateBtn');
+            const translateWordDisplay = document.getElementById('translateWordDisplay');
+            const translateTranslationDisplay = document.getElementById('translateTranslationDisplay');
+            const translateLangInfo = document.getElementById('translateLangInfo');
+            const translateGoogleBtn = document.getElementById('translateGoogleBtn');
+            const translateCopyBtn = document.getElementById('translateCopyBtn');
+            const translateSpeakBtn = document.getElementById('translateSpeakBtn');
+
             let tooltip = null,
                 tooltipTimeout = null,
                 currentTooltipWordElement = null;
@@ -1171,7 +1358,6 @@
             function escapeHtml(str) { return (str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' :
                     '&gt;'); }
 
-            // ========== Показ/приховування підказки про скрол ==========
             let scrollHintTimeout = null;
 
             function showScrollHint(show) {
@@ -1187,7 +1373,6 @@
                 }
             }
 
-            // ========== АНІМАЦІЯ ПЕРЕГОРТАННЯ ==========
             function flipPage(direction) {
                 if (!allPages.length || isAnimating) return;
 
@@ -1215,7 +1400,6 @@
                 const wrappedHtml = wrapWordsInHtml(allPages[targetPage]);
                 targetContent.innerHTML = wrappedHtml;
 
-                // Зберігаємо позицію скролу поточної сторінки
                 const currentScrollTop = currentContainer.scrollTop || 0;
                 currentContainer.scrollTop = 0;
                 targetContainer.scrollTop = 0;
@@ -1269,7 +1453,6 @@
                     pageNext.innerHTML = '';
                     pagePrev.innerHTML = '';
 
-                    // Скидаємо скрол на початок
                     currentContainer.scrollTop = 0;
 
                     updateUI();
@@ -1283,7 +1466,6 @@
                 }, FLIP_DURATION + 50);
             }
 
-            // ========== ПЕРЕВІРКА ЧИ ПОТРІБЕН СКРОЛ ==========
             function checkScrollNeeded() {
                 setTimeout(() => {
                     if (!flipCurrent) return;
@@ -1296,11 +1478,45 @@
                 }, 150);
             }
 
-            // ========== ОБРОБКА ДОТИКІВ ДЛЯ СВАЙПУ І СКРОЛУ ==========
+            function showMiniTranslate(word, translation) {
+                translateWordDisplay.textContent = word;
+                translateTranslationDisplay.textContent = translation;
+                const sourceName = currentSourceLang === 'uk' ? 'Українська' : currentSourceLang.toUpperCase();
+                const targetName = targetLang === 'uk' ? 'Українська' : targetLang.toUpperCase();
+                translateLangInfo.textContent = `${sourceName} → ${targetName}`;
+                longPressWord = word;
+                longPressTranslation = translation;
+                miniTranslateModal.classList.add('active');
+            }
+
+            function hideMiniTranslate() {
+                miniTranslateModal.classList.remove('active');
+            }
+
+            function openGoogleTranslate(word) {
+                const url =
+                    `https://translate.google.com/?sl=${currentSourceLang}&tl=${targetLang}&text=${encodeURIComponent(word)}&op=translate`;
+                window.open(url, '_blank');
+            }
+
+            function handleLongPress(word) {
+                if (longPressWord === word && longPressTranslation) {
+                    showMiniTranslate(word, longPressTranslation);
+                    return;
+                }
+                fetchTranslation(word).then(translation => {
+                    longPressTranslation = translation;
+                    showMiniTranslate(word, translation);
+                });
+            }
+
             function setupTouchHandling() {
                 const element = bookPageDiv;
 
-                // Для дотиків - визначаємо напрямок
+                element.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                });
+
                 element.addEventListener('touchstart', (e) => {
                     const touch = e.touches[0];
                     touchStartX = touch.clientX;
@@ -1310,6 +1526,22 @@
                     isVerticalScroll = false;
                     swipeStartX = touch.clientX;
                     swipeStartY = touch.clientY;
+
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (target && target.closest('.word')) {
+                        isLongPress = false;
+                        longPressTimer = setTimeout(() => {
+                            isLongPress = true;
+                            const wordSpan = target.closest('.word');
+                            if (wordSpan) {
+                                const word = wordSpan.innerText.trim();
+                                if (word) {
+                                    handleLongPress(word);
+                                }
+                            }
+                            longPressTimer = null;
+                        }, LONG_PRESS_DURATION);
+                    }
                 }, { passive: true });
 
                 element.addEventListener('touchmove', (e) => {
@@ -1318,34 +1550,47 @@
                     const deltaX = touch.clientX - touchStartX;
                     const deltaY = touch.clientY - touchStartY;
 
-                    // Визначаємо напрямок руху
                     const absX = Math.abs(deltaX);
                     const absY = Math.abs(deltaY);
 
-                    // Якщо вертикальний рух значно більший - це скрол
                     if (absY > 15 && absY > absX * 1.2) {
                         isVerticalScroll = true;
-                        // Дозволяємо нативний скрол
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
                         return;
                     }
 
-                    // Якщо горизонтальний рух більший - це свайп для гортання
                     if (absX > 10 && absX > absY * 1.2) {
                         isSwiping = true;
                         e.preventDefault();
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
                     }
                 }, { passive: false });
 
                 element.addEventListener('touchend', (e) => {
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+
+                    if (isLongPress) {
+                        isLongPress = false;
+                        touchStartX = 0;
+                        return;
+                    }
+
                     if (touchStartX === 0) return;
 
-                    // Якщо це був вертикальний скрол - нічого не робимо
                     if (isVerticalScroll) {
                         touchStartX = 0;
                         return;
                     }
 
-                    // Якщо це був горизонтальний свайп - гортаємо
                     if (isSwiping) {
                         const touch = e.changedTouches[0];
                         const deltaX = touch.clientX - touchStartX;
@@ -1363,17 +1608,26 @@
                         return;
                     }
 
-                    // Якщо не було свайпу - це тап
                     if (!isSwiping && !isVerticalScroll) {
                         const touch = e.changedTouches[0];
-                        // Перевіряємо чи це був клік на слово (обробляється окремо)
-                        // Якщо ні - обробляємо як тап для гортання
                         const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
                         if (target && target.closest('.word')) {
-                            // Клік на слово - обробляється окремим обробником
+                            const wordSpan = target.closest('.word');
+                            if (wordSpan) {
+                                const clickEvent = new MouseEvent('click', {
+                                    view: window,
+                                    bubbles: true,
+                                    cancelable: true,
+                                    clientX: touch.clientX,
+                                    clientY: touch.clientY
+                                });
+                                wordSpan.dispatchEvent(clickEvent);
+                            }
                             touchStartX = 0;
                             return;
                         }
+
                         handleTap(touch.clientX, touch.clientY);
                     }
 
@@ -1381,12 +1635,12 @@
                     isSwiping = false;
                 }, { passive: true });
 
-                // Миша
                 let mouseDownX = 0,
                     mouseDownTime = 0,
                     isMouseDown = false;
                 let mouseDownY = 0,
                     isMouseScroll = false;
+                let mouseDownTarget = null;
 
                 element.addEventListener('mousedown', (e) => {
                     if (e.button === 0) {
@@ -1395,6 +1649,22 @@
                         mouseDownTime = Date.now();
                         isMouseDown = true;
                         isMouseScroll = false;
+                        mouseDownTarget = document.elementFromPoint(e.clientX, e.clientY);
+
+                        if (mouseDownTarget && mouseDownTarget.closest('.word')) {
+                            isLongPress = false;
+                            longPressTimer = setTimeout(() => {
+                                isLongPress = true;
+                                const wordSpan = mouseDownTarget.closest('.word');
+                                if (wordSpan) {
+                                    const word = wordSpan.innerText.trim();
+                                    if (word) {
+                                        handleLongPress(word);
+                                    }
+                                }
+                                longPressTimer = null;
+                            }, LONG_PRESS_DURATION);
+                        }
                     }
                 });
 
@@ -1405,23 +1675,48 @@
                         if (Math.abs(deltaY) > 20 && Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
                             isMouseScroll = true;
                         }
+                        if (longPressTimer && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
                     }
                 });
 
                 element.addEventListener('mouseup', (e) => {
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+
+                    if (isLongPress) {
+                        isLongPress = false;
+                        isMouseDown = false;
+                        return;
+                    }
+
                     if (isMouseDown && e.button === 0) {
                         const deltaX = e.clientX - mouseDownX;
                         const deltaTime = Date.now() - mouseDownTime;
 
-                        // Якщо це скрол - ігноруємо
                         if (isMouseScroll) {
                             isMouseDown = false;
                             return;
                         }
 
-                        // Перевіряємо чи клік на слово
                         const target = document.elementFromPoint(e.clientX, e.clientY);
+
                         if (target && target.closest('.word')) {
+                            const wordSpan = target.closest('.word');
+                            if (wordSpan) {
+                                const clickEvent = new MouseEvent('click', {
+                                    view: window,
+                                    bubbles: true,
+                                    cancelable: true,
+                                    clientX: e.clientX,
+                                    clientY: e.clientY
+                                });
+                                wordSpan.dispatchEvent(clickEvent);
+                            }
                             isMouseDown = false;
                             return;
                         }
@@ -1433,23 +1728,25 @@
                                 flipPage('back');
                             }
                         } else if (Math.abs(deltaX) < 10) {
-                            // Тап
                             handleTap(e.clientX, e.clientY);
                         }
                         isMouseDown = false;
                     }
                 });
 
-                element.addEventListener('mouseleave', () => { isMouseDown = false; });
+                element.addEventListener('mouseleave', () => {
+                    if (longPressTimer) {
+                        clearTimeout(longPressTimer);
+                        longPressTimer = null;
+                    }
+                    isMouseDown = false;
+                });
 
-                // Колесо миші
                 element.addEventListener('wheel', (e) => {
-                    // Якщо є вертикальний скрол - дозволяємо
                     if (flipCurrent && flipCurrent.scrollHeight > flipCurrent.clientHeight) {
                         showScrollHint(true);
                         return;
                     }
-                    // Немає скролу - гортаємо
                     if (Math.abs(e.deltaY) > 20) {
                         e.preventDefault();
                         if (e.deltaY > 0) {
@@ -1473,7 +1770,6 @@
                 }
             }
 
-            // ========== РОЗБИТТЯ СТОРІНОК ==========
             function splitIntoPagesLikeFBReader(html) {
                 const cleanDiv = document.createElement('div');
                 cleanDiv.innerHTML = html;
@@ -1490,7 +1786,6 @@
 
                 if (viewHeight < 50) return ['<p>📱 Зачекайте...</p>'];
 
-                // Робимо сторінки трохи меншими, щоб текст міг вміститися з запасом
                 const charsPerPage = estimateCharsPerPage(viewHeight * 0.85, containerWidth);
 
                 const pages = [];
@@ -1568,7 +1863,6 @@
                 return height;
             }
 
-            // ========== ОНОВЛЕННЯ ==========
             function recalculatePages(showToastMsg = false) {
                 if (!currentBookId) return;
 
@@ -1604,10 +1898,8 @@
                 const wrappedHtml = wrapWordsInHtml(allPages[currentPage]);
                 pageCurrent.innerHTML = wrappedHtml;
 
-                // Скидаємо скрол
                 flipCurrent.scrollTop = 0;
 
-                // Скидаємо всі контейнери
                 flipCurrent.style.transition = 'none';
                 flipCurrent.style.transform = 'rotateY(0deg)';
                 flipCurrent.style.opacity = '1';
@@ -1737,7 +2029,6 @@
                 return container.innerHTML;
             }
 
-            // ========== ПЕРЕКЛАД ==========
             async function fetchTranslation(word) {
                 const lower = word.toLowerCase();
                 if (translationCache.has(lower)) return translationCache.get(lower);
@@ -1936,7 +2227,6 @@
                 currentUtterance = utter;
             }
 
-            // ========== КЛІК НА СЛОВО ==========
             function attachListeners() {
                 document.querySelectorAll('#pageCurrent .word').forEach(span => {
                     span.removeEventListener('click', wordClickHandler);
@@ -1944,8 +2234,16 @@
                 });
             }
 
+            // ⭐ ВИПРАВЛЕНИЙ ОБРОБНИК - БЕЗ БЛАКИТНОГО ⭐
             async function wordClickHandler(e) {
                 e.stopPropagation();
+                e.preventDefault();
+
+                if (isLongPress) {
+                    isLongPress = false;
+                    return;
+                }
+
                 const span = e.currentTarget;
                 const word = span.innerText.trim();
                 if (!word || !word.match(/[A-Za-zА-ЯІЇЄҐа-яіїєґ]/)) return;
@@ -1967,15 +2265,14 @@
                     showTooltip(span, `🔇 Переклад вимкнено`, true);
                 }
 
-                span.classList.add('word-highlight');
-                setTimeout(() => span.classList.remove('word-highlight'), 600);
-
                 lastWordText = word;
                 lastWordPageIndex = currentPage;
                 lastWordPosition = wordIndex;
                 localStorage.setItem('lastWord', word);
                 localStorage.setItem('lastWordPage', currentPage);
                 localStorage.setItem('lastWordPosition', wordIndex);
+
+                longPressTranslation = translation;
             }
 
             function highlightWordByPosition(pos) {
@@ -1984,9 +2281,6 @@
                     const container = flipCurrent;
                     const targetTop = spans[pos].offsetTop - container.clientHeight / 2 + 30;
                     container.scrollTop = Math.max(0, targetTop);
-
-                    spans[pos].classList.add('word-highlight');
-                    setTimeout(() => spans[pos].classList.remove('word-highlight'), 1500);
                     return true;
                 }
                 return false;
@@ -2025,7 +2319,6 @@
                     tooltipTimeout);
                 currentTooltipWordElement = null; }
 
-            // ========== НАВІГАЦІЯ ==========
             function goToPage(pageNum) {
                 if (!allPages.length) { showToast("Немає книги"); return; }
                 let target = parseInt(pageNum);
@@ -2060,7 +2353,6 @@
                 } else showToast(`⚠️ Слово не знайдено`);
             }
 
-            // ========== ШРИФТ ТА ТЕМА ==========
             function updateFontSize() {
                 const container = document.querySelector('#pageCurrent');
                 if (container) container.style.fontSize = currentFontSize + 'rem';
@@ -2127,7 +2419,6 @@
                 showToast(`🌍 ${targetLang.toUpperCase()}`);
             }
 
-            // ========== ЗАВАНТАЖЕННЯ КНИГ ==========
             async function parseEpub(file) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -2316,7 +2607,6 @@
                 if (savedPos) lastWordPosition = parseInt(savedPos);
             }
 
-            // ========== БОКОВА ПАНЕЛЬ ==========
             function openSidebar() { sidebar.classList.add('open');
                 overlay.classList.add('open'); }
 
@@ -2327,7 +2617,6 @@
 
             function closeSettings() { settingsModal.classList.remove('active'); }
 
-            // ========== ОНБОРДИНГ ==========
             function showOnboarding() { onboardingOverlay.classList.add('active'); }
 
             function hideOnboarding() {
@@ -2341,7 +2630,6 @@
                 setTimeout(() => { fileInput.click(); }, 1000);
             }
 
-            // ========== ІНІЦІАЛІЗАЦІЯ ==========
             function init() {
                 populateTargetLanguageSelect();
                 targetLangSelect.addEventListener('change', updateTargetLanguage);
@@ -2369,10 +2657,44 @@
                 if (savedTheme === 'true') setTheme(true);
                 else setTheme(false);
 
-                // Налаштовуємо обробку дотиків
                 setupTouchHandling();
 
-                // Кнопки гортання
+                closeTranslateBtn.addEventListener('click', hideMiniTranslate);
+                miniTranslateModal.addEventListener('click', (e) => {
+                    if (e.target === miniTranslateModal) hideMiniTranslate();
+                });
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') hideMiniTranslate();
+                });
+
+                translateGoogleBtn.addEventListener('click', () => {
+                    if (longPressWord) {
+                        openGoogleTranslate(longPressWord);
+                    }
+                });
+
+                translateCopyBtn.addEventListener('click', () => {
+                    if (longPressTranslation) {
+                        navigator.clipboard.writeText(longPressTranslation).then(() => {
+                            showToast("📋 Скопійовано!");
+                        }).catch(() => {
+                            const textarea = document.createElement('textarea');
+                            textarea.value = longPressTranslation;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            document.execCommand('copy');
+                            textarea.remove();
+                            showToast("📋 Скопійовано!");
+                        });
+                    }
+                });
+
+                translateSpeakBtn.addEventListener('click', () => {
+                    if (longPressWord) {
+                        speakWord(longPressWord);
+                    }
+                });
+
                 tapLeft.addEventListener('click', (e) => {
                     e.stopPropagation();
                     flipPage('back');
@@ -2388,7 +2710,6 @@
                     }
                 });
 
-                // Кнопки
                 soundToggleBtn.addEventListener('click', toggleSound);
                 clearVocabBtn.addEventListener('click', clearVocabulary);
                 toggleAllWordsBtn.addEventListener('click', toggleShowAllWords);
@@ -2469,10 +2790,13 @@
                     }, 300);
                 });
 
-                // Стежимо за скролом, щоб ховати підказку
                 flipCurrent.addEventListener('scroll', () => {
                     if (flipCurrent.scrollTop > 10) {
                         showScrollHint(false);
+                    }
+
+                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
+                        updateTooltipPosition();
                     }
                 });
 
@@ -2485,6 +2809,7 @@
                         updateTooltipPosition();
                 };
                 window.addEventListener('resize', updatePosition);
+                window.addEventListener('scroll', updatePosition);
 
                 updateLangBadge();
 
