@@ -399,59 +399,66 @@
             color: inherit !important;
         }
 
+        /* ===== ОНОВЛЕНЕ ВИДІЛЕННЯ СЛОВА ===== */
         .word-clicked {
-            background-color: transparent !important;
-            color: inherit !important;
-            border-radius: 0 !important;
-            padding: 2px 4px !important;
-            box-shadow: none !important;
-            transform: none !important;
-            font-weight: inherit !important;
-            border-bottom: 3px solid #3f51b5 !important;
-            transition: border-bottom-color 0.3s ease !important;
+            background-color: rgba(255, 215, 0, 0.35) !important;
+            border-bottom: 5px solid #ff6f00 !important;
+            border-radius: 4px;
+            padding: 2px 6px !important;
+            box-shadow: 0 2px 12px rgba(255, 111, 0, 0.4) !important;
+            transition: all 0.25s ease;
         }
-        
+
         body.dark .word-clicked {
-            border-bottom: 3px solid #7986cb !important;
+            background-color: rgba(255, 215, 0, 0.25) !important;
+            border-bottom: 5px solid #ffab00 !important;
+            box-shadow: 0 2px 12px rgba(255, 171, 0, 0.5) !important;
         }
-        
+
         .word-clicked-pulse {
-            animation: clickedPulseLight 1.5s ease;
+            animation: clickedPulse 1.8s ease 2;
         }
-        
-        @keyframes clickedPulseLight {
-            0% { 
-                border-bottom-color: #1a237e !important;
-                border-bottom-width: 4px;
+
+        @keyframes clickedPulse {
+            0% {
+                border-bottom-width: 6px;
+                border-bottom-color: #e65100;
+                box-shadow: 0 0 20px rgba(255, 111, 0, 0.7);
             }
-            50% { 
-                border-bottom-color: #3f51b5 !important;
-                border-bottom-width: 2px;
-            }
-            100% { 
-                border-bottom-color: #3f51b5 !important;
+            50% {
                 border-bottom-width: 3px;
+                border-bottom-color: #ffab00;
+                box-shadow: 0 0 30px rgba(255, 171, 0, 0.3);
+            }
+            100% {
+                border-bottom-width: 5px;
+                border-bottom-color: #ff6f00;
+                box-shadow: 0 2px 12px rgba(255, 111, 0, 0.4);
             }
         }
-        
+
         body.dark .word-clicked-pulse {
-            animation: clickedPulseDark 1.5s ease;
+            animation: clickedPulseDark 1.8s ease 2;
         }
-        
+
         @keyframes clickedPulseDark {
-            0% { 
-                border-bottom-color: #9fa8da !important;
-                border-bottom-width: 4px;
+            0% {
+                border-bottom-width: 6px;
+                border-bottom-color: #ffca28;
+                box-shadow: 0 0 20px rgba(255, 202, 40, 0.7);
             }
-            50% { 
-                border-bottom-color: #7986cb !important;
-                border-bottom-width: 2px;
-            }
-            100% { 
-                border-bottom-color: #7986cb !important;
+            50% {
                 border-bottom-width: 3px;
+                border-bottom-color: #ffd54f;
+                box-shadow: 0 0 30px rgba(255, 202, 40, 0.3);
+            }
+            100% {
+                border-bottom-width: 5px;
+                border-bottom-color: #ffab00;
+                box-shadow: 0 2px 12px rgba(255, 171, 0, 0.5);
             }
         }
+        /* ===== КІНЕЦЬ ОНОВЛЕННЯ ===== */
 
         .word-tooltip {
             position: fixed;
@@ -1037,7 +1044,7 @@
             color: #121212;
         }
 
-        /* ========== НОВЕ МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ (ЯК НА ФОТО) ========== */
+        /* ========== МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ ========== */
         .mini-translate-modal {
             position: fixed;
             top: 0;
@@ -1056,7 +1063,7 @@
         }
 
         .mini-translate-box {
-            background: #1e1e1e; /* Темний фон як на скріншоті */
+            background: #1e1e1e;
             border-radius: 24px;
             max-width: 400px;
             width: 92%;
@@ -1067,86 +1074,102 @@
             color: #ffffff;
             border: 1px solid rgba(255,255,255,0.1);
             font-family: 'Inter', system-ui, sans-serif;
+            overflow: hidden;
         }
 
-        /* Заголовок слова */
-        .mini-translate-box .word-display {
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: #ffffff;
-            margin-bottom: 4px;
-            padding-right: 30px;
-        }
-
-        /* Мова (наприклад "англійська") */
-        .mini-translate-box .lang-info {
-            font-size: 0.85rem;
-            color: #4285f4; /* Синій колір як на фото */
+        .translate-row {
             margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .lang-label {
+            color: #4285f4;
+            font-size: 0.85rem;
             font-weight: 500;
+            letter-spacing: 0.5px;
         }
 
-        /* Сам переклад */
-        .mini-translate-box .translation-display {
-            font-size: 1.4rem;
+        .text-and-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .translate-text {
+            font-size: 1.5rem;
             font-weight: 400;
             color: #ffffff;
-            margin: 8px 0 20px 0;
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 12px;
+            word-break: break-all;
+            padding-right: 10px;
         }
 
-        /* Кнопки дій */
-        .mini-translate-box .action-buttons {
+        .translate-actions {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
-        .mini-translate-box .action-buttons button {
-            padding: 10px 14px;
-            border-radius: 50px;
-            background: #2d2d2d;
+        .icon-action-btn {
+            background: transparent;
             border: none;
-            color: #e0e0e0;
-            font-size: 0.9rem;
+            color: #4285f4;
+            font-size: 1.2rem;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex: 0 1 auto;
+            justify-content: center;
             -webkit-tap-highlight-color: transparent !important;
             outline: none !important;
         }
-        .mini-translate-box .action-buttons button:hover {
-            background: #3d3d3d;
+        .icon-action-btn:hover {
+            background: rgba(66, 133, 244, 0.15);
         }
-        .mini-translate-box .action-buttons button i {
-            font-size: 1rem;
+        .icon-action-btn:active {
+            transform: scale(0.9);
         }
 
-        /* Кнопка Google (синя) */
-        .mini-translate-box .action-buttons .btn-google {
+        .translate-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 8px 0 16px 0;
+        }
+
+        .bottom-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .blue-action-btn {
             background: #4285f4;
             color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
-        .mini-translate-box .action-buttons .btn-google:hover {
+        .blue-action-btn:hover {
             background: #3367d6;
         }
-
-        /* Кнопка "В словник" (синя) */
-        .mini-translate-box .action-buttons .btn-add-dict {
-            background: #4285f4;
-            color: #ffffff;
-        }
-        .mini-translate-box .action-buttons .btn-add-dict:hover {
-            background: #3367d6;
+        .blue-action-btn:active {
+            transform: scale(0.96);
         }
 
-        /* Кнопка закриття (хрестик) */
         .mini-translate-box .close-translate {
             position: absolute;
             top: 16px;
@@ -1409,8 +1432,7 @@
             .tap-zone-left, .tap-zone-right { flex: 0 0 20%; }
             .tap-zone-center { flex: 0 0 60%; }
             .mini-translate-box { max-width: 95%; padding: 16px; }
-            .mini-translate-box .word-display { font-size: 1.1rem; }
-            .mini-translate-box .translation-display { font-size: 1rem; }
+            .translate-text { font-size: 1.2rem; }
             .settings-panel { width: 95%; padding: 16px; }
             .settings-section { padding: 10px 12px; }
             .settings-row button { min-width: 60px; font-size: 0.75rem; }
@@ -1430,6 +1452,8 @@
             .tap-zone-left, .tap-zone-right { flex: 0 0 15%; }
             .tap-zone-center { flex: 0 0 70%; }
             .mini-translate-box { padding: 14px; }
+            .icon-action-btn { font-size: 1rem; padding: 6px; }
+            .blue-action-btn { font-size: 0.75rem; padding: 6px 12px; }
         }
         
         button, input, select, textarea, a, div, span, p, h1, h2, h3, h4, h5, h6 {
@@ -1510,21 +1534,38 @@
         </div>
     </div>
 
-    <!-- ========== НОВЕ МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ (ЯК НА ФОТО) ========== -->
+    <!-- ========== МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ ========== -->
     <div id="miniTranslateModal" class="mini-translate-modal">
         <div class="mini-translate-box">
             <button class="close-translate" id="closeTranslateBtn">&times;</button>
             
-            <div class="word-display" id="translateWordDisplay">Google</div>
-            <div class="lang-info" id="translateLangInfo">англійська</div>
-            
-            <div class="translation-display" id="translateTranslationDisplay">Google</div>
-            
-            <div class="action-buttons">
-                <button id="translateSpeakBtn" class="btn-speak"><i class="fas fa-volume-up"></i></button>
-                <button id="translateCopyBtn" class="btn-copy"><i class="fas fa-copy"></i></button>
-                <button id="translateGoogleBtn" class="btn-google"><i class="fab fa-google"></i> Google</button>
-                <button id="translateAddDictBtn" class="btn-add-dict"><i class="fas fa-plus"></i> В словник</button>
+            <div class="translate-row">
+                <div class="lang-label" id="translateLangInfo">англійська</div>
+                <div class="text-and-actions">
+                    <div class="translate-text" id="translateWordDisplay">Grok</div>
+                    <div class="translate-actions">
+                        <button id="translateCopyWordBtn" class="icon-action-btn" title="Копіювати слово"><i class="fas fa-copy"></i></button>
+                        <button id="translateSpeakWordBtn" class="icon-action-btn" title="Прослухати"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="translate-divider"></div>
+
+            <div class="translate-row">
+                <div class="lang-label">українська</div>
+                <div class="text-and-actions">
+                    <div class="translate-text" id="translateTranslationDisplay">Грок</div>
+                    <div class="translate-actions">
+                        <button id="translateCopyTransBtn" class="icon-action-btn" title="Копіювати переклад"><i class="fas fa-copy"></i></button>
+                        <button id="translateSpeakTransBtn" class="icon-action-btn" title="Прослухати"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-actions">
+                <button id="translateAddDictBtn" class="blue-action-btn"><i class="fas fa-plus"></i> В словник</button>
+                <button id="translateGoogleBtn" class="blue-action-btn"><i class="fab fa-google"></i> Google</button>
             </div>
         </div>
     </div>
@@ -1689,9 +1730,8 @@
                 { id: 'settingsBtn', key: 'settings', icon: 'fa-cog', label: 'Налаштування', defaultVisible: true, alwaysVisible: true, group: 'nav' }
             ];
 
-            // ========== НОВА СИСТЕМА ПЕРЕКЛАДУ З ПОСЛІДОВНИМ ПОШУКОМ ==========
+            // ========== СИСТЕМА ПЕРЕКЛАДУ ==========
             
-            // Список джерел перекладу в порядку пріоритету
             const TRANSLATION_SOURCES = [
                 {
                     id: 'google',
@@ -1776,18 +1816,15 @@
                 }
             ];
 
-            // ========== ГОЛОВНА ФУНКЦІЯ ПЕРЕКЛАДУ ==========
             async function fetchTranslation(word) {
                 const lower = word.toLowerCase().trim();
                 if (!lower) return "";
 
-                // 1️⃣ Перевіряємо кеш (збережені переклади)
                 if (translationCache.has(lower)) {
                     console.log(`📦 Кеш: "${word}" → "${translationCache.get(lower)}"`);
                     return translationCache.get(lower);
                 }
 
-                // 2️⃣ Перевіряємо локальний словник
                 const localDict = getLocalDictionary();
                 if (localDict[lower]) {
                     translationCache.set(lower, localDict[lower]);
@@ -1795,7 +1832,6 @@
                     return localDict[lower];
                 }
 
-                // 3️⃣ Перевіряємо, чи слово взагалі потребує перекладу
                 if (isWordInTargetLanguage(word)) {
                     translationCache.set(lower, word);
                     return word;
@@ -1803,18 +1839,14 @@
 
                 console.log(`🔍 Шукаємо переклад для "${word}" (${currentSourceLang} → ${targetLang})...`);
 
-                // 4️⃣ Послідовно пробуємо всі джерела
                 for (const source of TRANSLATION_SOURCES) {
                     try {
                         console.log(`  ⏳ Спроба ${source.priority}: ${source.name}...`);
-                        
                         const translation = await source.fetch(word, currentSourceLang, targetLang);
-                        
                         if (translation && 
                             translation.trim() && 
                             translation.trim().toLowerCase() !== word.toLowerCase() &&
                             translation.length > 0) {
-                            
                             translationCache.set(lower, translation);
                             console.log(`  ✅ ${source.name}: "${word}" → "${translation}"`);
                             return translation;
@@ -1824,13 +1856,11 @@
                     }
                 }
 
-                // 5️⃣ Якщо всі джерела не спрацювали - пробуємо розбити слово на частини
                 if (word.includes(' ')) {
                     console.log(`🔄 Пробуємо перекласти по частинах: "${word}"`);
                     const words = word.split(' ');
                     const translations = [];
                     let allTranslated = true;
-                    
                     for (const w of words) {
                         const trans = await fetchTranslation(w);
                         if (trans && !trans.includes('❓')) {
@@ -1840,7 +1870,6 @@
                             translations.push(w);
                         }
                     }
-                    
                     if (allTranslated && translations.length > 1) {
                         const fullTranslation = translations.join(' ');
                         translationCache.set(lower, fullTranslation);
@@ -1848,7 +1877,6 @@
                     }
                 }
 
-                // 6️⃣ Якщо нічого не допомогло - повертаємо повідомлення
                 const fallback = `❓ (переклад не знайдено)`;
                 translationCache.set(lower, fallback);
                 console.log(`❌ Не вдалося перекласти "${word}"`);
@@ -1987,8 +2015,12 @@
             const translateTranslationDisplay = document.getElementById('translateTranslationDisplay');
             const translateLangInfo = document.getElementById('translateLangInfo');
             const translateGoogleBtn = document.getElementById('translateGoogleBtn');
-            const translateCopyBtn = document.getElementById('translateCopyBtn');
-            const translateSpeakBtn = document.getElementById('translateSpeakBtn');
+            
+            const translateCopyWordBtn = document.getElementById('translateCopyWordBtn');
+            const translateSpeakWordBtn = document.getElementById('translateSpeakWordBtn');
+            const translateCopyTransBtn = document.getElementById('translateCopyTransBtn');
+            const translateSpeakTransBtn = document.getElementById('translateSpeakTransBtn');
+            
             const translateAddDictBtn = document.getElementById('translateAddDictBtn');
 
             const soundToggleBtn = document.getElementById('soundToggleBtn');
@@ -2038,7 +2070,7 @@
                 }
             }
 
-            // ========== ПЕРЕГОРТАННЯ СТОРІНОК ==========
+            // ========== ПЕРЕГОРТАННЯ ==========
 
             function flipPage(direction) {
                 if (!allPages.length || isAnimating) return;
@@ -2151,7 +2183,6 @@
                 translateWordDisplay.textContent = word;
                 translateTranslationDisplay.textContent = translation;
                 
-                // Отримуємо назву мови джерела (як на фото "англійська")
                 const langMap = {
                     'uk': 'українська',
                     'en': 'англійська',
@@ -2928,17 +2959,8 @@
                     showTooltip(span, translation, true);
                     longPressTranslation = translation;
                     
-                    if (translation.includes('❓')) {
-                        setTimeout(() => {
-                            const userTranslation = prompt(`Введіть переклад для "${word}":`);
-                            if (userTranslation && userTranslation.trim()) {
-                                addToLocalDictionary(word, userTranslation.trim());
-                                addOrUpdateWord(word, userTranslation.trim());
-                                showTooltip(span, userTranslation.trim(), true);
-                                showToast(`✅ Додано в словник: "${word}" → "${userTranslation}"`);
-                            }
-                        }, 500);
-                    }
+                    // Вікно з пропозицією ввести переклад вручну – ВИДАЛЕНО!
+                    // Користувач більше не бачить зайвих prompt.
                 }
                 
                 lastWordText = word;
@@ -3479,6 +3501,20 @@
             function hideOnboarding() { onboardingOverlay.classList.remove('active'); localStorage.setItem('onboardingShown', 'true'); }
             function startOnboardingTour() { hideOnboarding(); showToast("💡 Завантажте книгу!"); setTimeout(() => { fileInput.click(); }, 1000); }
 
+            // ========== ФУНКЦІЯ КОПІЮВАННЯ ==========
+            function copyToClipboard(text) {
+                if (!text) return;
+                navigator.clipboard.writeText(text).then(() => showToast("📋 Скопійовано!")).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    textarea.remove();
+                    showToast("📋 Скопійовано!");
+                });
+            }
+
             // ========== ІНІЦІАЛІЗАЦІЯ ==========
 
             function init() {
@@ -3518,20 +3554,6 @@
                 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideMiniTranslate(); });
 
                 translateGoogleBtn.addEventListener('click', () => { if (longPressWord) openGoogleTranslate(longPressWord); });
-                translateCopyBtn.addEventListener('click', () => {
-                    if (longPressTranslation) {
-                        navigator.clipboard.writeText(longPressTranslation).then(() => showToast("📋 Скопійовано!")).catch(() => {
-                            const textarea = document.createElement('textarea');
-                            textarea.value = longPressTranslation;
-                            document.body.appendChild(textarea);
-                            textarea.select();
-                            document.execCommand('copy');
-                            textarea.remove();
-                            showToast("📋 Скопійовано!");
-                        });
-                    }
-                });
-                translateSpeakBtn.addEventListener('click', () => { if (longPressWord) speakWord(longPressWord); });
                 translateAddDictBtn.addEventListener('click', () => {
                     if (longPressWord && longPressTranslation) {
                         addToLocalDictionary(longPressWord, longPressTranslation);
@@ -3539,6 +3561,19 @@
                         showToast(`✅ Додано в словник: "${longPressWord}" → "${longPressTranslation}"`);
                         hideMiniTranslate();
                     }
+                });
+
+                translateCopyWordBtn.addEventListener('click', () => {
+                    if (longPressWord) copyToClipboard(longPressWord);
+                });
+                translateSpeakWordBtn.addEventListener('click', () => {
+                    if (longPressWord) speakWord(longPressWord);
+                });
+                translateCopyTransBtn.addEventListener('click', () => {
+                    if (longPressTranslation) copyToClipboard(longPressTranslation);
+                });
+                translateSpeakTransBtn.addEventListener('click', () => {
+                    if (longPressTranslation) speakWord(longPressTranslation);
                 });
 
                 tapLeft.addEventListener('click', (e) => { e.stopPropagation(); flipPage('back'); });
