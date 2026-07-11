@@ -13,11 +13,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ВСІ ВАШІ СТИЛІ... */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            outline: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
         }
         :root {
             --light-bg: #f5f5f0;
@@ -51,6 +55,7 @@
             flex-direction: column;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark {
             background: var(--dark-bg);
@@ -114,6 +119,8 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
         body.dark .tool-btn {
             color: #f0f0f0;
@@ -125,6 +132,16 @@
         body.dark .tool-btn:hover {
             background: var(--dark-btn-hover);
             color: #ffffff;
+        }
+        .tool-btn:focus, .tool-btn:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .tool-btn.hidden-btn {
+            display: none !important;
+        }
+        .tool-btn.settings-btn {
+            display: inline-flex !important;
         }
         .main-container {
             flex: 1;
@@ -159,6 +176,14 @@
             border-radius: 4px;
             cursor: pointer;
             perspective: 2000px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        .book-page:focus, .book-page:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark .book-page {
             background: var(--dark-surface);
@@ -178,6 +203,8 @@
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
             touch-action: pan-y;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
         .flip-container.current {
             z-index: 2;
@@ -228,6 +255,7 @@
             -webkit-touch-callout: none !important;
             user-select: none !important;
             -webkit-user-select: none !important;
+            outline: none !important;
         }
         body.dark .page-content {
             background: var(--dark-surface);
@@ -281,6 +309,8 @@
             display: flex;
             pointer-events: none;
             z-index: 10;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
         .tap-zone {
             flex: 1;
@@ -291,6 +321,14 @@
             justify-content: center;
             opacity: 0;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        .tap-zone:focus, .tap-zone:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .tap-zone-left {
             flex: 0 0 25%;
@@ -316,7 +354,6 @@
             color: var(--dark-text);
         }
 
-        /* ⭐ СТИЛЬ ДЛЯ СЛІВ - ЩОБ БУЛО ВИДНО ⭐ */
         .word {
             display: inline-block;
             cursor: pointer;
@@ -332,6 +369,11 @@
             background: transparent !important;
             color: inherit !important;
             position: relative;
+            outline: none !important;
+        }
+        .word:focus, .word:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         
         .word:hover {
@@ -357,7 +399,6 @@
             color: inherit !important;
         }
 
-        /* ⭐ НОВИЙ СТИЛЬ ПІДСВІЧУВАННЯ - ПІДКРЕСЛЕННЯ ЗАМІСТЬ ЖОВТОГО ФОНУ ТА ОБВОДКИ ⭐ */
         .word-clicked {
             background-color: transparent !important;
             color: inherit !important;
@@ -374,7 +415,6 @@
             border-bottom: 3px solid #7986cb !important;
         }
         
-        /* Анімація пульсації для підкреслення - СВІТЛА ТЕМА */
         .word-clicked-pulse {
             animation: clickedPulseLight 1.5s ease;
         }
@@ -394,7 +434,6 @@
             }
         }
         
-        /* Анімація пульсації для підкреслення - ТЕМНА ТЕМА */
         body.dark .word-clicked-pulse {
             animation: clickedPulseDark 1.5s ease;
         }
@@ -414,7 +453,6 @@
             }
         }
 
-        /* ⭐ ПІДКАЗКА - ДОБРЕ ВИДНО В ОБОХ ТЕМАХ ⭐ */
         .word-tooltip {
             position: fixed;
             background: #1a1a1a !important;
@@ -467,6 +505,12 @@
             align-items: center;
             justify-content: center;
             font-size: 0.85rem;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .pagination-bar button:focus, .pagination-bar button:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark .pagination-bar button {
             background: var(--dark-surface);
@@ -512,6 +556,12 @@
             text-align: center;
             font-size: 0.75rem;
             height: 30px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .page-jump-input:focus, .page-jump-input:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark .page-jump-input {
             background: var(--dark-surface);
@@ -530,6 +580,12 @@
             transition: background 0.2s ease;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             height: 30px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .page-jump-btn:focus, .page-jump-btn:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .page-jump-btn:hover {
             background: #1b5e20 !important;
@@ -629,6 +685,12 @@
             border-radius: 4px;
             color: inherit;
             font-size: 0.8rem;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .icon-btn:focus, .icon-btn:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .icon-btn:hover {
             background: var(--light-btn-hover);
@@ -636,6 +698,8 @@
         body.dark .icon-btn:hover {
             background: var(--dark-btn-hover);
         }
+        
+        /* ========== НАЛАШТУВАННЯ ========== */
         .settings-modal {
             position: fixed;
             top: 0;
@@ -650,6 +714,7 @@
             visibility: hidden;
             opacity: 0;
             transition: 0.2s;
+            backdrop-filter: blur(2px);
         }
         .settings-modal.active {
             visibility: visible;
@@ -657,103 +722,302 @@
         }
         .settings-panel {
             background: var(--light-surface);
-            width: 340px;
+            width: 440px;
             max-width: 95%;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            max-height: 90vh;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+            max-height: 92vh;
             overflow-y: auto;
+            animation: slideUp 0.3s ease;
         }
         body.dark .settings-panel {
             background: var(--dark-surface);
+            border: 1px solid var(--dark-border);
         }
         .settings-panel h3 {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: var(--light-text);
+            font-size: 1.3rem;
         }
         body.dark .settings-panel h3 {
             color: var(--dark-text);
-        }
-        .settings-panel button, .settings-panel .select-row {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .settings-panel button {
-            background: transparent;
-            border: 1px solid var(--light-border);
-            text-align: left;
-            cursor: pointer;
-            color: var(--light-text);
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        body.dark .settings-panel button {
-            border-color: var(--dark-border);
-            color: #f0f0f0;
-        }
-        .select-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-        .select-row label {
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        .lang-select {
-            background: var(--light-surface);
-            border: 1px solid var(--light-border);
-            padding: 6px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            color: var(--light-text);
-            flex: 1;
-            cursor: pointer;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        body.dark .lang-select {
-            background: var(--dark-surface);
-            border-color: var(--dark-border);
-            color: #f0f0f0;
         }
         .close-settings {
             float: right;
             background: none !important;
             border: none !important;
-            font-size: 1.2rem !important;
+            font-size: 1.4rem !important;
             cursor: pointer;
-            color: var(--light-text);
-            margin-bottom: 8px;
-            width: auto !important;
+            color: var(--light-text-secondary);
             padding: 4px 8px !important;
+            width: auto !important;
+            border-radius: 6px !important;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .close-settings:focus, .close-settings:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .close-settings:hover {
+            background: var(--light-btn-hover) !important;
         }
         body.dark .close-settings {
-            color: #f0f0f0;
+            color: var(--dark-text-secondary);
+        }
+        body.dark .close-settings:hover {
+            background: var(--dark-btn-hover) !important;
         }
 
-        .book-page {
+        .settings-section {
+            margin-bottom: 16px;
+            padding: 14px 16px;
+            background: var(--light-accent-soft);
+            border-radius: 10px;
+        }
+        body.dark .settings-section {
+            background: var(--dark-accent-soft);
+        }
+        .settings-section h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--light-text-secondary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        body.dark .settings-section h4 {
+            color: var(--dark-text-secondary);
+        }
+        .settings-section button {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            border: 1px solid var(--light-border);
+            background: var(--light-surface);
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-align: left;
+            color: var(--light-text);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             -webkit-tap-highlight-color: transparent !important;
-            -webkit-touch-callout: none !important;
+            outline: none !important;
+        }
+        .settings-section button:last-child {
+            margin-bottom: 0;
+        }
+        .settings-section button:focus, .settings-section button:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .settings-section button:hover {
+            background: var(--light-btn-hover);
+            transform: translateX(2px);
+        }
+        body.dark .settings-section button {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        body.dark .settings-section button:hover {
+            background: var(--dark-btn-hover);
+        }
+        .settings-section button i {
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .settings-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .settings-row button {
+            flex: 1;
+            min-width: 80px;
+            justify-content: center;
+        }
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        .font-controls button {
+            flex: 0 0 40px;
+            width: 40px;
+            text-align: center;
+            justify-content: center;
+        }
+        .font-controls span {
+            min-width: 32px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .select-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+        }
+        .select-row label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            min-width: 100px;
+            flex-shrink: 0;
+        }
+        .lang-select {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--light-border);
+            background: var(--light-surface);
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: var(--light-text);
+            max-height: 300px;
+            overflow-y: auto;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .lang-select:focus, .lang-select:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        body.dark .lang-select {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
         }
 
-        .toast-message {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 6px 14px;
-            border-radius: 4px;
-            z-index: 2200;
-            font-size: 0.75rem;
-            white-space: nowrap;
+        .toggle-group-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--light-text-secondary);
+            padding: 10px 0 4px 0;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--light-border);
+            margin-bottom: 4px;
         }
+        body.dark .toggle-group-label {
+            color: var(--dark-text-secondary);
+            border-bottom-color: var(--dark-border);
+        }
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: var(--light-surface);
+            border-radius: 6px;
+            border: 1px solid transparent;
+            margin-bottom: 2px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .toggle-wrapper:focus, .toggle-wrapper:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .toggle-wrapper:hover {
+            background: var(--light-btn-hover);
+            border-color: var(--light-border);
+        }
+        body.dark .toggle-wrapper {
+            background: var(--dark-surface);
+        }
+        body.dark .toggle-wrapper:hover {
+            background: var(--dark-btn-hover);
+            border-color: var(--dark-border);
+        }
+        .toggle-wrapper.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .toggle-wrapper.disabled:hover {
+            background: var(--light-surface);
+            border-color: transparent;
+        }
+        body.dark .toggle-wrapper.disabled:hover {
+            background: var(--dark-surface);
+            border-color: transparent;
+        }
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            flex: 1;
+            color: var(--light-text);
+        }
+        body.dark .toggle-label {
+            color: var(--dark-text);
+        }
+        .toggle-label i {
+            width: 20px;
+            text-align: center;
+            color: var(--light-accent);
+            flex-shrink: 0;
+        }
+        body.dark .toggle-label i {
+            color: var(--dark-accent);
+        }
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            flex-shrink: 0;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .toggle-switch:focus, .toggle-switch:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        .toggle-switch.active {
+            background: #3f51b5;
+        }
+        body.dark .toggle-switch {
+            background: #555;
+        }
+        body.dark .toggle-switch.active {
+            background: #7986cb;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+        .toggle-switch.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .toggle-switch.disabled::after {
+            opacity: 0.8;
+        }
+
         .lang-badge {
             position: fixed;
             bottom: 20px;
@@ -773,14 +1037,15 @@
             color: #121212;
         }
 
+        /* ========== НОВЕ МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ (ЯК НА ФОТО) ========== */
         .mini-translate-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 5000;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
@@ -789,114 +1054,123 @@
         .mini-translate-modal.active {
             display: flex;
         }
+
         .mini-translate-box {
-            background: var(--light-surface);
-            border-radius: 12px;
-            max-width: 360px;
+            background: #1e1e1e; /* Темний фон як на скріншоті */
+            border-radius: 24px;
+            max-width: 400px;
             width: 92%;
-            padding: 20px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             animation: slideUp 0.25s ease;
             position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Inter', system-ui, sans-serif;
         }
-        body.dark .mini-translate-box {
-            background: var(--dark-surface);
-            color: var(--dark-text);
-            border: 1px solid var(--dark-border);
-        }
-        .mini-translate-box .close-translate {
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            cursor: pointer;
-            color: var(--light-text-secondary);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        body.dark .mini-translate-box .close-translate {
-            color: var(--dark-text-secondary);
-        }
-        .mini-translate-box .close-translate:hover {
-            background: var(--light-btn-hover);
-        }
-        body.dark .mini-translate-box .close-translate:hover {
-            background: var(--dark-btn-hover);
-        }
+
+        /* Заголовок слова */
         .mini-translate-box .word-display {
-            font-size: 1.3rem;
-            font-weight: 600;
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: #ffffff;
             margin-bottom: 4px;
-            color: var(--light-accent);
             padding-right: 30px;
         }
-        body.dark .mini-translate-box .word-display {
-            color: var(--dark-accent);
-        }
-        .mini-translate-box .translation-display {
-            font-size: 1.1rem;
-            margin: 8px 0 12px 0;
-            padding: 8px 12px;
-            background: var(--light-accent-soft);
-            border-radius: 6px;
-        }
-        body.dark .mini-translate-box .translation-display {
-            background: var(--dark-accent-soft);
-        }
+
+        /* Мова (наприклад "англійська") */
         .mini-translate-box .lang-info {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            color: #4285f4; /* Синій колір як на фото */
+            margin-bottom: 12px;
+            font-weight: 500;
         }
+
+        /* Сам переклад */
+        .mini-translate-box .translation-display {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: #ffffff;
+            margin: 8px 0 20px 0;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+        }
+
+        /* Кнопки дій */
         .mini-translate-box .action-buttons {
             display: flex;
-            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 4px;
+            gap: 10px;
+            justify-content: flex-start;
         }
+
         .mini-translate-box .action-buttons button {
-            padding: 4px 12px;
-            border: 1px solid var(--light-border);
-            border-radius: 4px;
-            background: transparent;
+            padding: 10px 14px;
+            border-radius: 50px;
+            background: #2d2d2d;
+            border: none;
+            color: #e0e0e0;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-size: 0.75rem;
-            color: var(--light-text);
             transition: all 0.2s ease;
-        }
-        body.dark .mini-translate-box .action-buttons button {
-            border-color: var(--dark-border);
-            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 0 1 auto;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
         .mini-translate-box .action-buttons button:hover {
-            background: var(--light-btn-hover);
+            background: #3d3d3d;
         }
-        body.dark .mini-translate-box .action-buttons button:hover {
-            background: var(--dark-btn-hover);
+        .mini-translate-box .action-buttons button i {
+            font-size: 1rem;
         }
+
+        /* Кнопка Google (синя) */
         .mini-translate-box .action-buttons .btn-google {
             background: #4285f4;
-            color: white;
-            border: none;
+            color: #ffffff;
         }
         .mini-translate-box .action-buttons .btn-google:hover {
             background: #3367d6;
-            color: white;
         }
-        body.dark .mini-translate-box .action-buttons .btn-google {
-            background: #5a8de4;
-            color: #121212;
+
+        /* Кнопка "В словник" (синя) */
+        .mini-translate-box .action-buttons .btn-add-dict {
+            background: #4285f4;
+            color: #ffffff;
         }
-        body.dark .mini-translate-box .action-buttons .btn-google:hover {
-            background: #7aa3f0;
+        .mini-translate-box .action-buttons .btn-add-dict:hover {
+            background: #3367d6;
+        }
+
+        /* Кнопка закриття (хрестик) */
+        .mini-translate-box .close-translate {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mini-translate-box .close-translate:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
@@ -956,6 +1230,12 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .onboarding-step:focus, .onboarding-step:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark .onboarding-step {
             background: var(--dark-accent-soft);
@@ -999,6 +1279,12 @@
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .onboarding-buttons button:focus, .onboarding-buttons button:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .onboarding-buttons .btn-primary {
             background: var(--light-accent);
@@ -1056,6 +1342,12 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+        }
+        .empty-state .upload-btn:focus, .empty-state .upload-btn:active {
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         body.dark .empty-state .upload-btn {
             background: var(--dark-accent);
@@ -1085,6 +1377,20 @@
             opacity: 0;
         }
 
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 4px;
+            z-index: 2200;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
         @media (max-width:600px) {
             .page-content { padding: 12px 14px; font-size: 1rem; }
             .top-bar { padding: 4px 8px; min-height: 40px; }
@@ -1105,6 +1411,13 @@
             .mini-translate-box { max-width: 95%; padding: 16px; }
             .mini-translate-box .word-display { font-size: 1.1rem; }
             .mini-translate-box .translation-display { font-size: 1rem; }
+            .settings-panel { width: 95%; padding: 16px; }
+            .settings-section { padding: 10px 12px; }
+            .settings-row button { min-width: 60px; font-size: 0.75rem; }
+            .toggle-label { font-size: 0.75rem; }
+            .toggle-switch { width: 38px; height: 20px; }
+            .toggle-switch::after { width: 16px; height: 16px; top: 2px; left: 2px; }
+            .toggle-switch.active::after { transform: translateX(18px); }
         }
         @media (max-width:400px) {
             .page-content { padding: 8px 10px; font-size: 0.9rem; line-height: 1.5; }
@@ -1118,17 +1431,38 @@
             .tap-zone-center { flex: 0 0 70%; }
             .mini-translate-box { padding: 14px; }
         }
+        
+        button, input, select, textarea, a, div, span, p, h1, h2, h3, h4, h5, h6 {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            outline: none !important;
+        }
+        *:focus {
+            outline: none !important;
+        }
+        ::-moz-focus-inner {
+            border: 0 !important;
+        }
     </style>
 </head>
 <body>
-    <!-- ВЕСЬ ВАШ HTML КОД... (той самий, що був) -->
     <div class="top-bar">
         <div class="logo-area"><span class="logo">📖</span><span class="site-title">LinguaReader</span></div>
-        <div class="toolbar-buttons">
-            <button id="lastWordTopBtn" class="tool-btn"><i class="fas fa-location-dot"></i><span> Останнє</span></button>
-            <button id="sidebarBtn" class="tool-btn"><i class="fas fa-book"></i><span> Словник</span></button>
-            <button id="settingsBtn" class="tool-btn"><i class="fas fa-cog"></i><span> Налаштування</span></button>
-            <button id="helpBtn" class="tool-btn"><i class="fas fa-question-circle"></i></button>
+        <div class="toolbar-buttons" id="toolbarContainer">
+            <button id="lastWordTopBtn" class="tool-btn" data-toolbar-btn="lastWord"><i class="fas fa-location-dot"></i><span> Останнє</span></button>
+            <button id="sidebarBtn" class="tool-btn" data-toolbar-btn="sidebar"><i class="fas fa-book"></i><span> Словник</span></button>
+            <button id="helpBtn" class="tool-btn" data-toolbar-btn="help"><i class="fas fa-question-circle"></i></button>
+            
+            <span class="toolbar-separator" style="width:1px; height:20px; background:var(--light-border); margin:0 2px;"></span>
+            
+            <button id="decreaseFontTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="decreaseFont"><i class="fas fa-minus"></i></button>
+            <button id="increaseFontTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="increaseFont"><i class="fas fa-plus"></i></button>
+            <button id="themeToggleTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="themeToggle"><i class="fas fa-moon"></i></button>
+            <button id="soundToggleTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="soundToggle"><i class="fas fa-volume-up"></i></button>
+            <button id="toggleTranslationTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="toggleTranslation"><i class="fas fa-language"></i><span> UK</span></button>
+            <button id="recalcPagesTopBtn" class="tool-btn hidden-btn" data-toolbar-btn="recalcPages"><i class="fas fa-arrows-rotate"></i></button>
+            
+            <button id="settingsBtn" class="tool-btn settings-btn" data-toolbar-btn="settings"><i class="fas fa-cog"></i><span> Налаштування</span></button>
         </div>
     </div>
     <input type="file" id="uploadBook" accept=".epub,.fb2,.pdf,.txt" style="display:none">
@@ -1176,16 +1510,21 @@
         </div>
     </div>
 
+    <!-- ========== НОВЕ МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ (ЯК НА ФОТО) ========== -->
     <div id="miniTranslateModal" class="mini-translate-modal">
         <div class="mini-translate-box">
             <button class="close-translate" id="closeTranslateBtn">&times;</button>
-            <div class="word-display" id="translateWordDisplay">word</div>
-            <div class="lang-info" id="translateLangInfo">en → uk</div>
-            <div class="translation-display" id="translateTranslationDisplay">переклад...</div>
+            
+            <div class="word-display" id="translateWordDisplay">Google</div>
+            <div class="lang-info" id="translateLangInfo">англійська</div>
+            
+            <div class="translation-display" id="translateTranslationDisplay">Google</div>
+            
             <div class="action-buttons">
-                <button id="translateGoogleBtn"><i class="fab fa-google"></i> Google</button>
-                <button id="translateCopyBtn"><i class="fas fa-copy"></i> Копіювати</button>
-                <button id="translateSpeakBtn"><i class="fas fa-volume-up"></i> Озвучити</button>
+                <button id="translateSpeakBtn" class="btn-speak"><i class="fas fa-volume-up"></i></button>
+                <button id="translateCopyBtn" class="btn-copy"><i class="fas fa-copy"></i></button>
+                <button id="translateGoogleBtn" class="btn-google"><i class="fab fa-google"></i> Google</button>
+                <button id="translateAddDictBtn" class="btn-add-dict"><i class="fas fa-plus"></i> В словник</button>
             </div>
         </div>
     </div>
@@ -1198,25 +1537,58 @@
             <button id="toggleAllWordsBtn" class="tool-btn" style="padding:4px 10px; font-size:0.7rem;">Всі</button>
             <button id="exportVocabBtn" class="tool-btn" style="padding:4px 10px; font-size:0.7rem;"><i class="fas fa-download"></i></button>
             <button id="importVocabBtn" class="tool-btn" style="padding:4px 10px; font-size:0.7rem;"><i class="fas fa-upload"></i></button>
+            <button id="addManualWordBtn" class="tool-btn" style="padding:4px 10px; font-size:0.7rem; background:#4caf50; color:white;"><i class="fas fa-plus"></i> Додати</button>
             <input type="file" id="importVocabFile" accept=".json" style="display:none">
         </div>
         <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово</li></ul>
         <div style="margin-top:20px;"><h3 style="font-size:1rem;"><i class="fas fa-layer-group"></i> Книги</h3><ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul></div>
     </div>
+
+    <!-- ========== НАЛАШТУВАННЯ ========== -->
     <div id="settingsModal" class="settings-modal">
         <div class="settings-panel">
             <button class="close-settings" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
             <h3>⚙️ Налаштування</h3>
-            <button id="uploadBookSettingsBtn"><i class="fas fa-folder-open"></i> 📂 Відкрити книгу</button>
-            <div class="select-row"><label>🌍 Переклад:</label><select id="targetLangSelect" class="lang-select"></select></div>
-            <button id="decreaseFontBtn"><i class="fas fa-minus"></i> Зменшити шрифт</button>
-            <button id="increaseFontBtn"><i class="fas fa-plus"></i> Збільшити шрифт</button>
-            <button id="themeToggleBtn"><i class="fas fa-moon"></i> Нічний режим</button>
-            <button id="soundToggleBtn"><i class="fas fa-volume-up"></i> Звук</button>
-            <button id="toggleTranslationBtn"><i class="fas fa-language"></i> Переклад</button>
-            <button id="recalcPagesBtn"><i class="fas fa-arrows-rotate"></i> Перерахувати</button>
+
+            <div class="settings-section">
+                <h4>📖 Книга</h4>
+                <button id="uploadBookSettingsBtn"><i class="fas fa-folder-open"></i> Відкрити книгу</button>
+                <button id="recalcPagesBtn"><i class="fas fa-arrows-rotate"></i> Перерахувати сторінки</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>🎨 Вигляд</h4>
+                <div class="settings-row">
+                    <button id="themeToggleBtn"><i class="fas fa-moon"></i> Нічний режим</button>
+                    <div class="font-controls">
+                        <button id="decreaseFontBtn"><i class="fas fa-minus"></i></button>
+                        <span id="fontSizeDisplay">1.0</span>
+                        <button id="increaseFontBtn"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h4>🌍 Переклад</h4>
+                <div class="select-row">
+                    <label>Мова перекладу</label>
+                    <select id="targetLangSelect" class="lang-select"></select>
+                </div>
+                <button id="toggleTranslationBtn"><i class="fas fa-language"></i> Переклад: увімк.</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>🔊 Звук</h4>
+                <button id="soundToggleBtn"><i class="fas fa-volume-up"></i> Звук</button>
+            </div>
+
+            <div class="settings-section">
+                <h4>🔧 Кнопки на панелі</h4>
+                <div id="toolbarToggles"></div>
+            </div>
         </div>
     </div>
+
     <div id="langBadge" class="lang-badge">📖 en → uk</div>
 
     <div id="onboardingOverlay" class="onboarding-overlay">
@@ -1304,6 +1676,229 @@
                 { code: "ru", name: "🇷🇺 Русский" }
             ];
 
+            const TOOLBAR_BUTTONS_CONFIG = [
+                { id: 'lastWordTopBtn', key: 'lastWord', icon: 'fa-location-dot', label: 'Останнє слово', defaultVisible: true, alwaysVisible: false, group: 'nav' },
+                { id: 'sidebarBtn', key: 'sidebar', icon: 'fa-book', label: 'Словник', defaultVisible: true, alwaysVisible: false, group: 'nav' },
+                { id: 'helpBtn', key: 'help', icon: 'fa-question-circle', label: 'Допомога', defaultVisible: true, alwaysVisible: false, group: 'nav' },
+                { id: 'decreaseFontTopBtn', key: 'decreaseFont', icon: 'fa-minus', label: 'Зменшити шрифт', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'increaseFontTopBtn', key: 'increaseFont', icon: 'fa-plus', label: 'Збільшити шрифт', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'themeToggleTopBtn', key: 'themeToggle', icon: 'fa-moon', label: 'Тема (світла/нічна)', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'soundToggleTopBtn', key: 'soundToggle', icon: 'fa-volume-up', label: 'Звук', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'toggleTranslationTopBtn', key: 'toggleTranslation', icon: 'fa-language', label: 'Переклад', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'recalcPagesTopBtn', key: 'recalcPages', icon: 'fa-arrows-rotate', label: 'Перерахувати сторінки', defaultVisible: false, alwaysVisible: false, group: 'func' },
+                { id: 'settingsBtn', key: 'settings', icon: 'fa-cog', label: 'Налаштування', defaultVisible: true, alwaysVisible: true, group: 'nav' }
+            ];
+
+            // ========== НОВА СИСТЕМА ПЕРЕКЛАДУ З ПОСЛІДОВНИМ ПОШУКОМ ==========
+            
+            // Список джерел перекладу в порядку пріоритету
+            const TRANSLATION_SOURCES = [
+                {
+                    id: 'google',
+                    name: 'Google Translate',
+                    priority: 1,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(word)}`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Google не відповів');
+                        const data = await response.json();
+                        return data?.[0]?.[0]?.[0] || null;
+                    }
+                },
+                {
+                    id: 'libre',
+                    name: 'LibreTranslate',
+                    priority: 2,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = 'https://libretranslate.de/translate';
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                q: word,
+                                source: sourceLang,
+                                target: targetLang,
+                                format: 'text'
+                            })
+                        });
+                        if (!response.ok) throw new Error('LibreTranslate не відповів');
+                        const data = await response.json();
+                        return data?.translatedText || null;
+                    }
+                },
+                {
+                    id: 'mymemory',
+                    name: 'MyMemory',
+                    priority: 3,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${sourceLang}|${targetLang}`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('MyMemory не відповів');
+                        const data = await response.json();
+                        return data?.responseData?.translatedText || null;
+                    }
+                },
+                {
+                    id: 'yandex',
+                    name: 'Yandex Translate',
+                    priority: 4,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = `https://translate.yandex.net/api/v1/tr.json/translate?lang=${sourceLang}-${targetLang}&text=${encodeURIComponent(word)}`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Yandex не відповів');
+                        const data = await response.json();
+                        return data?.text?.[0] || null;
+                    }
+                },
+                {
+                    id: 'translatecom',
+                    name: 'Translate.com',
+                    priority: 5,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = `https://translate.com/api/translate?source=${sourceLang}&target=${targetLang}&text=${encodeURIComponent(word)}`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Translate.com не відповів');
+                        const data = await response.json();
+                        return data?.text || data?.translation || null;
+                    }
+                },
+                {
+                    id: 'lingva',
+                    name: 'Lingva Translate',
+                    priority: 6,
+                    fetch: async (word, sourceLang, targetLang) => {
+                        const url = `https://lingva.ml/api/v1/${sourceLang}/${targetLang}/${encodeURIComponent(word)}`;
+                        const response = await fetch(url);
+                        if (!response.ok) throw new Error('Lingva не відповів');
+                        const data = await response.json();
+                        return data?.translation || null;
+                    }
+                }
+            ];
+
+            // ========== ГОЛОВНА ФУНКЦІЯ ПЕРЕКЛАДУ ==========
+            async function fetchTranslation(word) {
+                const lower = word.toLowerCase().trim();
+                if (!lower) return "";
+
+                // 1️⃣ Перевіряємо кеш (збережені переклади)
+                if (translationCache.has(lower)) {
+                    console.log(`📦 Кеш: "${word}" → "${translationCache.get(lower)}"`);
+                    return translationCache.get(lower);
+                }
+
+                // 2️⃣ Перевіряємо локальний словник
+                const localDict = getLocalDictionary();
+                if (localDict[lower]) {
+                    translationCache.set(lower, localDict[lower]);
+                    console.log(`📖 Локальний словник: "${word}" → "${localDict[lower]}"`);
+                    return localDict[lower];
+                }
+
+                // 3️⃣ Перевіряємо, чи слово взагалі потребує перекладу
+                if (isWordInTargetLanguage(word)) {
+                    translationCache.set(lower, word);
+                    return word;
+                }
+
+                console.log(`🔍 Шукаємо переклад для "${word}" (${currentSourceLang} → ${targetLang})...`);
+
+                // 4️⃣ Послідовно пробуємо всі джерела
+                for (const source of TRANSLATION_SOURCES) {
+                    try {
+                        console.log(`  ⏳ Спроба ${source.priority}: ${source.name}...`);
+                        
+                        const translation = await source.fetch(word, currentSourceLang, targetLang);
+                        
+                        if (translation && 
+                            translation.trim() && 
+                            translation.trim().toLowerCase() !== word.toLowerCase() &&
+                            translation.length > 0) {
+                            
+                            translationCache.set(lower, translation);
+                            console.log(`  ✅ ${source.name}: "${word}" → "${translation}"`);
+                            return translation;
+                        }
+                    } catch (error) {
+                        console.log(`  ❌ ${source.name}: ${error.message}`);
+                    }
+                }
+
+                // 5️⃣ Якщо всі джерела не спрацювали - пробуємо розбити слово на частини
+                if (word.includes(' ')) {
+                    console.log(`🔄 Пробуємо перекласти по частинах: "${word}"`);
+                    const words = word.split(' ');
+                    const translations = [];
+                    let allTranslated = true;
+                    
+                    for (const w of words) {
+                        const trans = await fetchTranslation(w);
+                        if (trans && !trans.includes('❓')) {
+                            translations.push(trans);
+                        } else {
+                            allTranslated = false;
+                            translations.push(w);
+                        }
+                    }
+                    
+                    if (allTranslated && translations.length > 1) {
+                        const fullTranslation = translations.join(' ');
+                        translationCache.set(lower, fullTranslation);
+                        return fullTranslation;
+                    }
+                }
+
+                // 6️⃣ Якщо нічого не допомогло - повертаємо повідомлення
+                const fallback = `❓ (переклад не знайдено)`;
+                translationCache.set(lower, fallback);
+                console.log(`❌ Не вдалося перекласти "${word}"`);
+                return fallback;
+            }
+
+            // ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
+
+            let localDictionary = {};
+
+            function getLocalDictionary() {
+                if (Object.keys(localDictionary).length === 0) {
+                    try {
+                        const saved = localStorage.getItem('local_dictionary');
+                        if (saved) {
+                            localDictionary = JSON.parse(saved);
+                        }
+                    } catch (e) {
+                        localDictionary = {};
+                    }
+                }
+                return localDictionary;
+            }
+
+            function saveLocalDictionary() {
+                try {
+                    localStorage.setItem('local_dictionary', JSON.stringify(localDictionary));
+                } catch (e) {}
+            }
+
+            function addToLocalDictionary(word, translation) {
+                const lower = word.toLowerCase().trim();
+                localDictionary[lower] = translation;
+                translationCache.set(lower, translation);
+                saveLocalDictionary();
+                console.log(`📖 Додано в словник: "${word}" → "${translation}"`);
+            }
+
+            function isWordInTargetLanguage(word) {
+                if (targetLang === 'en' && /^[a-zA-Z]+$/.test(word)) {
+                    return true;
+                }
+                if (targetLang === 'uk' && /[а-яіїєґА-ЯІЇЄҐ]/.test(word)) {
+                    return true;
+                }
+                return false;
+            }
+
+            // ========== ОСНОВНІ ЗМІННІ ==========
+
             let allPages = [],
                 currentPage = 0,
                 vocabularyHistory = [],
@@ -1357,18 +1952,12 @@
             const pageIndicator = document.getElementById('pageIndicator'),
                 vocabListUl = document.getElementById('vocabularyList'),
                 booksListUl = document.getElementById('booksList');
-            const fileInput = document.getElementById('uploadBook'),
-                soundToggleBtn = document.getElementById('soundToggleBtn'),
-                clearVocabBtn = document.getElementById('clearVocabBtn');
+            const fileInput = document.getElementById('uploadBook');
             const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn'),
-                lastWordTopBtn = document.getElementById('lastWordTopBtn'),
-                themeToggleBtn = document.getElementById('themeToggleBtn');
+                lastWordTopBtn = document.getElementById('lastWordTopBtn');
             const sidebar = document.getElementById('sidebar'),
-                overlay = document.getElementById('sidebarOverlay'),
-                increaseFontBtn = document.getElementById('increaseFontBtn');
-            const decreaseFontBtn = document.getElementById('decreaseFontBtn');
-            const toggleTranslationBtn = document.getElementById('toggleTranslationBtn'),
-                settingsBtn = document.getElementById('settingsBtn'),
+                overlay = document.getElementById('sidebarOverlay');
+            const settingsBtn = document.getElementById('settingsBtn'),
                 settingsModal = document.getElementById('settingsModal');
             const closeSettingsBtn = document.getElementById('closeSettingsBtn'),
                 sidebarBtn = document.getElementById('sidebarBtn'),
@@ -1387,10 +1976,10 @@
             const exportVocabBtn = document.getElementById('exportVocabBtn');
             const importVocabBtn = document.getElementById('importVocabBtn');
             const importVocabFile = document.getElementById('importVocabFile');
-            const recalcPagesBtn = document.getElementById('recalcPagesBtn');
             const tapLeft = document.getElementById('tapLeft');
             const tapRight = document.getElementById('tapRight');
             const tapCenter = document.getElementById('tapCenter');
+            const fontSizeDisplay = document.getElementById('fontSizeDisplay');
 
             const miniTranslateModal = document.getElementById('miniTranslateModal');
             const closeTranslateBtn = document.getElementById('closeTranslateBtn');
@@ -1400,10 +1989,29 @@
             const translateGoogleBtn = document.getElementById('translateGoogleBtn');
             const translateCopyBtn = document.getElementById('translateCopyBtn');
             const translateSpeakBtn = document.getElementById('translateSpeakBtn');
+            const translateAddDictBtn = document.getElementById('translateAddDictBtn');
+
+            const soundToggleBtn = document.getElementById('soundToggleBtn');
+            const clearVocabBtn = document.getElementById('clearVocabBtn');
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const increaseFontBtn = document.getElementById('increaseFontBtn');
+            const decreaseFontBtn = document.getElementById('decreaseFontBtn');
+            const toggleTranslationBtn = document.getElementById('toggleTranslationBtn');
+            const recalcPagesBtn = document.getElementById('recalcPagesBtn');
+            const addManualWordBtn = document.getElementById('addManualWordBtn');
+
+            const decreaseFontTopBtn = document.getElementById('decreaseFontTopBtn');
+            const increaseFontTopBtn = document.getElementById('increaseFontTopBtn');
+            const themeToggleTopBtn = document.getElementById('themeToggleTopBtn');
+            const soundToggleTopBtn = document.getElementById('soundToggleTopBtn');
+            const toggleTranslationTopBtn = document.getElementById('toggleTranslationTopBtn');
+            const recalcPagesTopBtn = document.getElementById('recalcPagesTopBtn');
 
             let tooltip = null,
                 tooltipTimeout = null,
                 currentTooltipWordElement = null;
+
+            // ========== ДОПОМІЖНІ ФУНКЦІЇ ==========
 
             function showToast(msg) {
                 const toast = document.createElement('div');
@@ -1413,8 +2021,7 @@
                 setTimeout(() => toast.remove(), 2000);
             }
 
-            function escapeHtml(str) { return (str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' :
-                    '&gt;'); }
+            function escapeHtml(str) { return (str || '').replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : ''); }
 
             let scrollHintTimeout = null;
 
@@ -1430,6 +2037,8 @@
                     scrollHint.classList.add('hidden');
                 }
             }
+
+            // ========== ПЕРЕГОРТАННЯ СТОРІНОК ==========
 
             function flipPage(direction) {
                 if (!allPages.length || isAnimating) return;
@@ -1536,12 +2145,47 @@
                 }, 150);
             }
 
+            // ========== МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ ==========
+
             function showMiniTranslate(word, translation) {
                 translateWordDisplay.textContent = word;
                 translateTranslationDisplay.textContent = translation;
-                const sourceName = currentSourceLang === 'uk' ? 'Українська' : currentSourceLang.toUpperCase();
-                const targetName = targetLang === 'uk' ? 'Українська' : targetLang.toUpperCase();
-                translateLangInfo.textContent = `${sourceName} → ${targetName}`;
+                
+                // Отримуємо назву мови джерела (як на фото "англійська")
+                const langMap = {
+                    'uk': 'українська',
+                    'en': 'англійська',
+                    'de': 'німецька',
+                    'fr': 'французька',
+                    'es': 'іспанська',
+                    'pl': 'польська',
+                    'it': 'італійська',
+                    'pt': 'португальська',
+                    'nl': 'нідерландська',
+                    'sv': 'шведська',
+                    'da': 'данська',
+                    'no': 'норвезька',
+                    'fi': 'фінська',
+                    'cs': 'чеська',
+                    'sk': 'словацька',
+                    'hu': 'угорська',
+                    'ro': 'румунська',
+                    'bg': 'болгарська',
+                    'el': 'грецька',
+                    'tr': 'турецька',
+                    'ja': 'японська',
+                    'ko': 'корейська',
+                    'zh': 'китайська',
+                    'th': 'тайська',
+                    'vi': 'в\'єтнамська',
+                    'hi': 'хінді',
+                    'ar': 'арабська',
+                    'he': 'іврит',
+                    'ru': 'російська'
+                };
+                const sourceName = langMap[currentSourceLang] || currentSourceLang;
+                translateLangInfo.textContent = sourceName;
+                
                 longPressWord = word;
                 longPressTranslation = translation;
                 miniTranslateModal.classList.add('active');
@@ -1552,8 +2196,7 @@
             }
 
             function openGoogleTranslate(word) {
-                const url =
-                    `https://translate.google.com/?sl=${currentSourceLang}&tl=${targetLang}&text=${encodeURIComponent(word)}&op=translate`;
+                const url = `https://translate.google.com/?sl=${currentSourceLang}&tl=${targetLang}&text=${encodeURIComponent(word)}&op=translate`;
                 window.open(url, '_blank');
             }
 
@@ -1567,6 +2210,8 @@
                     showMiniTranslate(word, translation);
                 });
             }
+
+            // ========== ОБРОБКА ДОТИКІВ ==========
 
             function setupTouchHandling() {
                 const element = bookPageDiv;
@@ -1828,6 +2473,8 @@
                 }
             }
 
+            // ========== РОЗБИТТЯ НА СТОРІНКИ ==========
+
             function splitIntoPagesLikeFBReader(html) {
                 const cleanDiv = document.createElement('div');
                 cleanDiv.innerHTML = html;
@@ -1923,41 +2570,34 @@
 
             function recalculatePages(showToastMsg = false) {
                 if (!currentBookId) return;
-
                 const book = uploadedBooks.find(b => b.id === currentBookId);
                 if (!book) return;
-
                 const progress = allPages.length > 0 ? (currentPage + 1) / allPages.length : 0;
-
                 const newPages = splitIntoPagesLikeFBReader(book.content);
-
                 if (newPages.length === 0) {
                     showToast("Помилка: не вдалося розбити текст");
                     return;
                 }
-
                 const oldCount = allPages.length;
                 allPages = newPages;
                 currentPage = Math.min(Math.floor(progress * allPages.length), allPages.length - 1);
                 if (currentPage < 0) currentPage = 0;
-
                 renderPage();
                 if (showToastMsg) {
                     showToast(`📱 Сторінок: ${oldCount} → ${allPages.length}`);
                 }
             }
 
+            // ========== ВІДОБРАЖЕННЯ СТОРІНКИ ==========
+
             function renderPage() {
                 if (!allPages.length) {
                     renderEmptyState();
                     return;
                 }
-
                 const wrappedHtml = wrapWordsInHtml(allPages[currentPage]);
                 pageCurrent.innerHTML = wrappedHtml;
-
                 flipCurrent.scrollTop = 0;
-
                 flipCurrent.style.transition = 'none';
                 flipCurrent.style.transform = 'rotateY(0deg)';
                 flipCurrent.style.opacity = '1';
@@ -1974,16 +2614,12 @@
                 pagePrev.innerHTML = '';
                 shadowRight.classList.remove('active');
                 shadowLeft.classList.remove('active');
-
                 updateUI();
                 attachListeners();
-
                 checkScrollNeeded();
-
                 if (lastWordText && currentPage === lastWordPageIndex && lastWordPosition !== null) {
                     setTimeout(() => highlightWordByPosition(lastWordPosition), 400);
                 }
-
                 localStorage.setItem('lastPage', currentPage);
             }
 
@@ -2020,6 +2656,8 @@
                 }
             }
 
+            // ========== ВИЗНАЧЕННЯ МОВИ ==========
+
             function updateSourceLanguageFromContent(htmlContent) {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = htmlContent;
@@ -2034,6 +2672,7 @@
                         targetLangSelect.value = newTarget;
                         updateLangBadge();
                         translationCache.clear();
+                        updateTranslationButton();
                     }
                 }
             }
@@ -2046,17 +2685,17 @@
                 const latinPattern = /[a-zA-Z]/g;
                 const latinMatches = sample.match(latinPattern) || [];
                 const latinCount = latinMatches.length;
-
                 if (cyrillicCount > latinCount && cyrillicCount > 10) return 'uk';
                 const ukrSpecific = /[іїєґІЇЄҐ]/;
                 if (ukrSpecific.test(sample) && cyrillicCount > 5) return 'uk';
                 return 'en';
             }
 
+            // ========== ОБГОРТКА СЛІВ ==========
+
             function wrapWordsInHtml(html) {
                 const container = document.createElement('div');
                 container.innerHTML = html;
-
                 function processNode(node) {
                     if (node.nodeType === Node.TEXT_NODE) {
                         const wordRegex = /([A-Za-zА-ЯІЇЄҐа-яіїєґ']+(?:-[A-Za-zА-ЯІЇЄҐа-яіїєґ']+)?)/g;
@@ -2065,8 +2704,7 @@
                         const fragment = document.createDocumentFragment();
                         while ((match = wordRegex.exec(node.textContent)) !== null) {
                             if (match.index > lastIndex) {
-                                fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex, match
-                                    .index)));
+                                fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex, match.index)));
                             }
                             const wordSpan = document.createElement('span');
                             wordSpan.className = 'word';
@@ -2078,8 +2716,7 @@
                             fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex)));
                         }
                         node.parentNode.replaceChild(fragment, node);
-                    } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'IMG', 'BUTTON', 'INPUT']
-                        .includes(node.tagName)) {
+                    } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'IMG', 'BUTTON', 'INPUT'].includes(node.tagName)) {
                         Array.from(node.childNodes).forEach(child => processNode(child));
                     }
                 }
@@ -2087,41 +2724,7 @@
                 return container.innerHTML;
             }
 
-            async function fetchTranslation(word) {
-                const lower = word.toLowerCase();
-                if (translationCache.has(lower)) return translationCache.get(lower);
-                try {
-                    const url =
-                        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${currentSourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(word)}`;
-                    const resp = await fetch(url);
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        if (data && data[0] && data[0][0] && data[0][0][0]) {
-                            let trans = data[0][0][0];
-                            translationCache.set(lower, trans);
-                            return trans;
-                        }
-                    }
-                    throw new Error('Google translate failed');
-                } catch (e) {
-                    try {
-                        const myMemoryUrl =
-                            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${currentSourceLang}|${targetLang}`;
-                        const resp2 = await fetch(myMemoryUrl);
-                        if (resp2.ok) {
-                            const data2 = await resp2.json();
-                            if (data2 && data2.responseData && data2.responseData.translatedText) {
-                                let trans = data2.responseData.translatedText;
-                                translationCache.set(lower, trans);
-                                return trans;
-                            }
-                        }
-                    } catch (e2) {}
-                    const fallback = "❓ (немає перекладу)";
-                    translationCache.set(lower, fallback);
-                    return fallback;
-                }
-            }
+            // ========== СЛОВНИК ==========
 
             function addOrUpdateWord(word, translation) {
                 const idx = vocabularyHistory.findIndex(i => i.word.toLowerCase() === word.toLowerCase());
@@ -2143,8 +2746,7 @@
 
             function loadVocabulary() {
                 const saved = localStorage.getItem('reader_vocabulary');
-                if (saved) try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) vocabularyHistory = parsed; }
-                catch (e) {}
+                if (saved) try { const parsed = JSON.parse(saved); if (Array.isArray(parsed)) vocabularyHistory = parsed; } catch (e) {}
                 renderVocabularyList();
             }
 
@@ -2197,15 +2799,19 @@
                 }));
             }
 
-            function clearVocabulary() { vocabularyHistory = [];
+            function clearVocabulary() {
+                vocabularyHistory = [];
                 translationCache.clear();
                 saveVocabulary();
                 renderVocabularyList();
-                showToast("Словник очищено"); }
+                showToast("Словник очищено");
+            }
 
-            function toggleShowAllWords() { showAllWords = !showAllWords;
+            function toggleShowAllWords() {
+                showAllWords = !showAllWords;
                 toggleAllWordsBtn.innerHTML = showAllWords ? 'Приховати' : 'Всі';
-                renderVocabularyList(); }
+                renderVocabularyList();
+            }
 
             function exportVocabulary() {
                 if (vocabularyHistory.length === 0) {
@@ -2250,40 +2856,43 @@
                 reader.readAsText(file);
             }
 
+            function addManualWord() {
+                const word = prompt('Введіть слово:');
+                if (!word || !word.trim()) return;
+                
+                const translation = prompt(`Введіть переклад для "${word}":`);
+                if (!translation || !translation.trim()) return;
+                
+                addToLocalDictionary(word.trim(), translation.trim());
+                addOrUpdateWord(word.trim(), translation.trim());
+                showToast(`✅ Додано: "${word}" → "${translation}"`);
+            }
+
+            // ========== ОЗВУЧУВАННЯ ==========
+
             function speakWord(word) {
                 if (!soundEnabled) return;
                 if (!window.speechSynthesis) return;
                 if (currentUtterance) window.speechSynthesis.cancel();
-
                 let speechLang = currentSourceLang;
                 const hasCyrillic = /[а-яіїєґА-ЯІЇЄҐ]/.test(word);
                 if (hasCyrillic && currentSourceLang !== 'uk') speechLang = 'uk';
                 else if (!hasCyrillic && currentSourceLang !== 'en') speechLang = 'en';
-
                 const utter = new SpeechSynthesisUtterance(word);
                 switch (speechLang) {
-                    case 'uk':
-                        utter.lang = 'uk-UA';
-                        break;
-                    case 'de':
-                        utter.lang = 'de-DE';
-                        break;
-                    case 'fr':
-                        utter.lang = 'fr-FR';
-                        break;
-                    case 'es':
-                        utter.lang = 'es-ES';
-                        break;
-                    case 'pl':
-                        utter.lang = 'pl-PL';
-                        break;
-                    default:
-                        utter.lang = 'en-US';
+                    case 'uk': utter.lang = 'uk-UA'; break;
+                    case 'de': utter.lang = 'de-DE'; break;
+                    case 'fr': utter.lang = 'fr-FR'; break;
+                    case 'es': utter.lang = 'es-ES'; break;
+                    case 'pl': utter.lang = 'pl-PL'; break;
+                    default: utter.lang = 'en-US';
                 }
                 utter.rate = 0.9;
                 window.speechSynthesis.speak(utter);
                 currentUtterance = utter;
             }
+
+            // ========== ОБРОБКА КЛІКУ ПО СЛОВУ ==========
 
             function attachListeners() {
                 document.querySelectorAll('#pageCurrent .word').forEach(span => {
@@ -2292,111 +2901,88 @@
                 });
             }
 
-            // ⭐ ВИПРАВЛЕНИЙ ОБРОБНИК КЛІКУ НА СЛОВІ - ПІДКРЕСЛЕННЯ ЗАМІСТЬ ЗБІЛЬШЕННЯ ТА ЖОВТОГО ОБОДКА ⭐
             async function wordClickHandler(e) {
                 e.stopPropagation();
                 e.preventDefault();
-
-                if (isLongPress) {
-                    isLongPress = false;
-                    return;
-                }
-
+                if (isLongPress) { isLongPress = false; return; }
                 const span = e.currentTarget;
                 const word = span.innerText.trim();
                 if (!word || !word.match(/[A-Za-zА-ЯІЇЄҐа-яіїєґ]/)) return;
-
-                // Видаляємо попереднє підсвічування
+                
                 document.querySelectorAll('#pageCurrent .word').forEach(w => {
                     w.classList.remove('word-clicked', 'word-clicked-pulse');
                 });
-                
-                // Додаємо класи для підкреслення (без збільшення та жовтого фону)
                 span.classList.add('word-clicked', 'word-clicked-pulse');
-
                 const allWords = Array.from(document.querySelectorAll('#pageCurrent .word'));
                 const wordIndex = allWords.indexOf(span);
-
+                
                 if (soundEnabled) speakWord(word);
-
-                showTooltip(span, `⏳ Переклад...`, false);
-                let translation = await fetchTranslation(word);
-                if (translation.includes("❓")) translation = `❓ (немає перекладу)`;
-
-                addOrUpdateWord(word, translation);
-
-                if (showTranslation) {
-                    showTooltip(span, translation, true);
+                
+                if (!showTranslation) {
+                    addOrUpdateWord(word, `(переклад вимкнено)`);
+                    hideTooltip();
                 } else {
-                    showTooltip(span, `🔇 Переклад вимкнено`, true);
+                    showTooltip(span, `⏳ Пошук перекладу...`, false);
+                    let translation = await fetchTranslation(word);
+                    addOrUpdateWord(word, translation);
+                    showTooltip(span, translation, true);
+                    longPressTranslation = translation;
+                    
+                    if (translation.includes('❓')) {
+                        setTimeout(() => {
+                            const userTranslation = prompt(`Введіть переклад для "${word}":`);
+                            if (userTranslation && userTranslation.trim()) {
+                                addToLocalDictionary(word, userTranslation.trim());
+                                addOrUpdateWord(word, userTranslation.trim());
+                                showTooltip(span, userTranslation.trim(), true);
+                                showToast(`✅ Додано в словник: "${word}" → "${userTranslation}"`);
+                            }
+                        }, 500);
+                    }
                 }
-
+                
                 lastWordText = word;
                 lastWordPageIndex = currentPage;
                 lastWordPosition = wordIndex;
                 localStorage.setItem('lastWord', word);
                 localStorage.setItem('lastWordPage', currentPage);
                 localStorage.setItem('lastWordPosition', wordIndex);
-
-                longPressTranslation = translation;
                 
-                // Знімаємо підкреслення через 3 секунди
                 setTimeout(() => {
                     span.classList.remove('word-clicked', 'word-clicked-pulse');
                 }, 3000);
             }
 
-            // ⭐ ФУНКЦІЯ ДЛЯ ПІДСВІЧУВАННЯ СЛОВА - ТЕПЕР ПІДКРЕСЛЕННЯ ⭐
             function highlightWordByPosition(pos) {
                 const spans = document.querySelectorAll('#pageCurrent .word');
                 if (pos !== null && spans[pos]) {
                     const container = flipCurrent;
-                    
-                    // Видаляємо попередні виділення
                     document.querySelectorAll('#pageCurrent .word').forEach(w => {
                         w.classList.remove('word-clicked', 'word-clicked-pulse');
                     });
-                    
-                    // Прокручуємо до слова
                     const targetTop = spans[pos].offsetTop - container.clientHeight / 2 + 30;
                     container.scrollTop = Math.max(0, targetTop);
-                    
-                    // Додаємо класи для підкреслення
                     spans[pos].classList.add('word-clicked', 'word-clicked-pulse');
-                    
-                    // Знімаємо підкреслення через 3 секунди
                     setTimeout(() => {
                         spans[pos].classList.remove('word-clicked', 'word-clicked-pulse');
                     }, 3000);
-                    
                     return true;
                 }
                 return false;
             }
 
-            // ⭐ ФУНКЦІЯ "ОСТАННЄ" ⭐
             function goToLastWord() {
-                if (!lastWordText) { 
-                    showToast("⚠️ Немає збереженого слова"); 
-                    return; 
-                }
-                
-                if (!allPages.length) { 
-                    showToast("⚠️ Немає книги"); 
-                    return; 
-                }
-                
+                if (!lastWordText) { showToast("⚠️ Немає збереженого слова"); return; }
+                if (!allPages.length) { showToast("⚠️ Немає книги"); return; }
                 if (currentPage === lastWordPageIndex && lastWordPosition !== null) {
                     if (highlightWordByPosition(lastWordPosition)) {
                         showToast(`📍 "${lastWordText}"`);
                         return;
                     }
                 }
-                
                 if (lastWordPageIndex !== -1 && lastWordPageIndex < allPages.length) {
                     currentPage = lastWordPageIndex;
                     renderPage();
-                    
                     setTimeout(() => {
                         if (lastWordPosition !== null) {
                             const found = highlightWordByPosition(lastWordPosition);
@@ -2411,6 +2997,8 @@
                     showToast(`⚠️ Слово "${lastWordText}" не знайдено`);
                 }
             }
+
+            // ========== ПІДКАЗКА ==========
 
             function showTooltip(wordElement, text, autoHide = true) {
                 if (!tooltip) {
@@ -2441,9 +3029,13 @@
                 tooltip.style.left = `${left}px`;
             }
 
-            function hideTooltip() { if (tooltip) tooltip.classList.add('hidden'); if (tooltipTimeout) clearTimeout(
-                    tooltipTimeout);
-                currentTooltipWordElement = null; }
+            function hideTooltip() {
+                if (tooltip) tooltip.classList.add('hidden');
+                if (tooltipTimeout) clearTimeout(tooltipTimeout);
+                currentTooltipWordElement = null;
+            }
+
+            // ========== НАВІГАЦІЯ ==========
 
             function goToPage(pageNum) {
                 if (!allPages.length) { showToast("Немає книги"); return; }
@@ -2458,43 +3050,81 @@
             }
 
             function nextPage() { flipPage('forward'); }
-
             function prevPage() { flipPage('back'); }
+
+            // ========== НАЛАШТУВАННЯ ==========
 
             function updateFontSize() {
                 const container = document.querySelector('#pageCurrent');
                 if (container) container.style.fontSize = currentFontSize + 'rem';
                 localStorage.setItem('readerFontSize', currentFontSize);
+                updateFontSizeDisplay();
                 setTimeout(() => recalculatePages(false), 150);
             }
 
-            function increaseFont() { if (currentFontSize < 2.0) { currentFontSize += 0.1;
-                    updateFontSize();
-                    showToast(`Шрифт: ${Math.round(currentFontSize*10)/10}`); } else showToast("Максимум"); }
+            function updateFontSizeDisplay() {
+                if (fontSizeDisplay) {
+                    fontSizeDisplay.textContent = currentFontSize.toFixed(1);
+                }
+            }
 
-            function decreaseFont() { if (currentFontSize > 0.7) { currentFontSize -= 0.1;
-                    updateFontSize();
-                    showToast(`Шрифт: ${Math.round(currentFontSize*10)/10}`); } else showToast("Мінімум"); }
+            function increaseFont() {
+                if (currentFontSize < 2.0) { currentFontSize += 0.1; updateFontSize(); showToast(`Шрифт: ${currentFontSize.toFixed(1)}`); }
+                else showToast("Максимум");
+            }
 
-            function setTheme(dark) { isDarkTheme = dark; if (dark) { document.body.classList.add('dark');
-                    themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла'; } else { document.body.classList.remove(
-                        'dark');
-                    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічна'; } localStorage.setItem('darkTheme',
-                    dark); }
+            function decreaseFont() {
+                if (currentFontSize > 0.7) { currentFontSize -= 0.1; updateFontSize(); showToast(`Шрифт: ${currentFontSize.toFixed(1)}`); }
+                else showToast("Мінімум");
+            }
+
+            function setTheme(dark) {
+                isDarkTheme = dark;
+                if (dark) {
+                    document.body.classList.add('dark');
+                    themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Світла';
+                } else {
+                    document.body.classList.remove('dark');
+                    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Нічна';
+                }
+                localStorage.setItem('darkTheme', dark);
+                updateTopBarIcons();
+            }
 
             function toggleTheme() { setTheme(!isDarkTheme); }
 
-            function toggleSound() { soundEnabled = !soundEnabled;
-                soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' :
-                    '<i class="fas fa-volume-mute"></i> Звук'; if (!soundEnabled && window.speechSynthesis) window
-                        .speechSynthesis.cancel();
-                localStorage.setItem('soundEnabled', soundEnabled); }
+            function toggleSound() {
+                soundEnabled = !soundEnabled;
+                soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' : '<i class="fas fa-volume-mute"></i> Звук';
+                if (!soundEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+                localStorage.setItem('soundEnabled', soundEnabled);
+                updateTopBarIcons();
+            }
 
-            function toggleTranslationMode() { showTranslation = !showTranslation;
-                toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' :
-                    '<i class="fas fa-language"></i> Переклад: вимк.';
+            function updateTranslationButton() {
+                const targetName = targetLang === 'uk' ? 'UK' : targetLang.toUpperCase();
+                const transTopBtn = document.getElementById('toggleTranslationTopBtn');
+                if (transTopBtn) {
+                    if (showTranslation) {
+                        transTopBtn.innerHTML = `<i class="fas fa-language"></i><span> ${targetName}</span>`;
+                        transTopBtn.style.opacity = '1';
+                    } else {
+                        transTopBtn.innerHTML = `<i class="fas fa-language" style="opacity:0.4;"></i><span style="opacity:0.4;"> ${targetName}</span>`;
+                        transTopBtn.style.opacity = '1';
+                    }
+                }
+                toggleTranslationBtn.innerHTML = showTranslation ? 
+                    `<i class="fas fa-language"></i> Переклад: увімк. → ${targetName}` : 
+                    `<i class="fas fa-language"></i> Переклад: вимк.`;
+            }
+
+            function toggleTranslationMode() {
+                showTranslation = !showTranslation;
+                updateTranslationButton();
                 localStorage.setItem('showTranslation', showTranslation);
-                showToast(showTranslation ? "Переклад увімкнено" : "Переклад вимкнено"); }
+                const targetName = targetLang === 'uk' ? 'укр' : targetLang.toUpperCase();
+                showToast(showTranslation ? `✅ Переклад увімкнено → ${targetName}` : `🔇 Переклад вимкнено`);
+            }
 
             function updateLangBadge() {
                 const sourceName = currentSourceLang === 'uk' ? 'укр' : currentSourceLang.toUpperCase();
@@ -2524,8 +3154,134 @@
                 targetLang = newTarget;
                 updateLangBadge();
                 translationCache.clear();
+                updateTranslationButton();
                 showToast(`🌍 ${targetLang.toUpperCase()}`);
             }
+
+            // ========== НАЛАШТУВАННЯ ПАНЕЛІ ІНСТРУМЕНТІВ ==========
+
+            function loadToolbarVisibility() {
+                const saved = localStorage.getItem('toolbar_visibility');
+                if (saved) {
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        return getDefaultVisibility();
+                    }
+                }
+                return getDefaultVisibility();
+            }
+
+            function getDefaultVisibility() {
+                const defaults = {};
+                TOOLBAR_BUTTONS_CONFIG.forEach(btn => {
+                    defaults[btn.key] = btn.defaultVisible;
+                });
+                return defaults;
+            }
+
+            function saveToolbarVisibility(visibility) {
+                localStorage.setItem('toolbar_visibility', JSON.stringify(visibility));
+            }
+
+            function applyToolbarVisibility(visibility) {
+                TOOLBAR_BUTTONS_CONFIG.forEach(btn => {
+                    const element = document.getElementById(btn.id);
+                    if (!element) return;
+                    
+                    if (btn.alwaysVisible) {
+                        element.classList.remove('hidden-btn');
+                        return;
+                    }
+                    
+                    if (visibility[btn.key]) {
+                        element.classList.remove('hidden-btn');
+                    } else {
+                        element.classList.add('hidden-btn');
+                    }
+                });
+            }
+
+            function renderToolbarToggles() {
+                const container = document.getElementById('toolbarToggles');
+                if (!container) return;
+
+                const visibility = loadToolbarVisibility();
+                
+                const groups = {
+                    nav: { label: '📖 Навігація', keys: ['lastWord', 'sidebar', 'help'] },
+                    func: { label: '⚙️ Функції', keys: ['decreaseFont', 'increaseFont', 'themeToggle', 'soundToggle', 'toggleTranslation', 'recalcPages'] }
+                };
+
+                let html = '';
+
+                Object.values(groups).forEach(group => {
+                    html += `<div class="toggle-group-label">${group.label}</div>`;
+                    
+                    group.keys.forEach(key => {
+                        const config = TOOLBAR_BUTTONS_CONFIG.find(b => b.key === key);
+                        if (!config) return;
+                        
+                        const isChecked = visibility[key] || false;
+                        const isActive = isChecked ? 'active' : '';
+                        
+                        html += `
+                            <div class="toggle-wrapper">
+                                <label class="toggle-label">
+                                    <i class="fas ${config.icon}"></i>
+                                    <span>${config.label}</span>
+                                </label>
+                                <div class="toggle-switch ${isActive}" data-key="${key}"></div>
+                            </div>
+                        `;
+                    });
+                });
+
+                html += `
+                    <div class="toggle-group-label" style="opacity:0.5; font-size:0.7rem;">🔒 Завжди видимі</div>
+                    <div class="toggle-wrapper disabled">
+                        <label class="toggle-label" style="cursor:not-allowed;">
+                            <i class="fas fa-cog"></i>
+                            <span>Налаштування</span>
+                            <span style="font-size:0.6rem; color:#999; margin-left:auto;">(завжди)</span>
+                        </label>
+                        <div class="toggle-switch active disabled"></div>
+                    </div>
+                `;
+
+                container.innerHTML = html;
+
+                container.querySelectorAll('.toggle-switch:not(.disabled)').forEach(toggle => {
+                    toggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const key = this.dataset.key;
+                        const visibility = loadToolbarVisibility();
+                        const newState = !visibility[key];
+                        visibility[key] = newState;
+                        saveToolbarVisibility(visibility);
+                        
+                        this.classList.toggle('active');
+                        applyToolbarVisibility(visibility);
+                        
+                        showToast(newState ? `✅ Показано` : `👻 Приховано`);
+                    });
+                });
+            }
+
+            function updateTopBarIcons() {
+                const themeTopBtn = document.getElementById('themeToggleTopBtn');
+                if (themeTopBtn) {
+                    themeTopBtn.innerHTML = isDarkTheme ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                }
+                const soundTopBtn = document.getElementById('soundToggleTopBtn');
+                if (soundTopBtn) {
+                    soundTopBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+                }
+                updateTranslationButton();
+                updateFontSizeDisplay();
+            }
+
+            // ========== ЗАВАНТАЖЕННЯ КНИГ ==========
 
             async function parseEpub(file) {
                 return new Promise((resolve, reject) => {
@@ -2568,18 +3324,8 @@
                             let html = '';
                             const process = (n) => {
                                 if (n.nodeType === Node.ELEMENT_NODE) {
-                                    if (n.tagName === 'p') {
-                                        html += '<p>';
-                                        n.childNodes.forEach(process);
-                                        html += '</p>';
-                                        return;
-                                    }
-                                    if (n.tagName === 'title') {
-                                        html += '<h2>';
-                                        n.childNodes.forEach(process);
-                                        html += '</h2>';
-                                        return;
-                                    }
+                                    if (n.tagName === 'p') { html += '<p>'; n.childNodes.forEach(process); html += '</p>'; return; }
+                                    if (n.tagName === 'title') { html += '<h2>'; n.childNodes.forEach(process); html += '</h2>'; return; }
                                     n.childNodes.forEach(process);
                                 } else if (n.nodeType === Node.TEXT_NODE) html += n.textContent;
                             };
@@ -2622,28 +3368,28 @@
                     else if (ext === 'fb2') html = await parseFb2(file);
                     else if (ext === 'pdf') html = await parsePdf(file);
                     else if (ext === 'txt') {
-                        const text = await new Promise((res, rej) => { const r = new FileReader();
+                        const text = await new Promise((res, rej) => {
+                            const r = new FileReader();
                             r.onload = e => res(e.target.result);
                             r.onerror = rej;
-                            r.readAsText(file, 'UTF-8'); });
+                            r.readAsText(file, 'UTF-8');
+                        });
                         html = text.split('\n').map(l => l.trim() ? `<p>${escapeHtml(l)}</p>` : '<br>').join('');
                     } else throw new Error("Формат не підтримується");
 
                     if (!html.trim()) html = "<p>⚠️ Не вдалося витягнути текст</p>";
-
                     updateSourceLanguageFromContent(html);
                     translationCache.clear();
-
                     const id = Date.now() + '-' + Math.random().toString(36).substr(2, 6);
                     uploadedBooks.unshift({ id, name: file.name, content: html });
                     localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
                     renderBooksList();
-
                     allPages = splitIntoPagesLikeFBReader(html);
                     currentPage = 0;
                     currentBookId = id;
                     renderPage();
                     localStorage.setItem('reader_current_book_id', id);
+                    updateTranslationButton();
                     showToast(`✅ ${file.name} (${allPages.length} стор.)`);
                 } catch (err) { showToast("❌ Помилка: " + err.message); }
             }
@@ -2663,6 +3409,7 @@
                 lastWordText = null;
                 renderPage();
                 localStorage.setItem('reader_current_book_id', bookId);
+                updateTranslationButton();
                 showToast(`📖 ${book.name}`);
             }
 
@@ -2674,22 +3421,25 @@
                 }
                 booksListUl.innerHTML = uploadedBooks.map(book =>
                     `<li class="book-item"><div style="display:flex; justify-content:space-between; align-items:center;"><span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1; font-size:0.85rem;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`
-                    ).join('');
-                document.querySelectorAll('.open-book').forEach(btn => btn.addEventListener('click', (e) => { e
-                        .stopPropagation();
-                        openBook(btn.getAttribute('data-id'));
-                        closeSidebar(); }));
-                document.querySelectorAll('.delete-book').forEach(btn => btn.addEventListener('click', (e) => { e
-                        .stopPropagation();
+                ).join('');
+                document.querySelectorAll('.open-book').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openBook(btn.getAttribute('data-id'));
+                    closeSidebar();
+                }));
+                document.querySelectorAll('.delete-book').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     const id = btn.getAttribute('data-id');
                     uploadedBooks = uploadedBooks.filter(b => b.id !== id);
                     localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
-                    if (currentBookId === id) { if (uploadedBooks.length) openBook(uploadedBooks[0].id);
-                        else renderEmptyState(); }
+                    if (currentBookId === id) {
+                        if (uploadedBooks.length) openBook(uploadedBooks[0].id);
+                        else renderEmptyState();
+                    }
                     renderBooksList();
-                    showToast("Книгу видалено"); }));
-                document.querySelectorAll('.book-name').forEach(name => name.addEventListener('click', () => openBook(
-                    name.getAttribute('data-id'))));
+                    showToast("Книгу видалено");
+                }));
+                document.querySelectorAll('.book-name').forEach(name => name.addEventListener('click', () => openBook(name.getAttribute('data-id'))));
             }
 
             function loadUploadedBooks() {
@@ -2713,34 +3463,30 @@
                 if (savedPage) lastWordPageIndex = parseInt(savedPage);
                 const savedPos = localStorage.getItem('lastWordPosition');
                 if (savedPos) lastWordPosition = parseInt(savedPos);
+                updateTranslationButton();
             }
 
-            function openSidebar() { sidebar.classList.add('open');
-                overlay.classList.add('open'); }
+            // ========== БОКОВА ПАНЕЛЬ ТА НАЛАШТУВАННЯ ==========
 
-            function closeSidebar() { sidebar.classList.remove('open');
-                overlay.classList.remove('open'); }
-
-            function openSettings() { settingsModal.classList.add('active'); }
-
+            function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); }
+            function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+            function openSettings() { 
+                settingsModal.classList.add('active'); 
+                renderToolbarToggles(); 
+            }
             function closeSettings() { settingsModal.classList.remove('active'); }
-
             function showOnboarding() { onboardingOverlay.classList.add('active'); }
+            function hideOnboarding() { onboardingOverlay.classList.remove('active'); localStorage.setItem('onboardingShown', 'true'); }
+            function startOnboardingTour() { hideOnboarding(); showToast("💡 Завантажте книгу!"); setTimeout(() => { fileInput.click(); }, 1000); }
 
-            function hideOnboarding() {
-                onboardingOverlay.classList.remove('active');
-                localStorage.setItem('onboardingShown', 'true');
-            }
-
-            function startOnboardingTour() {
-                hideOnboarding();
-                showToast("💡 Завантажте книгу!");
-                setTimeout(() => { fileInput.click(); }, 1000);
-            }
+            // ========== ІНІЦІАЛІЗАЦІЯ ==========
 
             function init() {
                 populateTargetLanguageSelect();
                 targetLangSelect.addEventListener('change', updateTargetLanguage);
+
+                const visibility = loadToolbarVisibility();
+                applyToolbarVisibility(visibility);
 
                 loadUploadedBooks();
                 loadVocabulary();
@@ -2748,44 +3494,33 @@
 
                 const savedShowTranslation = localStorage.getItem('showTranslation');
                 if (savedShowTranslation !== null) showTranslation = savedShowTranslation === 'true';
-                toggleTranslationBtn.innerHTML = showTranslation ? '<i class="fas fa-language"></i> Переклад: увімк.' :
-                    '<i class="fas fa-language"></i> Переклад: вимк.';
+                
+                updateTranslationButton();
 
                 const savedSound = localStorage.getItem('soundEnabled');
                 if (savedSound !== null) soundEnabled = savedSound === 'true';
-                soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' :
-                    '<i class="fas fa-volume-mute"></i> Звук';
+                soundToggleBtn.innerHTML = soundEnabled ? '<i class="fas fa-volume-up"></i> Звук' : '<i class="fas fa-volume-mute"></i> Звук';
 
                 const savedFont = localStorage.getItem('readerFontSize');
-                if (savedFont) { currentFontSize = parseFloat(savedFont); if (isNaN(currentFontSize)) currentFontSize =
-                        1.0; }
+                if (savedFont) { currentFontSize = parseFloat(savedFont); if (isNaN(currentFontSize)) currentFontSize = 1.0; }
                 updateFontSize();
 
                 const savedTheme = localStorage.getItem('darkTheme');
                 if (savedTheme === 'true') setTheme(true);
                 else setTheme(false);
 
+                updateTopBarIcons();
+
                 setupTouchHandling();
 
                 closeTranslateBtn.addEventListener('click', hideMiniTranslate);
-                miniTranslateModal.addEventListener('click', (e) => {
-                    if (e.target === miniTranslateModal) hideMiniTranslate();
-                });
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') hideMiniTranslate();
-                });
+                miniTranslateModal.addEventListener('click', (e) => { if (e.target === miniTranslateModal) hideMiniTranslate(); });
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideMiniTranslate(); });
 
-                translateGoogleBtn.addEventListener('click', () => {
-                    if (longPressWord) {
-                        openGoogleTranslate(longPressWord);
-                    }
-                });
-
+                translateGoogleBtn.addEventListener('click', () => { if (longPressWord) openGoogleTranslate(longPressWord); });
                 translateCopyBtn.addEventListener('click', () => {
                     if (longPressTranslation) {
-                        navigator.clipboard.writeText(longPressTranslation).then(() => {
-                            showToast("📋 Скопійовано!");
-                        }).catch(() => {
+                        navigator.clipboard.writeText(longPressTranslation).then(() => showToast("📋 Скопійовано!")).catch(() => {
                             const textarea = document.createElement('textarea');
                             textarea.value = longPressTranslation;
                             document.body.appendChild(textarea);
@@ -2796,27 +3531,19 @@
                         });
                     }
                 });
-
-                translateSpeakBtn.addEventListener('click', () => {
-                    if (longPressWord) {
-                        speakWord(longPressWord);
+                translateSpeakBtn.addEventListener('click', () => { if (longPressWord) speakWord(longPressWord); });
+                translateAddDictBtn.addEventListener('click', () => {
+                    if (longPressWord && longPressTranslation) {
+                        addToLocalDictionary(longPressWord, longPressTranslation);
+                        addOrUpdateWord(longPressWord, longPressTranslation);
+                        showToast(`✅ Додано в словник: "${longPressWord}" → "${longPressTranslation}"`);
+                        hideMiniTranslate();
                     }
                 });
 
-                tapLeft.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    flipPage('back');
-                });
-                tapRight.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    flipPage('forward');
-                });
-                tapCenter.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (allPages.length) {
-                        showToast(`Стор. ${currentPage+1} з ${allPages.length}`);
-                    }
-                });
+                tapLeft.addEventListener('click', (e) => { e.stopPropagation(); flipPage('back'); });
+                tapRight.addEventListener('click', (e) => { e.stopPropagation(); flipPage('forward'); });
+                tapCenter.addEventListener('click', (e) => { e.stopPropagation(); if (allPages.length) showToast(`Стор. ${currentPage+1} з ${allPages.length}`); });
 
                 soundToggleBtn.addEventListener('click', toggleSound);
                 clearVocabBtn.addEventListener('click', clearVocabulary);
@@ -2828,6 +3555,16 @@
                 increaseFontBtn.addEventListener('click', increaseFont);
                 decreaseFontBtn.addEventListener('click', decreaseFont);
                 toggleTranslationBtn.addEventListener('click', toggleTranslationMode);
+                recalcPagesBtn.addEventListener('click', () => recalculatePages(true));
+                addManualWordBtn.addEventListener('click', addManualWord);
+
+                if (decreaseFontTopBtn) decreaseFontTopBtn.addEventListener('click', decreaseFont);
+                if (increaseFontTopBtn) increaseFontTopBtn.addEventListener('click', increaseFont);
+                if (themeToggleTopBtn) themeToggleTopBtn.addEventListener('click', toggleTheme);
+                if (soundToggleTopBtn) soundToggleTopBtn.addEventListener('click', toggleSound);
+                if (toggleTranslationTopBtn) toggleTranslationTopBtn.addEventListener('click', toggleTranslationMode);
+                if (recalcPagesTopBtn) recalcPagesTopBtn.addEventListener('click', () => recalculatePages(true));
+
                 settingsBtn.addEventListener('click', openSettings);
                 closeSettingsBtn.addEventListener('click', closeSettings);
                 sidebarBtn.addEventListener('click', openSidebar);
@@ -2835,9 +3572,7 @@
                 overlay.addEventListener('click', closeSidebar);
 
                 uploadBookSettingsBtn.addEventListener('click', () => { fileInput.click(); });
-                if (emptyUploadBtn) {
-                    emptyUploadBtn.addEventListener('click', () => fileInput.click());
-                }
+                if (emptyUploadBtn) emptyUploadBtn.addEventListener('click', () => fileInput.click());
                 fileInput.addEventListener('change', (e) => {
                     if (e.target.files && e.target.files[0]) loadBookFromFile(e.target.files[0]);
                     fileInput.value = '';
@@ -2863,10 +3598,6 @@
                     e.target.value = '';
                 });
 
-                if (recalcPagesBtn) {
-                    recalcPagesBtn.addEventListener('click', () => recalculatePages(true));
-                }
-
                 helpBtn.addEventListener('click', showOnboarding);
                 skipOnboardingBtn.addEventListener('click', hideOnboarding);
                 startOnboardingBtn.addEventListener('click', startOnboardingTour);
@@ -2875,37 +3606,23 @@
                     step.addEventListener('click', () => {
                         const action = step.dataset.action;
                         hideOnboarding();
-                        if (action === 'upload') {
-                            fileInput.click();
-                        } else if (action === 'settings') {
-                            openSettings();
-                        } else if (action === 'click') {
-                            showToast("Завантажте книгу та натисніть на слово!");
-                            if (uploadedBooks.length === 0) fileInput.click();
-                        } else if (action === 'swipe') {
-                            showToast("👆 Гортайте пальцем вліво/вправо");
-                        } else if (action === 'scroll') {
-                            showToast("⬇️ Прокручуйте вгору/вниз якщо сторінка не вміщається");
-                        }
+                        if (action === 'upload') fileInput.click();
+                        else if (action === 'settings') openSettings();
+                        else if (action === 'click') { showToast("Завантажте книгу та натисніть на слово!"); if (uploadedBooks.length === 0) fileInput.click(); }
+                        else if (action === 'swipe') showToast("👆 Гортайте пальцем вліво/вправо");
+                        else if (action === 'scroll') showToast("⬇️ Прокручуйте вгору/вниз якщо сторінка не вміщається");
                     });
                 });
 
                 let resizeTimeout;
                 window.addEventListener('resize', () => {
                     clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => {
-                        if (currentBookId) recalculatePages(false);
-                    }, 300);
+                    resizeTimeout = setTimeout(() => { if (currentBookId) recalculatePages(false); }, 300);
                 });
 
                 flipCurrent.addEventListener('scroll', () => {
-                    if (flipCurrent.scrollTop > 10) {
-                        showScrollHint(false);
-                    }
-
-                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) {
-                        updateTooltipPosition();
-                    }
+                    if (flipCurrent.scrollTop > 10) showScrollHint(false);
+                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition();
                 });
 
                 tooltip = document.createElement('div');
@@ -2913,8 +3630,7 @@
                 document.body.appendChild(tooltip);
 
                 const updatePosition = () => {
-                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement)
-                        updateTooltipPosition();
+                    if (tooltip && !tooltip.classList.contains('hidden') && currentTooltipWordElement) updateTooltipPosition();
                 };
                 window.addEventListener('resize', updatePosition);
                 window.addEventListener('scroll', updatePosition);
