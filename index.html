@@ -399,12 +399,10 @@
             color: inherit !important;
         }
 
-        /* ===== ВИДІЛЕННЯ СЛОВА — БЕЗ ЗМІНИ РОЗМІРУ ===== */
         .word-clicked {
             background-color: rgba(255, 215, 0, 0.35) !important;
             border-bottom: 5px solid #ff6f00 !important;
             border-radius: 4px;
-            /* padding не змінюємо — залишаємо як у .word */
             padding: 2px 4px !important;
             box-shadow: 0 2px 12px rgba(255, 111, 0, 0.4) !important;
             transition: all 0.25s ease;
@@ -459,7 +457,6 @@
                 box-shadow: 0 2px 12px rgba(255, 171, 0, 0.5);
             }
         }
-        /* ===== КІНЕЦЬ ===== */
 
         .word-tooltip {
             position: fixed;
@@ -658,17 +655,17 @@
         .sidebar-overlay.open {
             display: block;
         }
-        .vocab-list, .books-list {
+        .vocab-list {
             list-style: none;
             margin-top: 10px;
         }
-        .vocab-item, .book-item {
+        .vocab-item {
             margin: 12px 0;
             padding: 10px;
             border-bottom: 1px solid var(--light-border);
             font-size: 0.9rem;
         }
-        body.dark .vocab-item, body.dark .book-item {
+        body.dark .vocab-item {
             border-bottom-color: var(--dark-border);
             color: var(--dark-text);
         }
@@ -685,6 +682,34 @@
             background: var(--dark-accent-soft);
             color: var(--dark-text);
         }
+        
+        .books-list-modal {
+            list-style: none;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .books-list-modal .book-item {
+            margin: 8px 0;
+            padding: 12px 14px;
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--light-surface);
+            transition: all 0.2s ease;
+        }
+        body.dark .books-list-modal .book-item {
+            border-color: var(--dark-border);
+            background: var(--dark-surface);
+            color: var(--dark-text);
+        }
+        .books-list-modal .book-item:hover {
+            background: var(--light-btn-hover);
+        }
+        body.dark .books-list-modal .book-item:hover {
+            background: var(--dark-btn-hover);
+        }
+
         .icon-btn {
             background: transparent;
             border: none;
@@ -707,7 +732,6 @@
             background: var(--dark-btn-hover);
         }
         
-        /* ========== НАЛАШТУВАННЯ ========== */
         .settings-modal {
             position: fixed;
             top: 0;
@@ -1045,7 +1069,6 @@
             color: #121212;
         }
 
-        /* ========== МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ ========== */
         .mini-translate-modal {
             position: fixed;
             top: 0;
@@ -1476,7 +1499,8 @@
         <div class="toolbar-buttons" id="toolbarContainer">
             <button id="lastWordTopBtn" class="tool-btn" data-toolbar-btn="lastWord"><i class="fas fa-location-dot"></i><span> Останнє</span></button>
             <button id="sidebarBtn" class="tool-btn" data-toolbar-btn="sidebar"><i class="fas fa-book"></i><span> Словник</span></button>
-            <button id="helpBtn" class="tool-btn" data-toolbar-btn="help"><i class="fas fa-question-circle"></i></button>
+            <button id="booksBtn" class="tool-btn" data-toolbar-btn="books"><i class="fas fa-layer-group"></i><span> Книги</span></button>
+            <button id="helpBtn" class="tool-btn" data-toolbar-btn="help"><i class="fas fa-info-circle"></i><span> Інформація</span></button>
             
             <span class="toolbar-separator" style="width:1px; height:20px; background:var(--light-border); margin:0 2px;"></span>
             
@@ -1535,7 +1559,59 @@
         </div>
     </div>
 
-    <!-- ========== МОДАЛЬНЕ ВІКНО ПЕРЕКЛАДУ ========== -->
+    <!-- МОДАЛЬНЕ ВІКНО ДЛЯ КНИГ -->
+    <div id="booksModal" class="settings-modal">
+        <div class="settings-panel" style="max-width:500px;">
+            <button class="close-settings" id="closeBooksBtn"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-layer-group"></i> Мої книги</h3>
+            <div style="margin:16px 0;">
+                <button id="uploadBookBooksBtn" class="tool-btn" style="width:100%; padding:10px; background:var(--light-accent); color:white; border-radius:8px; justify-content:center;">
+                    <i class="fas fa-upload"></i> Завантажити книгу
+                </button>
+            </div>
+            <ul id="booksListModal" class="books-list-modal"><li style="text-align:center; padding:20px; opacity:0.6;">📭 Немає книг</li></ul>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО ІНФОРМАЦІЇ -->
+    <div id="infoModal" class="settings-modal">
+        <div class="settings-panel" style="max-width:500px;">
+            <button class="close-settings" id="closeInfoBtn"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-info-circle"></i> Про LinguaReader</h3>
+            
+            <div style="margin:16px 0; padding:16px; background:var(--light-accent-soft); border-radius:12px;">
+                <p style="font-size:1.1rem; font-weight:600; margin-bottom:8px;">📖 Як користуватися:</p>
+                <ul style="list-style:none; padding:0; line-height:2.2;">
+                    <li>📂 <strong>Завантажте книгу</strong> — підтримуються EPUB, FB2, PDF, TXT</li>
+                    <li>👆 <strong>Натисніть на слово</strong> — отримайте переклад та додайте в словник</li>
+                    <li>🔄 <strong>Свайп по центру</strong> — гортайте сторінки вліво/вправо</li>
+                    <li>📚 <strong>Словник</strong> — зберігає всі перекладені слова</li>
+                    <li>⚙️ <strong>Налаштування</strong> — тема, шрифт, мова перекладу, звук</li>
+                    <li>⬇️ <strong>Прокручування</strong> — якщо сторінка не вміщається</li>
+                </ul>
+            </div>
+
+            <div style="margin:12px 0; padding:12px 16px; background:var(--light-surface); border-radius:8px; border:1px solid var(--light-border);">
+                <p style="font-size:0.85rem; opacity:0.8;">
+                    <i class="fas fa-globe" style="margin-right:8px;"></i>
+                    <strong>Переклад:</strong> автоматичне визначення мови тексту (en/uk) → обрана мова перекладу
+                </p>
+                <p style="font-size:0.85rem; opacity:0.8; margin-top:4px;">
+                    <i class="fas fa-volume-up" style="margin-right:8px;"></i>
+                    <strong>Озвучування:</strong> натисніть на слово → прослухайте вимову
+                </p>
+                <p style="font-size:0.85rem; opacity:0.8; margin-top:4px;">
+                    <i class="fas fa-save" style="margin-right:8px;"></i>
+                    <strong>Збереження:</strong> всі дані зберігаються у вашому браузері
+                </p>
+            </div>
+
+            <div style="text-align:center; margin-top:12px; font-size:0.75rem; opacity:0.5;">
+                LinguaReader v1.0 — читайте та вивчайте мови разом! 🌍
+            </div>
+        </div>
+    </div>
+
     <div id="miniTranslateModal" class="mini-translate-modal">
         <div class="mini-translate-box">
             <button class="close-translate" id="closeTranslateBtn">&times;</button>
@@ -1583,10 +1659,8 @@
             <input type="file" id="importVocabFile" accept=".json" style="display:none">
         </div>
         <ul id="vocabularyList" class="vocab-list"><li>📖 Натисніть на слово</li></ul>
-        <div style="margin-top:20px;"><h3 style="font-size:1rem;"><i class="fas fa-layer-group"></i> Книги</h3><ul id="booksList" class="books-list"><li>📭 Немає книг</li></ul></div>
     </div>
 
-    <!-- ========== НАЛАШТУВАННЯ ========== -->
     <div id="settingsModal" class="settings-modal">
         <div class="settings-panel">
             <button class="close-settings" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
@@ -1663,7 +1737,7 @@
                     <div class="step-icon">👆</div>
                     <div class="step-text">
                         <h4>4. Гортайте сторінки</h4>
-                        <p>Свайп або тап по краях</p>
+                        <p>Свайп по центру сторінки</p>
                     </div>
                 </div>
                 <div class="onboarding-step" data-action="scroll">
@@ -1721,7 +1795,8 @@
             const TOOLBAR_BUTTONS_CONFIG = [
                 { id: 'lastWordTopBtn', key: 'lastWord', icon: 'fa-location-dot', label: 'Останнє слово', defaultVisible: true, alwaysVisible: false, group: 'nav' },
                 { id: 'sidebarBtn', key: 'sidebar', icon: 'fa-book', label: 'Словник', defaultVisible: true, alwaysVisible: false, group: 'nav' },
-                { id: 'helpBtn', key: 'help', icon: 'fa-question-circle', label: 'Допомога', defaultVisible: true, alwaysVisible: false, group: 'nav' },
+                { id: 'booksBtn', key: 'books', icon: 'fa-layer-group', label: 'Книги', defaultVisible: true, alwaysVisible: false, group: 'nav' },
+                { id: 'helpBtn', key: 'help', icon: 'fa-info-circle', label: 'Інформація', defaultVisible: true, alwaysVisible: false, group: 'nav' },
                 { id: 'decreaseFontTopBtn', key: 'decreaseFont', icon: 'fa-minus', label: 'Зменшити шрифт', defaultVisible: false, alwaysVisible: false, group: 'func' },
                 { id: 'increaseFontTopBtn', key: 'increaseFont', icon: 'fa-plus', label: 'Збільшити шрифт', defaultVisible: false, alwaysVisible: false, group: 'func' },
                 { id: 'themeToggleTopBtn', key: 'themeToggle', icon: 'fa-moon', label: 'Тема (світла/нічна)', defaultVisible: false, alwaysVisible: false, group: 'func' },
@@ -1743,7 +1818,10 @@
                         const response = await fetch(url);
                         if (!response.ok) throw new Error('Google не відповів');
                         const data = await response.json();
-                        return data?.[0]?.[0]?.[0] || null;
+                        if (data && data[0] && data[0][0] && data[0][0][0]) {
+                            return data[0][0][0];
+                        }
+                        return null;
                     }
                 },
                 {
@@ -1776,7 +1854,11 @@
                         const response = await fetch(url);
                         if (!response.ok) throw new Error('MyMemory не відповів');
                         const data = await response.json();
-                        return data?.responseData?.translatedText || null;
+                        const translation = data?.responseData?.translatedText;
+                        if (translation && translation.toLowerCase() !== word.toLowerCase() && translation.length > 0) {
+                            return translation;
+                        }
+                        return null;
                     }
                 },
                 {
@@ -1792,21 +1874,9 @@
                     }
                 },
                 {
-                    id: 'translatecom',
-                    name: 'Translate.com',
-                    priority: 5,
-                    fetch: async (word, sourceLang, targetLang) => {
-                        const url = `https://translate.com/api/translate?source=${sourceLang}&target=${targetLang}&text=${encodeURIComponent(word)}`;
-                        const response = await fetch(url);
-                        if (!response.ok) throw new Error('Translate.com не відповів');
-                        const data = await response.json();
-                        return data?.text || data?.translation || null;
-                    }
-                },
-                {
                     id: 'lingva',
                     name: 'Lingva Translate',
-                    priority: 6,
+                    priority: 5,
                     fetch: async (word, sourceLang, targetLang) => {
                         const url = `https://lingva.ml/api/v1/${sourceLang}/${targetLang}/${encodeURIComponent(word)}`;
                         const response = await fetch(url);
@@ -1819,11 +1889,12 @@
 
             async function fetchTranslation(word) {
                 const lower = word.toLowerCase().trim();
-                if (!lower) return "";
+                if (!lower) return "❓ (пусте слово)";
 
                 if (translationCache.has(lower)) {
-                    console.log(`📦 Кеш: "${word}" → "${translationCache.get(lower)}"`);
-                    return translationCache.get(lower);
+                    const cached = translationCache.get(lower);
+                    console.log(`📦 Кеш: "${word}" → "${cached}"`);
+                    return cached;
                 }
 
                 const localDict = getLocalDictionary();
@@ -1878,7 +1949,7 @@
                     }
                 }
 
-                const fallback = `❓ (переклад не знайдено)`;
+                const fallback = `⚠️ (переклад не знайдено)`;
                 translationCache.set(lower, fallback);
                 console.log(`❌ Не вдалося перекласти "${word}"`);
                 return fallback;
@@ -1917,11 +1988,11 @@
             }
 
             function isWordInTargetLanguage(word) {
-                if (targetLang === 'en' && /^[a-zA-Z]+$/.test(word)) {
-                    return true;
+                if (targetLang === 'uk') {
+                    return /[а-яіїєґА-ЯІЇЄҐ]/.test(word);
                 }
-                if (targetLang === 'uk' && /[а-яіїєґА-ЯІЇЄҐ]/.test(word)) {
-                    return true;
+                if (targetLang === 'en') {
+                    return /^[a-zA-Z]+$/.test(word) && !/[а-яіїєґА-ЯІЇЄҐ]/.test(word);
                 }
                 return false;
             }
@@ -1957,6 +2028,7 @@
             let isVerticalScroll = false;
             let swipeStartX = 0,
                 swipeStartY = 0;
+            let touchStartInCenter = false;
             const SWIPE_THRESHOLD = 30;
             const SWIPE_MAX_TIME = 500;
             const FLIP_DURATION = 400;
@@ -1979,8 +2051,7 @@
             const prevBtn = document.getElementById('prevPageBtn'),
                 nextBtn = document.getElementById('nextPageBtn');
             const pageIndicator = document.getElementById('pageIndicator'),
-                vocabListUl = document.getElementById('vocabularyList'),
-                booksListUl = document.getElementById('booksList');
+                vocabListUl = document.getElementById('vocabularyList');
             const fileInput = document.getElementById('uploadBook');
             const toggleAllWordsBtn = document.getElementById('toggleAllWordsBtn'),
                 lastWordTopBtn = document.getElementById('lastWordTopBtn');
@@ -2009,6 +2080,17 @@
             const tapRight = document.getElementById('tapRight');
             const tapCenter = document.getElementById('tapCenter');
             const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+            
+            // Кнопки для модалки книг
+            const booksBtn = document.getElementById('booksBtn');
+            const booksModal = document.getElementById('booksModal');
+            const closeBooksBtn = document.getElementById('closeBooksBtn');
+            const uploadBookBooksBtn = document.getElementById('uploadBookBooksBtn');
+            const booksListModal = document.getElementById('booksListModal');
+
+            // Кнопки для модалки інформації
+            const infoModal = document.getElementById('infoModal');
+            const closeInfoBtn = document.getElementById('closeInfoBtn');
 
             const miniTranslateModal = document.getElementById('miniTranslateModal');
             const closeTranslateBtn = document.getElementById('closeTranslateBtn');
@@ -2069,6 +2151,67 @@
                 } else {
                     scrollHint.classList.add('hidden');
                 }
+            }
+
+            // ========== ФУНКЦІЇ ДЛЯ МОДАЛКИ КНИГ ==========
+
+            function openBooksModal() { 
+                booksModal.classList.add('active'); 
+                renderBooksListModal();
+            }
+
+            function closeBooksModal() { 
+                booksModal.classList.remove('active'); 
+            }
+
+            function renderBooksListModal() {
+                if (!booksListModal) return;
+                if (uploadedBooks.length === 0) {
+                    booksListModal.innerHTML = '<li style="text-align:center; padding:20px; opacity:0.6;">📭 Немає книг</li>';
+                    return;
+                }
+                booksListModal.innerHTML = uploadedBooks.map(book =>
+                    `<li class="book-item"><div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="book-name-modal" data-id="${book.id}" style="cursor:pointer; flex:1; font-size:0.9rem;">📘 ${escapeHtml(book.name)}</span>
+                        <button class="icon-btn open-book-modal" data-id="${book.id}" style="padding:6px 12px;">📂</button>
+                        <button class="icon-btn delete-book-modal" data-id="${book.id}" style="padding:6px 12px; color:#e53935;">🗑</button>
+                    </div></li>`
+                ).join('');
+                
+                document.querySelectorAll('.open-book-modal').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openBook(btn.getAttribute('data-id'));
+                    closeBooksModal();
+                }));
+                
+                document.querySelectorAll('.delete-book-modal').forEach(btn => btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = btn.getAttribute('data-id');
+                    uploadedBooks = uploadedBooks.filter(b => b.id !== id);
+                    localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                    if (currentBookId === id) {
+                        if (uploadedBooks.length) openBook(uploadedBooks[0].id);
+                        else renderEmptyState();
+                    }
+                    renderBooksListModal();
+                    renderBooksList();
+                    showToast("Книгу видалено");
+                }));
+                
+                document.querySelectorAll('.book-name-modal').forEach(name => name.addEventListener('click', () => {
+                    openBook(name.getAttribute('data-id'));
+                    closeBooksModal();
+                }));
+            }
+
+            // ========== ФУНКЦІЇ ДЛЯ МОДАЛКИ ІНФОРМАЦІЇ ==========
+
+            function openInfoModal() { 
+                infoModal.classList.add('active'); 
+            }
+
+            function closeInfoModal() { 
+                infoModal.classList.remove('active'); 
             }
 
             // ========== ПЕРЕГОРТАННЯ ==========
@@ -2262,6 +2405,11 @@
                     swipeStartX = touch.clientX;
                     swipeStartY = touch.clientY;
 
+                    const rect = bookPageDiv.getBoundingClientRect();
+                    const x = touch.clientX - rect.left;
+                    const width = rect.width;
+                    touchStartInCenter = (x >= width * 0.25 && x <= width * 0.75);
+
                     const target = document.elementFromPoint(touch.clientX, touch.clientY);
                     if (target && target.closest('.word')) {
                         isLongPress = false;
@@ -2288,6 +2436,11 @@
                     const absX = Math.abs(deltaX);
                     const absY = Math.abs(deltaY);
 
+                    const rect = bookPageDiv.getBoundingClientRect();
+                    const currentX = touch.clientX - rect.left;
+                    const width = rect.width;
+                    const isInCenter = (currentX >= width * 0.25 && currentX <= width * 0.75);
+
                     if (absY > 15 && absY > absX * 1.2) {
                         isVerticalScroll = true;
                         if (longPressTimer) {
@@ -2297,13 +2450,15 @@
                         return;
                     }
 
-                    if (absX > 10 && absX > absY * 1.2) {
+                    if (absX > 10 && absX > absY * 1.2 && isInCenter && touchStartInCenter) {
                         isSwiping = true;
                         e.preventDefault();
                         if (longPressTimer) {
                             clearTimeout(longPressTimer);
                             longPressTimer = null;
                         }
+                    } else if (absX > 10 && absX > absY * 1.2 && !isInCenter) {
+                        // Підказку прибрано
                     }
                 }, { passive: false });
 
@@ -2376,6 +2531,7 @@
                 let mouseDownY = 0,
                     isMouseScroll = false;
                 let mouseDownTarget = null;
+                let mouseStartInCenter = false;
 
                 element.addEventListener('mousedown', (e) => {
                     if (e.button === 0) {
@@ -2385,6 +2541,11 @@
                         isMouseDown = true;
                         isMouseScroll = false;
                         mouseDownTarget = document.elementFromPoint(e.clientX, e.clientY);
+
+                        const rect = bookPageDiv.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const width = rect.width;
+                        mouseStartInCenter = (x >= width * 0.25 && x <= width * 0.75);
 
                         if (mouseDownTarget && mouseDownTarget.closest('.word')) {
                             isLongPress = false;
@@ -2407,9 +2568,24 @@
                     if (isMouseDown) {
                         const deltaX = e.clientX - mouseDownX;
                         const deltaY = e.clientY - mouseDownY;
+                        
+                        const rect = bookPageDiv.getBoundingClientRect();
+                        const currentX = e.clientX - rect.left;
+                        const width = rect.width;
+                        const isInCenter = (currentX >= width * 0.25 && currentX <= width * 0.75);
+
                         if (Math.abs(deltaY) > 20 && Math.abs(deltaY) > Math.abs(deltaX) * 1.2) {
                             isMouseScroll = true;
                         }
+                        
+                        if (Math.abs(deltaX) > 15 && isInCenter && mouseStartInCenter) {
+                            isMouseScroll = false;
+                            if (longPressTimer) {
+                                clearTimeout(longPressTimer);
+                                longPressTimer = null;
+                            }
+                        }
+                        
                         if (longPressTimer && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
                             clearTimeout(longPressTimer);
                             longPressTimer = null;
@@ -2438,6 +2614,11 @@
                             return;
                         }
 
+                        const rect = bookPageDiv.getBoundingClientRect();
+                        const currentX = e.clientX - rect.left;
+                        const width = rect.width;
+                        const isInCenter = (currentX >= width * 0.25 && currentX <= width * 0.75);
+
                         const target = document.elementFromPoint(e.clientX, e.clientY);
 
                         if (target && target.closest('.word')) {
@@ -2456,14 +2637,14 @@
                             return;
                         }
 
-                        if (Math.abs(deltaX) > 30 && deltaTime < 500) {
+                        if (Math.abs(deltaX) > 30 && deltaTime < 500 && isInCenter && mouseStartInCenter) {
                             if (deltaX < 0) {
                                 flipPage('forward');
                             } else {
                                 flipPage('back');
                             }
-                        } else if (Math.abs(deltaX) < 10) {
-                            handleTap(e.clientX, e.clientY);
+                        } else if (Math.abs(deltaX) < 10 && isInCenter) {
+                            // Підказку прибрано
                         }
                         isMouseDown = false;
                     }
@@ -2498,10 +2679,8 @@
                 const x = clientX - rect.left;
                 const width = rect.width;
 
-                if (x < width * 0.25) {
-                    flipPage('back');
-                } else if (x > width * 0.75) {
-                    flipPage('forward');
+                if (x >= width * 0.25 && x <= width * 0.75) {
+                    // Центр - нічого не робимо
                 }
             }
 
@@ -3229,7 +3408,7 @@
                 const visibility = loadToolbarVisibility();
                 
                 const groups = {
-                    nav: { label: '📖 Навігація', keys: ['lastWord', 'sidebar', 'help'] },
+                    nav: { label: '📖 Навігація', keys: ['lastWord', 'sidebar', 'books', 'help'] },
                     func: { label: '⚙️ Функції', keys: ['decreaseFont', 'increaseFont', 'themeToggle', 'soundToggle', 'toggleTranslation', 'recalcPages'] }
                 };
 
@@ -3403,6 +3582,7 @@
                     const id = Date.now() + '-' + Math.random().toString(36).substr(2, 6);
                     uploadedBooks.unshift({ id, name: file.name, content: html });
                     localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                    renderBooksListModal();
                     renderBooksList();
                     allPages = splitIntoPagesLikeFBReader(html);
                     currentPage = 0;
@@ -3434,38 +3614,13 @@
             }
 
             function renderBooksList() {
-                if (!booksListUl) return;
-                if (uploadedBooks.length === 0) {
-                    booksListUl.innerHTML = '<li>📭 Немає книг</li>';
-                    return;
-                }
-                booksListUl.innerHTML = uploadedBooks.map(book =>
-                    `<li class="book-item"><div style="display:flex; justify-content:space-between; align-items:center;"><span class="book-name" data-id="${book.id}" style="cursor:pointer; flex:1; font-size:0.85rem;">📘 ${escapeHtml(book.name)}</span><button class="icon-btn open-book" data-id="${book.id}">📂</button><button class="icon-btn delete-book" data-id="${book.id}">🗑</button></div></li>`
-                ).join('');
-                document.querySelectorAll('.open-book').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    openBook(btn.getAttribute('data-id'));
-                    closeSidebar();
-                }));
-                document.querySelectorAll('.delete-book').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.getAttribute('data-id');
-                    uploadedBooks = uploadedBooks.filter(b => b.id !== id);
-                    localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
-                    if (currentBookId === id) {
-                        if (uploadedBooks.length) openBook(uploadedBooks[0].id);
-                        else renderEmptyState();
-                    }
-                    renderBooksList();
-                    showToast("Книгу видалено");
-                }));
-                document.querySelectorAll('.book-name').forEach(name => name.addEventListener('click', () => openBook(name.getAttribute('data-id'))));
+                // Застаріло - використовуємо renderBooksListModal
             }
 
             function loadUploadedBooks() {
                 const saved = localStorage.getItem('reader_books');
                 if (saved) try { uploadedBooks = JSON.parse(saved); } catch (e) { uploadedBooks = []; }
-                renderBooksList();
+                renderBooksListModal();
             }
 
             function loadSavedBook() {
@@ -3574,9 +3729,12 @@
                     if (longPressTranslation) speakWord(longPressTranslation);
                 });
 
-                tapLeft.addEventListener('click', (e) => { e.stopPropagation(); flipPage('back'); });
-                tapRight.addEventListener('click', (e) => { e.stopPropagation(); flipPage('forward'); });
-                tapCenter.addEventListener('click', (e) => { e.stopPropagation(); if (allPages.length) showToast(`Стор. ${currentPage+1} з ${allPages.length}`); });
+                tapLeft.addEventListener('click', (e) => { e.stopPropagation(); });
+                tapRight.addEventListener('click', (e) => { e.stopPropagation(); });
+                tapCenter.addEventListener('click', (e) => { 
+                    e.stopPropagation(); 
+                    // Підказку прибрано
+                });
 
                 soundToggleBtn.addEventListener('click', toggleSound);
                 clearVocabBtn.addEventListener('click', clearVocabulary);
@@ -3597,6 +3755,17 @@
                 if (soundToggleTopBtn) soundToggleTopBtn.addEventListener('click', toggleSound);
                 if (toggleTranslationTopBtn) toggleTranslationTopBtn.addEventListener('click', toggleTranslationMode);
                 if (recalcPagesTopBtn) recalcPagesTopBtn.addEventListener('click', () => recalculatePages(true));
+
+                // Кнопки для модалки книг
+                booksBtn.addEventListener('click', openBooksModal);
+                closeBooksBtn.addEventListener('click', closeBooksModal);
+                booksModal.addEventListener('click', (e) => { if (e.target === booksModal) closeBooksModal(); });
+                uploadBookBooksBtn.addEventListener('click', () => { closeBooksModal(); setTimeout(() => fileInput.click(), 300); });
+
+                // Кнопки для модалки інформації
+                helpBtn.addEventListener('click', openInfoModal);
+                closeInfoBtn.addEventListener('click', closeInfoModal);
+                infoModal.addEventListener('click', (e) => { if (e.target === infoModal) closeInfoModal(); });
 
                 settingsBtn.addEventListener('click', openSettings);
                 closeSettingsBtn.addEventListener('click', closeSettings);
@@ -3631,7 +3800,6 @@
                     e.target.value = '';
                 });
 
-                helpBtn.addEventListener('click', showOnboarding);
                 skipOnboardingBtn.addEventListener('click', hideOnboarding);
                 startOnboardingBtn.addEventListener('click', startOnboardingTour);
 
@@ -3642,7 +3810,7 @@
                         if (action === 'upload') fileInput.click();
                         else if (action === 'settings') openSettings();
                         else if (action === 'click') { showToast("Завантажте книгу та натисніть на слово!"); if (uploadedBooks.length === 0) fileInput.click(); }
-                        else if (action === 'swipe') showToast("👆 Гортайте пальцем вліво/вправо");
+                        else if (action === 'swipe') showToast("👆 Гортайте пальцем вліво/вправо по центру сторінки");
                         else if (action === 'scroll') showToast("⬇️ Прокручуйте вгору/вниз якщо сторінка не вміщається");
                     });
                 });
