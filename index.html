@@ -1438,6 +1438,199 @@
             white-space: nowrap;
         }
 
+        .book-sites-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0;
+        }
+        .book-site-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--light-text);
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+        body.dark .book-site-link {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        .book-site-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: var(--light-accent-soft);
+        }
+        body.dark .book-site-link:hover {
+            background: var(--dark-accent-soft);
+        }
+        .book-site-link i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .book-site-link .site-name {
+            font-weight: 500;
+        }
+        .book-site-link .site-desc {
+            font-size: 0.65rem;
+            opacity: 0.7;
+        }
+
+        .site-category {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--light-text-secondary);
+            padding: 8px 0 4px 0;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--light-border);
+            margin-bottom: 4px;
+        }
+        body.dark .site-category {
+            color: var(--dark-text-secondary);
+            border-bottom-color: var(--dark-border);
+        }
+
+        .my-library-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .my-library-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--light-surface);
+            border: 1px solid var(--light-border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        body.dark .my-library-item {
+            background: var(--dark-surface);
+            border-color: var(--dark-border);
+            color: var(--dark-text);
+        }
+        .my-library-item:hover {
+            background: var(--light-accent-soft);
+        }
+        body.dark .my-library-item:hover {
+            background: var(--dark-accent-soft);
+        }
+        .my-library-item .book-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            cursor: pointer;
+        }
+        .my-library-item .book-info i {
+            font-size: 1.2rem;
+            color: var(--light-accent);
+        }
+        body.dark .my-library-item .book-info i {
+            color: var(--dark-accent);
+        }
+        .my-library-item .book-info .title {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .my-library-item .book-info .pages {
+            font-size: 0.65rem;
+            opacity: 0.6;
+            margin-left: 8px;
+        }
+        .my-library-item .book-actions {
+            display: flex;
+            gap: 4px;
+        }
+        .my-library-item .book-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            color: var(--light-text-secondary);
+        }
+        body.dark .my-library-item .book-actions button {
+            color: var(--dark-text-secondary);
+        }
+        .my-library-item .book-actions button:hover {
+            background: var(--light-btn-hover);
+        }
+        body.dark .my-library-item .book-actions button:hover {
+            background: var(--dark-btn-hover);
+        }
+        .my-library-item .book-actions .delete-btn:hover {
+            color: #e53935 !important;
+        }
+
+        .support-section {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--light-accent-soft);
+            border-radius: 12px;
+            text-align: center;
+        }
+        body.dark .support-section {
+            background: var(--dark-accent-soft);
+        }
+        .support-section h4 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--light-text);
+        }
+        body.dark .support-section h4 {
+            color: var(--dark-text);
+        }
+        .support-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .support-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .support-btn.patreon {
+            background: #FF424D;
+            color: white;
+        }
+        .support-btn.buymeacoffee {
+            background: #FFDD00;
+            color: #333;
+        }
+        .support-btn.paypal {
+            background: #0070BA;
+            color: white;
+        }
+        .support-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(0.95);
+        }
+
         @media (max-width:600px) {
             .page-content { padding: 12px 14px; font-size: 1rem; }
             .top-bar { padding: 4px 8px; min-height: 40px; }
@@ -1464,6 +1657,7 @@
             .toggle-switch { width: 38px; height: 20px; }
             .toggle-switch::after { width: 16px; height: 16px; top: 2px; left: 2px; }
             .toggle-switch.active::after { transform: translateX(18px); }
+            .book-sites-grid { grid-template-columns: 1fr; }
         }
         @media (max-width:400px) {
             .page-content { padding: 8px 10px; font-size: 0.9rem; line-height: 1.5; }
@@ -1561,15 +1755,81 @@
 
     <!-- МОДАЛЬНЕ ВІКНО ДЛЯ КНИГ -->
     <div id="booksModal" class="settings-modal">
-        <div class="settings-panel" style="max-width:500px;">
+        <div class="settings-panel" style="max-width:580px;">
             <button class="close-settings" id="closeBooksBtn"><i class="fas fa-times"></i></button>
             <h3><i class="fas fa-layer-group"></i> Мої книги</h3>
-            <div style="margin:16px 0;">
+            
+            <div style="margin:12px 0;">
                 <button id="uploadBookBooksBtn" class="tool-btn" style="width:100%; padding:10px; background:var(--light-accent); color:white; border-radius:8px; justify-content:center;">
                     <i class="fas fa-upload"></i> Завантажити книгу
                 </button>
             </div>
-            <ul id="booksListModal" class="books-list-modal"><li style="text-align:center; padding:20px; opacity:0.6;">📭 Немає книг</li></ul>
+
+            <div style="margin:12px 0;">
+                <div class="site-category">📚 Моя бібліотека</div>
+                <div id="myLibraryList" class="my-library-grid">
+                    <div style="text-align:center; padding:12px; opacity:0.5; font-size:0.85rem;">
+                        <i class="fas fa-book" style="font-size:1.2rem; display:block; margin-bottom:4px;"></i>
+                        Немає книг. Завантажте першу!
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin:12px 0;">
+                <div class="site-category">🌐 Де скачати книги</div>
+                <div class="book-sites-grid">
+                    <a href="https://www.gutenberg.org/" target="_blank" class="book-site-link">
+                        <i class="fas fa-globe" style="color:#1a73e8;"></i>
+                        <div><div class="site-name">Project Gutenberg</div><div class="site-desc">70,000+ безкоштовних книг</div></div>
+                    </a>
+                    <a href="https://openlibrary.org/" target="_blank" class="book-site-link">
+                        <i class="fas fa-book-open" style="color:#d4a017;"></i>
+                        <div><div class="site-name">Open Library</div><div class="site-desc">1.7M+ книг</div></div>
+                    </a>
+                    <a href="https://standardebooks.org/" target="_blank" class="book-site-link">
+                        <i class="fas fa-star" style="color:#e67e22;"></i>
+                        <div><div class="site-name">Standard Ebooks</div><div class="site-desc">Якісні ebooks</div></div>
+                    </a>
+                    <a href="https://books.google.com/" target="_blank" class="book-site-link">
+                        <i class="fab fa-google" style="color:#4285f4;"></i>
+                        <div><div class="site-name">Google Books</div><div class="site-desc">Пошук і попередній перегляд</div></div>
+                    </a>
+                    <a href="https://litarchive.com.ua/" target="_blank" class="book-site-link">
+                        <i class="fas fa-flag" style="color:#0057b8;"></i>
+                        <div><div class="site-name">ЛітАрхів</div><div class="site-desc">Українські книги</div></div>
+                    </a>
+                    <a href="https://www.ukrclassic.com.ua/" target="_blank" class="book-site-link">
+                        <i class="fas fa-feather-alt" style="color:#e63946;"></i>
+                        <div><div class="site-name">UkrClassic</div><div class="site-desc">Українська класика</div></div>
+                    </a>
+                    <a href="https://archive.org/details/texts" target="_blank" class="book-site-link">
+                        <i class="fas fa-archive" style="color:#6c757d;"></i>
+                        <div><div class="site-name">Internet Archive</div><div class="site-desc">Мільйони книг</div></div>
+                    </a>
+                    <a href="https://www.manybooks.net/" target="_blank" class="book-site-link">
+                        <i class="fas fa-books" style="color:#28a745;"></i>
+                        <div><div class="site-name">ManyBooks</div><div class="site-desc">Безкоштовні ebooks</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="support-section">
+                <h4>☕ Підтримати проєкт</h4>
+                <p style="font-size:0.75rem; opacity:0.7; margin-bottom:10px;">Допоможіть розвитку LinguaReader!</p>
+                <div class="support-buttons">
+                    <a href="https://www.patreon.com/" target="_blank" class="support-btn patreon">
+                        <i class="fab fa-patreon"></i> Patreon
+                    </a>
+                    <a href="https://www.buymeacoffee.com/" target="_blank" class="support-btn buymeacoffee">
+                        <i class="fas fa-mug-hot"></i> Buy Me A Coffee
+                    </a>
+                    <a href="https://www.paypal.com/donate/" target="_blank" class="support-btn paypal">
+                        <i class="fab fa-paypal"></i> PayPal
+                    </a>
+                </div>
+            </div>
+
+            <ul id="booksListModal" class="books-list-modal" style="display:none;"></ul>
         </div>
     </div>
 
@@ -1891,6 +2151,31 @@
                 const lower = word.toLowerCase().trim();
                 if (!lower) return "❓ (пусте слово)";
 
+                // Якщо це число - перекладаємо через Google Translate
+                if (/^\d+(?:[.,]\d+)?$/.test(word)) {
+                    // Перевіряємо кеш
+                    if (translationCache.has(lower)) {
+                        return translationCache.get(lower);
+                    }
+                    
+                    // Перекладаємо число
+                    for (const source of TRANSLATION_SOURCES) {
+                        try {
+                            const translation = await source.fetch(word, currentSourceLang, targetLang);
+                            if (translation && translation.trim() && translation.length > 0) {
+                                translationCache.set(lower, translation);
+                                console.log(`🔢 Число "${word}" → "${translation}"`);
+                                return translation;
+                            }
+                        } catch (error) {
+                            console.log(`  ❌ ${source.name}: ${error.message}`);
+                        }
+                    }
+                    // Якщо не вдалося перекласти - повертаємо число як є
+                    translationCache.set(lower, word);
+                    return word;
+                }
+
                 if (translationCache.has(lower)) {
                     const cached = translationCache.get(lower);
                     console.log(`📦 Кеш: "${word}" → "${cached}"`);
@@ -1935,7 +2220,7 @@
                     let allTranslated = true;
                     for (const w of words) {
                         const trans = await fetchTranslation(w);
-                        if (trans && !trans.includes('❓')) {
+                        if (trans && !trans.includes('❓') && !trans.includes('⚠️')) {
                             translations.push(trans);
                         } else {
                             allTranslated = false;
@@ -1988,6 +2273,10 @@
             }
 
             function isWordInTargetLanguage(word) {
+                // Числа завжди перекладаємо
+                if (/^\d+(?:[.,]\d+)?$/.test(word)) {
+                    return false;
+                }
                 if (targetLang === 'uk') {
                     return /[а-яіїєґА-ЯІЇЄҐ]/.test(word);
                 }
@@ -2081,14 +2370,13 @@
             const tapCenter = document.getElementById('tapCenter');
             const fontSizeDisplay = document.getElementById('fontSizeDisplay');
             
-            // Кнопки для модалки книг
             const booksBtn = document.getElementById('booksBtn');
             const booksModal = document.getElementById('booksModal');
             const closeBooksBtn = document.getElementById('closeBooksBtn');
             const uploadBookBooksBtn = document.getElementById('uploadBookBooksBtn');
             const booksListModal = document.getElementById('booksListModal');
+            const myLibraryList = document.getElementById('myLibraryList');
 
-            // Кнопки для модалки інформації
             const infoModal = document.getElementById('infoModal');
             const closeInfoBtn = document.getElementById('closeInfoBtn');
 
@@ -2153,10 +2441,75 @@
                 }
             }
 
-            // ========== ФУНКЦІЇ ДЛЯ МОДАЛКИ КНИГ ==========
+            // ========== ФУНКЦІЇ ДЛЯ МОЄЇ БІБЛІОТЕКИ ==========
+
+            function renderMyLibrary() {
+                if (!myLibraryList) return;
+                if (uploadedBooks.length === 0) {
+                    myLibraryList.innerHTML = `
+                        <div style="text-align:center; padding:12px; opacity:0.5; font-size:0.85rem;">
+                            <i class="fas fa-book" style="font-size:1.2rem; display:block; margin-bottom:4px;"></i>
+                            Немає книг. Завантажте першу!
+                        </div>
+                    `;
+                    return;
+                }
+                
+                myLibraryList.innerHTML = uploadedBooks.map((book, index) => `
+                    <div class="my-library-item" data-index="${index}">
+                        <div class="book-info" data-id="${book.id}">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <span class="title">${escapeHtml(book.name)}</span>
+                                <span class="pages">(${book.pageCount || '?'} стор.)</span>
+                            </div>
+                        </div>
+                        <div class="book-actions">
+                            <button class="open-book-btn" data-id="${book.id}" title="Відкрити"><i class="fas fa-folder-open"></i></button>
+                            <button class="delete-book-btn" data-id="${book.id}" title="Видалити"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+
+                myLibraryList.querySelectorAll('.open-book-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = btn.dataset.id;
+                        openBook(id);
+                        closeBooksModal();
+                    });
+                });
+
+                myLibraryList.querySelectorAll('.book-info').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const id = el.dataset.id;
+                        openBook(id);
+                        closeBooksModal();
+                    });
+                });
+
+                myLibraryList.querySelectorAll('.delete-book-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const id = btn.dataset.id;
+                        if (confirm(`Видалити книгу "${uploadedBooks.find(b => b.id === id)?.name || ''}"?`)) {
+                            uploadedBooks = uploadedBooks.filter(b => b.id !== id);
+                            localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                            if (currentBookId === id) {
+                                if (uploadedBooks.length) openBook(uploadedBooks[0].id);
+                                else renderEmptyState();
+                            }
+                            renderMyLibrary();
+                            renderBooksListModal();
+                            showToast("Книгу видалено");
+                        }
+                    });
+                });
+            }
 
             function openBooksModal() { 
                 booksModal.classList.add('active'); 
+                renderMyLibrary();
                 renderBooksListModal();
             }
 
@@ -2166,45 +2519,8 @@
 
             function renderBooksListModal() {
                 if (!booksListModal) return;
-                if (uploadedBooks.length === 0) {
-                    booksListModal.innerHTML = '<li style="text-align:center; padding:20px; opacity:0.6;">📭 Немає книг</li>';
-                    return;
-                }
-                booksListModal.innerHTML = uploadedBooks.map(book =>
-                    `<li class="book-item"><div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="book-name-modal" data-id="${book.id}" style="cursor:pointer; flex:1; font-size:0.9rem;">📘 ${escapeHtml(book.name)}</span>
-                        <button class="icon-btn open-book-modal" data-id="${book.id}" style="padding:6px 12px;">📂</button>
-                        <button class="icon-btn delete-book-modal" data-id="${book.id}" style="padding:6px 12px; color:#e53935;">🗑</button>
-                    </div></li>`
-                ).join('');
-                
-                document.querySelectorAll('.open-book-modal').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    openBook(btn.getAttribute('data-id'));
-                    closeBooksModal();
-                }));
-                
-                document.querySelectorAll('.delete-book-modal').forEach(btn => btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.getAttribute('data-id');
-                    uploadedBooks = uploadedBooks.filter(b => b.id !== id);
-                    localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
-                    if (currentBookId === id) {
-                        if (uploadedBooks.length) openBook(uploadedBooks[0].id);
-                        else renderEmptyState();
-                    }
-                    renderBooksListModal();
-                    renderBooksList();
-                    showToast("Книгу видалено");
-                }));
-                
-                document.querySelectorAll('.book-name-modal').forEach(name => name.addEventListener('click', () => {
-                    openBook(name.getAttribute('data-id'));
-                    closeBooksModal();
-                }));
+                booksListModal.style.display = 'none';
             }
-
-            // ========== ФУНКЦІЇ ДЛЯ МОДАЛКИ ІНФОРМАЦІЇ ==========
 
             function openInfoModal() { 
                 infoModal.classList.add('active'); 
@@ -2457,8 +2773,6 @@
                             clearTimeout(longPressTimer);
                             longPressTimer = null;
                         }
-                    } else if (absX > 10 && absX > absY * 1.2 && !isInCenter) {
-                        // Підказку прибрано
                     }
                 }, { passive: false });
 
@@ -2643,8 +2957,6 @@
                             } else {
                                 flipPage('back');
                             }
-                        } else if (Math.abs(deltaX) < 10 && isInCenter) {
-                            // Підказку прибрано
                         }
                         isMouseDown = false;
                     }
@@ -2793,7 +3105,13 @@
                 allPages = newPages;
                 currentPage = Math.min(Math.floor(progress * allPages.length), allPages.length - 1);
                 if (currentPage < 0) currentPage = 0;
+                const bookToUpdate = uploadedBooks.find(b => b.id === currentBookId);
+                if (bookToUpdate) {
+                    bookToUpdate.pageCount = allPages.length;
+                    localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                }
                 renderPage();
+                renderMyLibrary();
                 if (showToastMsg) {
                     showToast(`📱 Сторінок: ${oldCount} → ${allPages.length}`);
                 }
@@ -2902,32 +3220,50 @@
                 return 'en';
             }
 
-            // ========== ОБГОРТКА СЛІВ ==========
+            // ========== ОБГОРТКА СЛІВ - З ПІДТРИМКОЮ ЧИСЕЛ ==========
 
             function wrapWordsInHtml(html) {
                 const container = document.createElement('div');
                 container.innerHTML = html;
+                
                 function processNode(node) {
                     if (node.nodeType === Node.TEXT_NODE) {
-                        const wordRegex = /([A-Za-zА-ЯІЇЄҐа-яіїєґ']+(?:-[A-Za-zА-ЯІЇЄҐа-яіїєґ']+)?)/g;
+                        // Регулярний вираз для:
+                        // 1. Слів з літерами та апострофами
+                        // 2. Чисел (цілі та десяткові)
+                        const wordRegex = /([A-Za-zА-ЯІЇЄҐа-яіїєґ']+(?:[-\'’][A-Za-zА-ЯІЇЄҐа-яіїєґ']+)*|\d+(?:[.,]\d+)?)/g;
                         let lastIndex = 0;
                         let match;
                         const fragment = document.createDocumentFragment();
+                        
                         while ((match = wordRegex.exec(node.textContent)) !== null) {
                             if (match.index > lastIndex) {
                                 fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex, match.index)));
                             }
-                            const wordSpan = document.createElement('span');
-                            wordSpan.className = 'word';
-                            wordSpan.textContent = match[0];
-                            fragment.appendChild(wordSpan);
+                            
+                            const wordText = match[0];
+                            // Перевіряємо, чи це слово з літерами або число
+                            const hasLetters = /[A-Za-zА-ЯІЇЄҐа-яіїєґ]/.test(wordText);
+                            const isNumber = /^\d+(?:[.,]\d+)?$/.test(wordText);
+                            
+                            // Обгортаємо ВСІ слова з літерами та числа
+                            if ((hasLetters || isNumber) && wordText.length > 0) {
+                                const wordSpan = document.createElement('span');
+                                wordSpan.className = 'word';
+                                wordSpan.textContent = wordText;
+                                fragment.appendChild(wordSpan);
+                            } else {
+                                fragment.appendChild(document.createTextNode(wordText));
+                            }
+                            
                             lastIndex = match.index + match[0].length;
                         }
+                        
                         if (lastIndex < node.textContent.length) {
                             fragment.appendChild(document.createTextNode(node.textContent.substring(lastIndex)));
                         }
                         node.parentNode.replaceChild(fragment, node);
-                    } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'IMG', 'BUTTON', 'INPUT'].includes(node.tagName)) {
+                    } else if (node.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE', 'IMG', 'BUTTON', 'INPUT', 'A', 'CODE', 'PRE'].includes(node.tagName)) {
                         Array.from(node.childNodes).forEach(child => processNode(child));
                     }
                 }
@@ -3118,7 +3454,7 @@
                 if (isLongPress) { isLongPress = false; return; }
                 const span = e.currentTarget;
                 const word = span.innerText.trim();
-                if (!word || !word.match(/[A-Za-zА-ЯІЇЄҐа-яіїєґ]/)) return;
+                if (!word) return;
                 
                 document.querySelectorAll('#pageCurrent .word').forEach(w => {
                     w.classList.remove('word-clicked', 'word-clicked-pulse');
@@ -3580,11 +3916,17 @@
                     updateSourceLanguageFromContent(html);
                     translationCache.clear();
                     const id = Date.now() + '-' + Math.random().toString(36).substr(2, 6);
-                    uploadedBooks.unshift({ id, name: file.name, content: html });
+                    const pages = splitIntoPagesLikeFBReader(html);
+                    uploadedBooks.unshift({ 
+                        id, 
+                        name: file.name, 
+                        content: html,
+                        pageCount: pages.length 
+                    });
                     localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                    renderMyLibrary();
                     renderBooksListModal();
-                    renderBooksList();
-                    allPages = splitIntoPagesLikeFBReader(html);
+                    allPages = pages;
                     currentPage = 0;
                     currentBookId = id;
                     renderPage();
@@ -3604,6 +3946,9 @@
                 if (savedLastPage && parseInt(savedLastPage) < allPages.length) {
                     currentPage = parseInt(savedLastPage);
                 }
+                book.pageCount = allPages.length;
+                localStorage.setItem('reader_books', JSON.stringify(uploadedBooks));
+                renderMyLibrary();
                 lastWordPosition = null;
                 lastWordPageIndex = -1;
                 lastWordText = null;
@@ -3613,13 +3958,18 @@
                 showToast(`📖 ${book.name}`);
             }
 
-            function renderBooksList() {
-                // Застаріло - використовуємо renderBooksListModal
-            }
-
             function loadUploadedBooks() {
                 const saved = localStorage.getItem('reader_books');
-                if (saved) try { uploadedBooks = JSON.parse(saved); } catch (e) { uploadedBooks = []; }
+                if (saved) try { 
+                    uploadedBooks = JSON.parse(saved); 
+                    uploadedBooks.forEach(book => {
+                        if (!book.pageCount) {
+                            const pages = splitIntoPagesLikeFBReader(book.content);
+                            book.pageCount = pages.length;
+                        }
+                    });
+                } catch (e) { uploadedBooks = []; }
+                renderMyLibrary();
                 renderBooksListModal();
             }
 
@@ -3733,7 +4083,6 @@
                 tapRight.addEventListener('click', (e) => { e.stopPropagation(); });
                 tapCenter.addEventListener('click', (e) => { 
                     e.stopPropagation(); 
-                    // Підказку прибрано
                 });
 
                 soundToggleBtn.addEventListener('click', toggleSound);
@@ -3756,13 +4105,11 @@
                 if (toggleTranslationTopBtn) toggleTranslationTopBtn.addEventListener('click', toggleTranslationMode);
                 if (recalcPagesTopBtn) recalcPagesTopBtn.addEventListener('click', () => recalculatePages(true));
 
-                // Кнопки для модалки книг
                 booksBtn.addEventListener('click', openBooksModal);
                 closeBooksBtn.addEventListener('click', closeBooksModal);
                 booksModal.addEventListener('click', (e) => { if (e.target === booksModal) closeBooksModal(); });
                 uploadBookBooksBtn.addEventListener('click', () => { closeBooksModal(); setTimeout(() => fileInput.click(), 300); });
 
-                // Кнопки для модалки інформації
                 helpBtn.addEventListener('click', openInfoModal);
                 closeInfoBtn.addEventListener('click', closeInfoModal);
                 infoModal.addEventListener('click', (e) => { if (e.target === infoModal) closeInfoModal(); });
